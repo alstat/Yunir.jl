@@ -1,4 +1,4 @@
-module Nur
+module Yunir
 
 import Base: download, delete!
 

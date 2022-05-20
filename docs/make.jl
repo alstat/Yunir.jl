@@ -1,13 +1,13 @@
 using Documenter
-using Nur
+using Yunir
 
 makedocs(
-    sitename = "Nur.jl",
+    sitename = "Yunir.jl",
     format = Documenter.HTML(
         assets = ["assets/favicon.ico"]
     ),
     authors = "Al-Ahmadgaid B. Asaad",
-    modules = [Nur],
+    modules = [Yunir],
     pages = [
         "Home" => "index.md",
         "Basic Utilities" => "man/basic_utilities.md",
@@ -26,5 +26,5 @@ makedocs(
 # See "Hosting Documentation" and deploydocs() in the Documenter manual
 # for more information.
 deploydocs(
-    repo = "github.com/alstat/Nur.jl.git"
+    repo = "github.com/alstat/Yunir.jl.git"
 )

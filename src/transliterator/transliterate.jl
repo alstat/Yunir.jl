@@ -99,7 +99,7 @@ macro transliterator(dict, name)
                 rx_diacs::Regex
                 rx_ardiacs::Regex
             end
-            Nur.Transliterator() = $T($dict, prop[1], prop[2], $AR_DIACS_REGEX)
+            Yunir.Transliterator() = $T($dict, prop[1], prop[2], $AR_DIACS_REGEX)
             function Base.show(io::IO, t::$T)
                 println(io, $T, ":")
                 println(io, " ├ encode: ", Transliterator().encode)

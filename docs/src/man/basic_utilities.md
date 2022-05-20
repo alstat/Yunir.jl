@@ -4,7 +4,7 @@ In this section, we are going to discuss how to use the APIs for dediacritizatio
 ## Dediacritization
 The function to use is `dediac`, which works on Arabic, Buckwalter and custom transliterated characters.
 ```@repl abc
-using Nur
+using Yunir
 
 ar_basmala = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ";
 dediac(ar_basmala)
@@ -60,7 +60,7 @@ normalize.(sentence0)
 normalize.(sentence0, [:alif_khanjareeya, :alif_hamza_below])
 ```
 ## Transliteration
-By default, Nur.jl uses [extended Buckwalter transliteration](https://corpus.quran.com/java/buckwalter.jsp). The function to use are `encode` (Arabic -> Roman) and `arabic` (Roman -> Arabic). The following are some examples:
+By default, Yunir.jl uses [extended Buckwalter transliteration](https://corpus.quran.com/java/buckwalter.jsp). The function to use are `encode` (Arabic -> Roman) and `arabic` (Roman -> Arabic). The following are some examples:
 ```@repl abc
 arabic(bw_basmala)
 arabic(bw_basmala) === ar_basmala
@@ -68,7 +68,7 @@ encode(ar_basmala)
 encode(ar_basmala) === bw_basmala
 ```
 ## Custom Transliteration
-For custom transliteration, user must specify the character mapping in a dictionary with `Symbol` type for both keys and values. By default, the Buckwalter mapping used in Nur.jl is encoded in the constant variable `BW_ENCODING`.
+For custom transliteration, user must specify the character mapping in a dictionary with `Symbol` type for both keys and values. By default, the Buckwalter mapping used in Yunir.jl is encoded in the constant variable `BW_ENCODING`.
 ```@repl abc
 BW_ENCODING
 ```

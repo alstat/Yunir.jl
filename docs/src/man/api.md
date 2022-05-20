@@ -2,5 +2,5 @@ API References
 =====
 
 ```@autodocs
-Modules = [Nur]
+Modules = [Yunir]
 ```

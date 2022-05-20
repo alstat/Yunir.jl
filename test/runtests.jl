@@ -1,4 +1,4 @@
-using Nur
+using Yunir
 using Test
 
 @info "encoding"

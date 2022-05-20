@@ -5,7 +5,7 @@ All Arabic characters and diacritics and other characters used in Arabic texts, 
 ## Numerals
 The numerals we refer here is the [Abjad numeral](https://en.wikipedia.org/wiki/Abjad_numerals).
 ```@repl abc2
-using Nur
+using Yunir
 
 ar_basmala = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ";
 ```
