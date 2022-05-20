@@ -3,11 +3,12 @@ uuid = "6ba116df-6904-454d-b214-90038a8281a6"
 authors = ["Al-Ahmadgaid B. Asaad"]
 version = "0.1.0"
 
+[deps]
+QuranTree = "f647ab69-6f05-4d64-883f-59d0fbe08d2b"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
 [compat]
 julia = "1.6.0"
-
-[deps]
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
