@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Working with QuranTree.jl · Nur.jl</title><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.044/juliamono.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.11/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script><link href="../../assets/favicon.ico" rel="icon" type="image/x-icon"/></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img class="docs-light-only" src="../../assets/logo.png" alt="Nur.jl logo"/><img class="docs-dark-only" src="../../assets/logo-dark.png" alt="Nur.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Nur.jl</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><a class="tocitem" href="../basic_utilities/">Basic Utilities</a></li><li><a class="tocitem" href="../orthography/">Orthographical Analysis</a></li><li class="is-active"><a class="tocitem" href>Working with QuranTree.jl</a><ul class="internal"><li><a class="tocitem" href="#Normalization"><span>Normalization</span></a></li><li><a class="tocitem" href="#Dediacritization"><span>Dediacritization</span></a></li><li><a class="tocitem" href="#Transliteration"><span>Transliteration</span></a></li></ul></li><li><a class="tocitem" href="../api/">API</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Working with QuranTree.jl</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Working with QuranTree.jl</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/alstat/Nur.jl/blob/master/docs/src/man/qurantree.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Working-with-QuranTree.jl"><a class="docs-heading-anchor" href="#Working-with-QuranTree.jl">Working with QuranTree.jl</a><a id="Working-with-QuranTree.jl-1"></a><a class="docs-heading-anchor-permalink" href="#Working-with-QuranTree.jl" title="Permalink"></a></h1><p>Nur.jl can seemlessly work with <a href="https://alstat.github.io/QuranTree.jl/dev/">QuranTree.jl</a>.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; using Nur</code><code class="nohighlight hljs ansi" style="display:block;"></code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; using QuranTree</code><code class="nohighlight hljs ansi" style="display:block;"></code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; data = QuranData();</code><code class="nohighlight hljs ansi" style="display:block;"></code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; crps, tnzl = load(data);</code><code class="nohighlight hljs ansi" style="display:block;"></code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; crpsdata = table(crps)</code><code class="nohighlight hljs ansi" style="display:block;">Quranic Arabic Corpus (morphology)
+(C) 2011 Kais Dukes
+
+Table with 128219 rows, 7 columns:
+Columns:
+#  colname   type
+───────────────────
+1  chapter   Int64
+2  verse     Int64
+3  word      Int64
+4  part      Int64
+5  form      String
+6  tag       String
+7  features  String</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; tnzldata = table(tnzl)</code><code class="nohighlight hljs ansi" style="display:block;">Tanzil Quran Text (Uthmani)
+(C) 2008-2010 Tanzil.net
+
+Table with 6236 rows, 3 columns:
+chapter  verse  form
+─────────────────────────────────────────────────────────────────────
+1        1      &quot;بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ&quot;
+1        2      &quot;ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَٰلَمِينَ&quot;
+1        3      &quot;ٱلرَّحْمَٰنِ ٱلرَّحِيمِ&quot;
+1        4      &quot;مَٰلِكِ يَوْمِ ٱلدِّينِ&quot;
+1        5      &quot;إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ&quot;
+1        6      &quot;ٱهْدِنَا ٱلصِّرَٰطَ ٱلْمُسْتَقِيمَ&quot;
+1        7      &quot;صِرَٰطَ ٱلَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ ٱلْمَغْضُوبِ عَلَيْهِمْ وَلَا ٱلضَّآلِّينَ&quot;
+2        1      &quot;بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ الٓمٓ&quot;
+2        2      &quot;ذَٰلِكَ ٱلْكِتَٰبُ لَا رَيْبَ فِيهِ هُدًى لِّلْمُتَّقِينَ&quot;
+⋮
+113      4      &quot;وَمِن شَرِّ ٱلنَّفَّٰثَٰتِ فِى ٱلْعُقَدِ&quot;
+113      5      &quot;وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ&quot;
+114      1      &quot;بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ قُلْ أَعُوذُ بِرَبِّ ٱلنَّاسِ&quot;
+114      2      &quot;مَلِكِ ٱلنَّاسِ&quot;
+114      3      &quot;إِلَٰهِ ٱلنَّاسِ&quot;
+114      4      &quot;مِن شَرِّ ٱلْوَسْوَاسِ ٱلْخَنَّاسِ&quot;
+114      5      &quot;ٱلَّذِى يُوَسْوِسُ فِى صُدُورِ ٱلنَّاسِ&quot;
+114      6      &quot;مِنَ ٱلْجِنَّةِ وَٱلنَّاسِ&quot;</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; Nur.arabic(verses(crpsdata[114])[1])</code><code class="nohighlight hljs ansi" style="display:block;">&quot;قُلْ أَعُوذُ بِرَبِّ ٱلنَّاسِ&quot;</code></pre><div class="admonition is-info"><header class="admonition-header">Note</header><div class="admonition-body"><p>You have to install QuranTree.jl to run the above example. To install, run</p><pre><code class="language-julia hljs">using Pkg
+Pkg.add(&quot;QuranTree&quot;)</code></pre></div></div><h2 id="Normalization"><a class="docs-heading-anchor" href="#Normalization">Normalization</a><a id="Normalization-1"></a><a class="docs-heading-anchor-permalink" href="#Normalization" title="Permalink"></a></h2><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; ikhlas = crpsdata[114]</code><code class="nohighlight hljs ansi" style="display:block;">Chapter 114: ٱلنَّاس (People)
+
+Table with 30 rows, 6 columns:
+verse  word  part  form       tag     features
+──────────────────────────────────────────────────────────────────────────────
+1      1     1     &quot;qulo&quot;     &quot;V&quot;     &quot;STEM|POS:V|IMPV|LEM:qaAla|ROOT:qwl|2MS&quot;
+1      2     1     &quot;&gt;aEuw*u&quot;  &quot;V&quot;     &quot;STEM|POS:V|IMPF|LEM:Eu*o|ROOT:Ew*|1S&quot;
+1      3     1     &quot;bi&quot;       &quot;P&quot;     &quot;PREFIX|bi+&quot;
+1      3     2     &quot;rab~i&quot;    &quot;N&quot;     &quot;STEM|POS:N|LEM:rab~|ROOT:rbb|M|GEN&quot;
+1      4     1     &quot;{l&quot;       &quot;DET&quot;   &quot;PREFIX|Al+&quot;
+1      4     2     &quot;n~aAsi&quot;   &quot;N&quot;     &quot;STEM|POS:N|LEM:n~aAs|ROOT:nws|MP|GEN&quot;
+2      1     1     &quot;maliki&quot;   &quot;N&quot;     &quot;STEM|POS:N|LEM:malik|ROOT:mlk|MS|GEN&quot;
+2      2     1     &quot;{l&quot;       &quot;DET&quot;   &quot;PREFIX|Al+&quot;
+2      2     2     &quot;n~aAsi&quot;   &quot;N&quot;     &quot;STEM|POS:N|LEM:n~aAs|ROOT:nws|MP|GEN&quot;
+⋮
+5      5     1     &quot;{l&quot;       &quot;DET&quot;   &quot;PREFIX|Al+&quot;
+5      5     2     &quot;n~aAsi&quot;   &quot;N&quot;     &quot;STEM|POS:N|LEM:n~aAs|ROOT:nws|MP|GEN&quot;
+6      1     1     &quot;mina&quot;     &quot;P&quot;     &quot;STEM|POS:P|LEM:min&quot;
+6      2     1     &quot;{lo&quot;      &quot;DET&quot;   &quot;PREFIX|Al+&quot;
+6      2     2     &quot;jin~api&quot;  &quot;N&quot;     &quot;STEM|POS:N|LEM:jin~ap|ROOT:jnn|F|GEN&quot;
+6      3     1     &quot;wa&quot;       &quot;CONJ&quot;  &quot;PREFIX|w:CONJ+&quot;
+6      3     2     &quot;{l&quot;       &quot;DET&quot;   &quot;PREFIX|Al+&quot;
+6      3     3     &quot;n~aAsi&quot;   &quot;N&quot;     &quot;STEM|POS:N|LEM:n~aAs|ROOT:nws|MP|GEN&quot;</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; ikhlas_vrs = verses(ikhlas)</code><code class="nohighlight hljs ansi" style="display:block;">6-element Vector{String}:
+ &quot;qulo &gt;aEuw*u birab~i {ln~aAsi&quot;
+ &quot;maliki {ln~aAsi&quot;
+ &quot;&lt;ila`hi {ln~aAsi&quot;
+ &quot;min \$ar~i {lowasowaAsi {loxan~aAsi&quot;
+ &quot;{l~a*iY yuwasowisu fiY Suduwri {ln~aAsi&quot;
+ &quot;mina {lojin~api wa{ln~aAsi&quot;</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; ikhlas_nrm = Nur.normalize.(ikhlas_vrs)</code><code class="nohighlight hljs ansi" style="display:block;">6-element Vector{String}:
+ &quot;qulo AaEuw*u birab~i Aln~aAsi&quot;
+ &quot;maliki Aln~aAsi&quot;
+ &quot;AilaAhi Aln~aAsi&quot;
+ &quot;min \$ar~i AlowasowaAsi Aloxan~aAsi&quot;
+ &quot;Al~a*iy yuwasowisu fiy Suduwri Aln~aAsi&quot;
+ &quot;mina Alojin~ahi waAln~aAsi&quot;</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; Nur.arabic.(ikhlas_nrm)</code><code class="nohighlight hljs ansi" style="display:block;">6-element Vector{String}:
+ &quot;قُلْ اَعُوذُ بِرَبِّ النَّاسِ&quot;
+ &quot;مَلِكِ النَّاسِ&quot;
+ &quot;اِلَاهِ النَّاسِ&quot;
+ &quot;مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ&quot;
+ &quot;الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ&quot;
+ &quot;مِنَ الْجِنَّهِ وَالنَّاسِ&quot;</code></pre><h2 id="Dediacritization"><a class="docs-heading-anchor" href="#Dediacritization">Dediacritization</a><a id="Dediacritization-1"></a><a class="docs-heading-anchor-permalink" href="#Dediacritization" title="Permalink"></a></h2><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; ikhlas_ddc = Nur.dediac.(ikhlas_vrs)</code><code class="nohighlight hljs ansi" style="display:block;">6-element Vector{String}:
+ &quot;ql &gt;Ew* brb {lnAs&quot;
+ &quot;mlk {lnAs&quot;
+ &quot;&lt;lh {lnAs&quot;
+ &quot;mn \$r {lwswAs {lxnAs&quot;
+ &quot;{l*Y ywsws fY Sdwr {lnAs&quot;
+ &quot;mn {ljnp w{lnAs&quot;</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; Nur.arabic.(ikhlas_ddc)</code><code class="nohighlight hljs ansi" style="display:block;">6-element Vector{String}:
+ &quot;قل أعوذ برب ٱلناس&quot;
+ &quot;ملك ٱلناس&quot;
+ &quot;إله ٱلناس&quot;
+ &quot;من شر ٱلوسواس ٱلخناس&quot;
+ &quot;ٱلذى يوسوس فى صدور ٱلناس&quot;
+ &quot;من ٱلجنة وٱلناس&quot;</code></pre><h2 id="Transliteration"><a class="docs-heading-anchor" href="#Transliteration">Transliteration</a><a id="Transliteration-1"></a><a class="docs-heading-anchor-permalink" href="#Transliteration" title="Permalink"></a></h2><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; ar_ikhlas = verses(tnzldata[114])</code><code class="nohighlight hljs ansi" style="display:block;">6-element WeakRefStrings.StringVector{String}:
+ &quot;بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ قُلْ أَعُوذُ بِرَبِّ ٱلنَّاسِ&quot;
+ &quot;مَلِكِ ٱلنَّاسِ&quot;
+ &quot;إِلَٰهِ ٱلنَّاسِ&quot;
+ &quot;مِن شَرِّ ٱلْوَسْوَاسِ ٱلْخَنَّاسِ&quot;
+ &quot;ٱلَّذِى يُوَسْوِسُ فِى صُدُورِ ٱلنَّاسِ&quot;
+ &quot;مِنَ ٱلْجِنَّةِ وَٱلنَّاسِ&quot;</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; Nur.encode.(ar_ikhlas)</code><code class="nohighlight hljs ansi" style="display:block;">6-element Vector{String}:
+ &quot;bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi qulo &gt;aEuw*u birab~i {ln~aAsi&quot;
+ &quot;maliki {ln~aAsi&quot;
+ &quot;&lt;ila`hi {ln~aAsi&quot;
+ &quot;min \$ar~i {lowasowaAsi {loxan~aAsi&quot;
+ &quot;{l~a*iY yuwasowisu fiY Suduwri {ln~aAsi&quot;
+ &quot;mina {lojin~api wa{ln~aAsi&quot;</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../orthography/">« Orthographical Analysis</a><a class="docs-footer-nextpage" href="../api/">API »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.17 on <span class="colophon-date" title="Friday 20 May 2022 02:23">Friday 20 May 2022</span>. Using Julia version 1.7.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

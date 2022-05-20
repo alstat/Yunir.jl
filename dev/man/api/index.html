@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>API · Nur.jl</title><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.044/juliamono.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.11/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script><link href="../../assets/favicon.ico" rel="icon" type="image/x-icon"/></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img class="docs-light-only" src="../../assets/logo.png" alt="Nur.jl logo"/><img class="docs-dark-only" src="../../assets/logo-dark.png" alt="Nur.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Nur.jl</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><a class="tocitem" href="../basic_utilities/">Basic Utilities</a></li><li><a class="tocitem" href="../orthography/">Orthographical Analysis</a></li><li><a class="tocitem" href="../qurantree/">Working with QuranTree.jl</a></li><li class="is-active"><a class="tocitem" href>API</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>API</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>API</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/alstat/Nur.jl/blob/master/docs/src/man/api.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="API-References"><a class="docs-heading-anchor" href="#API-References">API References</a><a id="API-References-1"></a><a class="docs-heading-anchor-permalink" href="#API-References" title="Permalink"></a></h1><article class="docstring"><header><a class="docstring-binding" id="Nur.arabic-Tuple{String}" href="#Nur.arabic-Tuple{String}"><code>Nur.arabic</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">arabic(s::String[, encoder::AbstractEncoder])</code></pre><p>Encode the <code>String</code> object into Arabic characters. Custom <code>encoder</code> generated from <code>@transliterator</code> can be provided, but default is <code>Buckwalter</code>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; bw_basmala = &quot;bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi&quot;
+julia&gt; arabic(bw_basmala)
+&quot;بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ&quot;</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/alstat/Nur.jl/blob/544a098f2add77ade8af408c0d3419505c8d7990/src/utils/decode.jl#L5-L17">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Nur.dediac-Tuple{String}" href="#Nur.dediac-Tuple{String}"><code>Nur.dediac</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">dediac(s::String)</code></pre><p>Dediacritize the input <code>String</code> object.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; bw_basmala = &quot;bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi&quot;
+julia&gt; dediac(bw_basmala)
+&quot;bsm {llh {lrHmn {lrHym&quot;
+julia&gt; dediac(arabic(bw_basmala))
+&quot;بسم ٱلله ٱلرحمن ٱلرحيم&quot;</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/alstat/Nur.jl/blob/544a098f2add77ade8af408c0d3419505c8d7990/src/utils/dediac.jl#L1-L14">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Nur.encode-Tuple{String}" href="#Nur.encode-Tuple{String}"><code>Nur.encode</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">encode(s::String)</code></pre><p>Transliterate the input <code>String</code> object using <code>Buckwalter</code>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; ar_basmala = &quot;بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ&quot;
+julia&gt; encode(ar_basmala)
+&quot;bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi&quot;</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/alstat/Nur.jl/blob/544a098f2add77ade8af408c0d3419505c8d7990/src/utils/encode.jl#L23-L34">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Nur.encode-Tuple{Union{Char, String}, AbstractEncoder}" href="#Nur.encode-Tuple{Union{Char, String}, AbstractEncoder}"><code>Nur.encode</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">encode(s::Union{Char,String}, encoder::AbstractEncoder)</code></pre><p>Transliterate the input <code>String</code> object using a custom <code>encoder</code>. Custom <code>encoder</code> is generated using the <code>@transliterator</code>.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/alstat/Nur.jl/blob/544a098f2add77ade8af408c0d3419505c8d7990/src/utils/encode.jl#L1-L6">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Nur.normalize-Tuple{String, Symbol}" href="#Nur.normalize-Tuple{String, Symbol}"><code>Nur.normalize</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">normalize(s::String, char::Symbol)</code></pre><p>Normalize a specific Arabic or Buckwalter <code>String</code> character (<code>chars</code>).</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; ar_basmala = &quot;بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ&quot;
+julia&gt; normalize(ar_basmala, :alif_khanjareeya) === &quot;بِسْمِ ٱللَّهِ ٱلرَّحْمَانِ ٱلرَّحِيمِ&quot;</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/alstat/Nur.jl/blob/544a098f2add77ade8af408c0d3419505c8d7990/src/utils/normalize.jl#L69-L79">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Nur.normalize-Tuple{String, Vector{Symbol}}" href="#Nur.normalize-Tuple{String, Vector{Symbol}}"><code>Nur.normalize</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">normalize(s::String, chars::Array{Symbol,1})</code></pre><p>Normalize a specific Arabic or Buckwalter <code>String</code> character/s (<code>chars</code>).</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; ar_basmala = &quot;بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ&quot;
+julia&gt; normalize(ar_basmala, [:alif_khanjareeya, :hamzat_wasl]) === &quot;بِسْمِ اللَّهِ الرَّحْمَانِ الرَّحِيمِ&quot;</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/alstat/Nur.jl/blob/544a098f2add77ade8af408c0d3419505c8d7990/src/utils/normalize.jl#L51-L61">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Nur.normalize-Tuple{String}" href="#Nur.normalize-Tuple{String}"><code>Nur.normalize</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">normalize(s::String)</code></pre><p>Normalize a Arabic or Buckwalter <code>String</code> characters.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; normalize(&quot;بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ&quot;)
+&quot;بِسْمِ اللَّهِ الرَّحْمَانِ الرَّحِيمِ&quot;</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/alstat/Nur.jl/blob/544a098f2add77ade8af408c0d3419505c8d7990/src/utils/normalize.jl#L10-L20">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Nur.tokenize" href="#Nur.tokenize"><code>Nur.tokenize</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">tokenize(s::String)</code></pre><p>tokenizes the string input s by space, and also tokenizes the punctuations.</p><pre><code class="language-julia-repl hljs">julia&gt; ar_basmala = &quot;بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ&quot;
+julia&gt; tokenize(ar_basmala)
+4-element Vector{String}:
+ &quot;بِسْمِ&quot;
+ &quot;ٱللَّهِ&quot;
+ &quot;ٱلرَّحْمَٰنِ&quot;
+ &quot;ٱلرَّحِيمِ&quot;</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/alstat/Nur.jl/blob/544a098f2add77ade8af408c0d3419505c8d7990/src/tokenizers/tokenize.jl#L1-L14">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Nur.@transliterator-Tuple{Any, Any}" href="#Nur.@transliterator-Tuple{Any, Any}"><code>Nur.@transliterator</code></a> — <span class="docstring-category">Macro</span></header><section><div><pre><code class="language-julia hljs">@transliterator(dict, name)</code></pre><p>Create a custom transliterator using an input <code>dict</code> (<code>Dict</code> object) with its corresponding <code>name</code> as <code>String</code> object. This will automatically update the transliterator inside all  functions like <code>arabic</code>, <code>verses</code>, and <code>encode</code>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; my_encoder = Dict(
+    Symbol(Char(0x0621)) =&gt; Symbol(&#39;(&#39;),
+    Symbol(Char(0x0622)) =&gt; Symbol(&#39;&#39;&#39;),
+    Symbol(Char(0x0623)) =&gt; Symbol(&#39;&amp;&#39;),
+    Symbol(Char(0x0624)) =&gt; Symbol(&#39;&gt;&#39;),
+    Symbol(Char(0x0625)) =&gt; Symbol(&#39;}&#39;),
+    Symbol(Char(0x0626)) =&gt; Symbol(&#39;&lt;&#39;),
+    Symbol(Char(0x0627)) =&gt; Symbol(&#39;b&#39;),
+    Symbol(Char(0x0628)) =&gt; Symbol(&#39;A&#39;),
+    Symbol(Char(0x0629)) =&gt; Symbol(&#39;t&#39;),
+    Symbol(Char(0x062A)) =&gt; Symbol(&#39;p&#39;),
+    Symbol(Char(0x062B)) =&gt; Symbol(&#39;j&#39;),
+    Symbol(Char(0x062C)) =&gt; Symbol(&#39;v&#39;),
+    Symbol(Char(0x062D)) =&gt; Symbol(&#39;x&#39;),
+    Symbol(Char(0x062E)) =&gt; Symbol(&#39;H&#39;),
+    Symbol(Char(0x062F)) =&gt; Symbol(&#39;*&#39;),
+    Symbol(Char(0x0630)) =&gt; Symbol(&#39;d&#39;),
+    Symbol(Char(0x0631)) =&gt; Symbol(&#39;z&#39;),
+    Symbol(Char(0x0632)) =&gt; Symbol(&#39;r&#39;),
+    Symbol(Char(0x0633)) =&gt; Symbol(&#39;$&#39;),
+    Symbol(Char(0x0634)) =&gt; Symbol(&#39;s&#39;),
+    Symbol(Char(0x0635)) =&gt; Symbol(&#39;D&#39;),
+    Symbol(Char(0x0636)) =&gt; Symbol(&#39;S&#39;),
+    Symbol(Char(0x0637)) =&gt; Symbol(&#39;Z&#39;),
+    Symbol(Char(0x0638)) =&gt; Symbol(&#39;T&#39;),
+    Symbol(Char(0x0639)) =&gt; Symbol(&#39;g&#39;),
+    Symbol(Char(0x063A)) =&gt; Symbol(&#39;E&#39;),
+    Symbol(Char(0x0640)) =&gt; Symbol(&#39;f&#39;),
+    Symbol(Char(0x0641)) =&gt; Symbol(&#39;_&#39;),
+    Symbol(Char(0x0642)) =&gt; Symbol(&#39;k&#39;),
+    Symbol(Char(0x0643)) =&gt; Symbol(&#39;q&#39;),
+    Symbol(Char(0x0644)) =&gt; Symbol(&#39;m&#39;),
+    Symbol(Char(0x0645)) =&gt; Symbol(&#39;l&#39;),
+    Symbol(Char(0x0646)) =&gt; Symbol(&#39;h&#39;),
+    Symbol(Char(0x0647)) =&gt; Symbol(&#39;n&#39;),
+    Symbol(Char(0x0648)) =&gt; Symbol(&#39;Y&#39;),
+    Symbol(Char(0x0649)) =&gt; Symbol(&#39;w&#39;),
+    Symbol(Char(0x064A)) =&gt; Symbol(&#39;F&#39;),
+    Symbol(Char(0x064B)) =&gt; Symbol(&#39;y&#39;),
+    Symbol(Char(0x064C)) =&gt; Symbol(&#39;K&#39;),
+    Symbol(Char(0x064D)) =&gt; Symbol(&#39;N&#39;),
+    Symbol(Char(0x064E)) =&gt; Symbol(&#39;u&#39;),
+    Symbol(Char(0x064F)) =&gt; Symbol(&#39;a&#39;),
+    Symbol(Char(0x0650)) =&gt; Symbol(&#39;~&#39;),
+    Symbol(Char(0x0651)) =&gt; Symbol(&#39;i&#39;),
+    Symbol(Char(0x0652)) =&gt; Symbol(&#39;^&#39;),
+    Symbol(Char(0x0653)) =&gt; Symbol(&#39;o&#39;),
+    Symbol(Char(0x0654)) =&gt; Symbol(&#39;`&#39;),
+    Symbol(Char(0x0670)) =&gt; Symbol(&#39;#&#39;),
+    Symbol(Char(0x0671)) =&gt; Symbol(&#39;:&#39;),
+    Symbol(Char(0x06DC)) =&gt; Symbol(&#39;{&#39;),
+    Symbol(Char(0x06DF)) =&gt; Symbol(&#39;&quot;&#39;),
+    Symbol(Char(0x06E0)) =&gt; Symbol(&#39;@&#39;),
+    Symbol(Char(0x06E2)) =&gt; Symbol(&#39;;&#39;),
+    Symbol(Char(0x06E3)) =&gt; Symbol(&#39;[&#39;),
+    Symbol(Char(0x06E5)) =&gt; Symbol(&#39;.&#39;),
+    Symbol(Char(0x06E6)) =&gt; Symbol(&#39;,&#39;),
+    Symbol(Char(0x06E8)) =&gt; Symbol(&#39;-&#39;),
+    Symbol(Char(0x06EA)) =&gt; Symbol(&#39;!&#39;),
+    Symbol(Char(0x06EB)) =&gt; Symbol(&#39;%&#39;),
+    Symbol(Char(0x06EC)) =&gt; Symbol(&#39;+&#39;),
+    Symbol(Char(0x06ED)) =&gt; Symbol(&#39;]&#39;)
+);
+julia&gt; @transliterator my_encoder &quot;MyEncoder&quot;
+julia&gt; encode(ar_basmala)
+&quot;A~$^l~ :mmiun~ :mziux^lu#h~ :mziux~Fl~&quot;</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/alstat/Nur.jl/blob/544a098f2add77ade8af408c0d3419505c8d7990/src/transliterator/transliterate.jl#L15-L91">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Nur.@transliterator-Tuple{Any}" href="#Nur.@transliterator-Tuple{Any}"><code>Nur.@transliterator</code></a> — <span class="docstring-category">Macro</span></header><section><div><pre><code class="language-julia hljs">@transliterator(symbl)</code></pre><p>Fallback to the default <code>Buckwalter</code> transliterator.</p><pre><code class="language-julia-repl hljs">julia&gt; @transliterator :default
+julia&gt; ar_basmala = &quot;بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ&quot;
+julia&gt; encode(ar_basmala)
+&quot;bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi&quot;</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/alstat/Nur.jl/blob/544a098f2add77ade8af408c0d3419505c8d7990/src/transliterator/transliterate.jl#L114-L124">source</a></section></article></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../qurantree/">« Working with QuranTree.jl</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.17 on <span class="colophon-date" title="Friday 20 May 2022 02:23">Friday 20 May 2022</span>. Using Julia version 1.7.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
