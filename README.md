@@ -8,8 +8,8 @@ Yunir.jl is a lightweight toolkit for Arabic Natural Language Processing (ANLP).
 
 Yunir (ينير) /yunīr/ is the Arabic word for "illuminate." The logo is a Kufic calligraphy of the Arabic word نور /nūr/ or "light," specifically, a heatless light such as that of the light of the moon.
 ## Installation
-Yunir.jl not yet registered, and can be installed as follows:
+Yunir.jl can be installed as follows:
 ```julia
 julia> using Pkg
-julia> Pkg.add(url="https://github.com/alstat/Yunir.jl.git")
+julia> Pkg.add("Yunir")
 ```
