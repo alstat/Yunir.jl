@@ -13,7 +13,7 @@ data = QuranData();
 crps, tnzl = load(data);
 crpsdata = table(crps)
 tnzldata = table(tnzl)
-Yunir.arabic(verses(crpsdata[114])[1])
+arabic(verses(crpsdata[114])[1])
 ```
 !!! note "Note"
     You have to install QuranTree.jl to run the above example. To install, run
@@ -25,16 +25,16 @@ Yunir.arabic(verses(crpsdata[114])[1])
 ```@repl abc
 ikhlas = crpsdata[114]
 ikhlas_vrs = verses(ikhlas)
-ikhlas_nrm = Yunir.normalize.(ikhlas_vrs)
-Yunir.arabic.(ikhlas_nrm)
+ikhlas_nrm = normalize.(ikhlas_vrs)
+arabic.(ikhlas_nrm)
 ```
 ## Dediacritization
 ```@repl abc
-ikhlas_ddc = Yunir.dediac.(ikhlas_vrs)
-Yunir.arabic.(ikhlas_ddc)
+ikhlas_ddc = dediac.(ikhlas_vrs)
+arabic.(ikhlas_ddc)
 ```
 ## Transliteration
 ```@repl abc
 ar_ikhlas = verses(tnzldata[114])
-Yunir.encode.(ar_ikhlas)
+encode.(ar_ikhlas)
 ```
