@@ -1,7 +1,7 @@
 name = "Yunir"
 uuid = "6ba116df-6904-454d-b214-90038a8281a6"
 authors = ["Al-Ahmadgaid B. Asaad"]
-version = "0.1.0"
+version = "0.1.1"
 
 [deps]
 QuranTree = "f647ab69-6f05-4d64-883f-59d0fbe08d2b"
