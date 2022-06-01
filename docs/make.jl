@@ -1,7 +1,6 @@
 using Documenter
 using Yunir
 
-
 makedocs(
     sitename = "Yunir.jl",
     format = Documenter.HTML(
