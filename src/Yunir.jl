@@ -19,7 +19,7 @@ include("tokenizers/tokenize.jl")
 export CAMeLData, MorphologyDB, locate, load
 export BW_ENCODING, AR_DIACS_REGEX, SP_REGEX_CHARS, PUNCTUATIONS_REGEX
 
-export isfeat, vocal, numeral, parse, arabic, dediac, encode, normalize, tokenize, disambig, predict, install_camel
+export isfeat, vocals, numerals, parse, arabic, dediac, encode, normalize, tokenize, disambig, predict, install_camel
 export AbstractCAMeLDB, AbstractEncoder, SimpleEncoding
 export @transliterator, genproperties
 
