@@ -7,7 +7,32 @@
  Orthography(Type[Ba, Kasra, Seen, Sukun, Meem, Kasra])
  Orthography(Type[AlifHamzatWasl, Lam, Lam, Shadda, Fatha, Ha, Kasra])
  Orthography(Type[AlifHamzatWasl, Lam, Ra, Shadda, Fatha, HHa, Sukun, Meem, Fatha, AlifKhanjareeya, Noon, Kasra])
- Orthography(Type[AlifHamzatWasl, Lam, Ra, Shadda, Fatha, HHa, Kasra, Ya, Meem, Kasra])</code></pre><p>Finally, we can compute the numerals of the parsed tokens as follows:</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; numerals(arb_parsed2[1])</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: numerals not defined</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; numerals(arb_parsed2[2])</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: numerals not defined</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; numerals(arb_parsed2[3])</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: numerals not defined</code></pre><p>We can also check the type of the characters, whether it is a Lunar or Solar character. To do this, use the <code>isfeat</code> (short for &#39;is feature&#39; in the sense that characters here are also referred as feature).</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; isfeat(arb_parsed2[1], AbstractLunar)</code><code class="nohighlight hljs ansi" style="display:block;">6-element BitVector:
+ Orthography(Type[AlifHamzatWasl, Lam, Ra, Shadda, Fatha, HHa, Kasra, Ya, Meem, Kasra])</code></pre><p>Finally, we can compute the numerals of the parsed tokens as follows:</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; numerals(arb_parsed2[1])</code><code class="nohighlight hljs ansi" style="display:block;">6-element Vector{Union{Nothing, Int64}}:
+  2
+   nothing
+ 60
+   nothing
+ 40
+   nothing</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; numerals(arb_parsed2[2])</code><code class="nohighlight hljs ansi" style="display:block;">7-element Vector{Union{Nothing, Int64}}:
+  1
+ 30
+ 30
+   nothing
+   nothing
+  5
+   nothing</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; numerals(arb_parsed2[3])</code><code class="nohighlight hljs ansi" style="display:block;">12-element Vector{Union{Nothing, Int64}}:
+   1
+  30
+ 200
+    nothing
+    nothing
+   8
+    nothing
+  40
+    nothing
+    nothing
+  50
+    nothing</code></pre><p>We can also check the type of the characters, whether it is a Lunar or Solar character. To do this, use the <code>isfeat</code> (short for &#39;is feature&#39; in the sense that characters here are also referred as feature).</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; isfeat(arb_parsed2[1], AbstractLunar)</code><code class="nohighlight hljs ansi" style="display:block;">6-element BitVector:
  1
  0
  0
@@ -23,4 +48,29 @@
  [0, 0, 1, 0, 0, 0]
  [0, 1, 1, 0, 0, 0, 0]
  [0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0]
- [0, 1, 1, 0, 0, 0, 0, 0, 0, 0]</code></pre><h2 id="Vocals"><a class="docs-heading-anchor" href="#Vocals">Vocals</a><a id="Vocals-1"></a><a class="docs-heading-anchor-permalink" href="#Vocals" title="Permalink"></a></h2><p>Vocals refer to categorization of the characters based on the vocals it mainly uses in pronunciation.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; vocals(arb_parsed2[1])</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: vocals not defined</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; vocals(arb_parsed2[2])</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: vocals not defined</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; vocals(arb_parsed2[3])</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: vocals not defined</code></pre><h2 id="Simple-Encoding"><a class="docs-heading-anchor" href="#Simple-Encoding">Simple Encoding</a><a id="Simple-Encoding-1"></a><a class="docs-heading-anchor-permalink" href="#Simple-Encoding" title="Permalink"></a></h2><p>Simple encoding is a worded or spelled out transliteration of the arabic text.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; parse(SimpleEncoding, ar_basmala)</code><code class="nohighlight hljs ansi" style="display:block;">&quot;Ba+Kasra | Seen+Sukun | Meem+Kasra | &lt;space&gt; | AlifHamzatWasl | Lam | Lam+Shadda+Fatha | Ha+Kasra | &lt;space&gt; | AlifHamzatWasl | Lam | Ra+Shadda+Fatha | HHa+Sukun | Meem+Fatha+AlifKhanjareeya | Noon+Kasra | &lt;space&gt; | AlifHamzatWasl | Lam | Ra+Shadda+Fatha | HHa+Kasra | Ya | Meem+Kasra&quot;</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../basic_utilities/">« Basic Utilities</a><a class="docs-footer-nextpage" href="../qurantree/">Working with QuranTree.jl »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.19 on <span class="colophon-date" title="Wednesday 8 June 2022 05:10">Wednesday 8 June 2022</span>. Using Julia version 1.7.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+ [0, 1, 1, 0, 0, 0, 0, 0, 0, 0]</code></pre><h2 id="Vocals"><a class="docs-heading-anchor" href="#Vocals">Vocals</a><a id="Vocals-1"></a><a class="docs-heading-anchor-permalink" href="#Vocals" title="Permalink"></a></h2><p>Vocals refer to categorization of the characters based on the vocals it mainly uses in pronunciation.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; vocals(arb_parsed2[1])</code><code class="nohighlight hljs ansi" style="display:block;">6-element Vector{Union{Nothing, Symbol}}:
+ :labial
+ nothing
+ :sibilant
+ nothing
+ :labial
+ nothing</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; vocals(arb_parsed2[2])</code><code class="nohighlight hljs ansi" style="display:block;">7-element Vector{Union{Nothing, Symbol}}:
+ :soft
+ :liquid
+ :liquid
+ nothing
+ nothing
+ :guttural
+ nothing</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; vocals(arb_parsed2[3])</code><code class="nohighlight hljs ansi" style="display:block;">12-element Vector{Union{Nothing, Symbol}}:
+ :soft
+ :liquid
+ :liquid
+ nothing
+ nothing
+ :guttural
+ nothing
+ :labial
+ nothing
+ nothing
+ :liquid
+ nothing</code></pre><h2 id="Simple-Encoding"><a class="docs-heading-anchor" href="#Simple-Encoding">Simple Encoding</a><a id="Simple-Encoding-1"></a><a class="docs-heading-anchor-permalink" href="#Simple-Encoding" title="Permalink"></a></h2><p>Simple encoding is a worded or spelled out transliteration of the arabic text.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; parse(SimpleEncoding, ar_basmala)</code><code class="nohighlight hljs ansi" style="display:block;">&quot;Ba+Kasra | Seen+Sukun | Meem+Kasra | &lt;space&gt; | AlifHamzatWasl | Lam | Lam+Shadda+Fatha | Ha+Kasra | &lt;space&gt; | AlifHamzatWasl | Lam | Ra+Shadda+Fatha | HHa+Sukun | Meem+Fatha+AlifKhanjareeya | Noon+Kasra | &lt;space&gt; | AlifHamzatWasl | Lam | Ra+Shadda+Fatha | HHa+Kasra | Ya | Meem+Kasra&quot;</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../basic_utilities/">« Basic Utilities</a><a class="docs-footer-nextpage" href="../qurantree/">Working with QuranTree.jl »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.19 on <span class="colophon-date" title="Wednesday 8 June 2022 05:20">Wednesday 8 June 2022</span>. Using Julia version 1.7.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
