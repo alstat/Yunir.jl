@@ -1,9 +1,15 @@
 module Yunir
 
+using HTTP
+using JSON
+using ZipFile
+
 import Base: download, delete!
 
 abstract type AbstractModel end
 
+include("database/data.jl")
+include("database/utils.jl")
 include("orthography/orthography.jl")
 # include("pos/morphfeats_types.jl")
 include("constants.jl")

@@ -1,3 +1,42 @@
+const GOOGLE_DRIVE = "https://docs.google.com/uc?export=download"
+const CATALOGUE_URL = "https://raw.githubusercontent.com/CAMeL-Lab/camel-tools-data/main/catalogue-1.4.json"
+
+const CAMEL_DATA = joinpath(@__DIR__, "..", "db")
+const CAMEL_CATALOGUE = joinpath(@__DIR__, "../db/catalogue.json")
+const CAMEL_MORPHOLOGY = joinpath(@__DIR__, "../db/morphology")
+const CAMEL_MORPHOLOGY_EGY = joinpath(@__DIR__, "../db/morphology/egy")
+const CAMEL_MORPHOLOGY_MSA = joinpath(@__DIR__, "../db/morphology/msa")
+const CAMEL_MORPHOLOGY_GLF = joinpath(@__DIR__, "../db/morphology/glf")
+const CAMEL_DISAMBIGUATION = joinpath(@__DIR__, "../db/disambiguation")
+const CAMEL_DISAMBIGUATION_MLE = joinpath(@__DIR__, "../db/disambiguation/mle")
+const CAMEL_DISAMBIGUATION_MLE_EGY = joinpath(@__DIR__, "../db/disambiguation/mle/egy")
+const CAMEL_DISAMBIGUATION_MLE_MSA = joinpath(@__DIR__, "../db/disambiguation/mle/msa")
+const CAMEL_DISAMBIGUATION_BERT = joinpath(@__DIR__, "../db/disambiguation/bert")
+const CAMEL_DISAMBIGUATION_BERT_EGY = joinpath(@__DIR__, "../db/disambiguation/bert/egy")
+const CAMEL_DISAMBIGUATION_BERT_MSA = joinpath(@__DIR__, "../db/disambiguation/bert/msa")
+const CAMEL_DISAMBIGUATION_BERT_GLF = joinpath(@__DIR__, "../db/disambiguation/bert/glf")
+const CAMEL_DIALECTID = joinpath(@__DIR__, "../db/dialectid")
+const CAMEL_NER = joinpath(@__DIR__, "../db/ner")
+const CAMEL_SENTIMENT = joinpath(@__DIR__, "../db/sentiment")
+const CAMEL_SENTIMENT_MBERT = joinpath(@__DIR__, "../db/sentiment/mbert")
+const CAMEL_SENTIMENT_ARABERT = joinpath(@__DIR__, "../db/sentiment/arabert")
+
+const CAMEL_MORPHOLOGY_EGY_R13 = joinpath(CAMEL_MORPHOLOGY_EGY, "morphology-db-egy-r13.zip");
+const CAMEL_MORPHOLOGY_MSA_R13 = joinpath(CAMEL_MORPHOLOGY_MSA, "morphology-db-msa-r13.zip");
+const CAMEL_MORPHOLOGY_GLF_01 = joinpath(CAMEL_MORPHOLOGY_GLF, "morphology-db-glf-01.zip");
+const CAMEL_DISAMBIG_MLE_CALIMA_EGY_R13 = joinpath(CAMEL_DISAMBIGUATION_MLE_EGY, "disambig-mle-calima-egy-r13.zip");
+const CAMEL_DISAMBIG_MLE_CALIMA_MSA_R13 = joinpath(CAMEL_DISAMBIGUATION_MLE_MSA, "disambig-mle-calima-msa-r13.zip");
+const CAMEL_DISAMBIG_BERT_UNFACTORED_EGY = joinpath(CAMEL_DISAMBIGUATION_BERT_EGY, "disambig-bert-unfactored-egy.zip");
+const CAMEL_DISAMBIG_BERT_UNFACTORED_MSA = joinpath(CAMEL_DISAMBIGUATION_BERT_MSA, "disambig-bert-unfactored-msa.zip");
+const CAMEL_DISAMBIG_BERT_UNFACTORED_GLF = joinpath(CAMEL_DISAMBIGUATION_BERT_GLF, "disambig-bert-unfactored-glf.zip");
+const CAMEL_DIALECTID_DEFAULT = joinpath(CAMEL_DIALECTID, "dialectid-default.zip");
+const CAMEL_NER_ARABERT = joinpath(CAMEL_NER, "ner-arabert.zip");
+const CAMEL_SENTIMENT_ANALYSIS_MBERT = joinpath(CAMEL_SENTIMENT_MBERT, "sentiment-analysis-mbert.zip");
+const CAMEL_SENTIMENT_ANALYSIS_ARABERT = joinpath(CAMEL_SENTIMENT_ARABERT, "sentiment-analysis-arabert.zip");
+
+const BACKOFF_TYPES = Set(["NONE", "NOAN_ALL", "NOAN_PROP", "ADD_ALL", "ADD_PROP"])
+const JOIN_FEATS = Set(["gloss", "bw"])
+
 const SIMPLE_ENCODING = Dict(
     Symbol(Char(0x0621)) => Symbol("Hamza"),
     Symbol(Char(0x0622)) => Symbol("Alif+Maddah"),

@@ -41,17 +41,17 @@ struct SmallLowMeem <: AbstractCharacter end
 macro consonant(name, parent, numeral, vocal)
     esc(quote
         struct $name <: $parent end
-        vocal(::Type{$name}) = $vocal
-        numeral(::Type{$name}) = $numeral
+        vocals(::Type{$name}) = $vocal
+        numerals(::Type{$name}) = $numeral
     end)
 end
 
 # for non-consonant with no vocal and numeral
-vocal(x) = try vocal(x) catch nothing end
-numeral(x) = try numeral(x) catch nothing end
+vocals(x) = try vocals(x) catch nothing end
+numerals(x) = try numerals(x) catch nothing end
 
-vocal(x::Orthography) = vocal.(x.data)
-numeral(x::Orthography) = numeral.(x.data)
+vocals(x::Orthography) = vocal.(x.data)
+numerals(x::Orthography) = numeral.(x.data)
 
 @consonant Alif AbstractLunar 1 :soft
 @consonant AlifMaksurah AbstractLunar 10 :soft
