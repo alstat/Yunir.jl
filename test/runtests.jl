@@ -131,11 +131,11 @@ arb_token = tokenize(ar_basmala)
 @test parse(Orthography, arb_token[1]) isa Orthography
 
 arb_parsed2 = parse.(Orthography, arb_token)
-@test numeral(arb_parsed2[1]) == [2, nothing, 60, nothing, 40, nothing]
+@test numerals(arb_parsed2[1]) == [2, nothing, 60, nothing, 40, nothing]
 
 @test isfeat(arb_parsed2[1], AbstractLunar) == [1, 0, 0, 0, 1, 0]
 @test arb_parsed2[1][isfeat(arb_parsed2[1], AbstractLunar)] == [Ba, Meem]
 
-@test vocal(arb_parsed2[1]) == [:labial, nothing, :sibilant, nothing, :labial, nothing]
+@test vocals(arb_parsed2[1]) == [:labial, nothing, :sibilant, nothing, :labial, nothing]
 
 @test parse(SimpleEncoding, ar_basmala) === "Ba+Kasra | Seen+Sukun | Meem+Kasra | <space> | AlifHamzatWasl | Lam | Lam+Shadda+Fatha | Ha+Kasra | <space> | AlifHamzatWasl | Lam | Ra+Shadda+Fatha | HHa+Sukun | Meem+Fatha+AlifKhanjareeya | Noon+Kasra | <space> | AlifHamzatWasl | Lam | Ra+Shadda+Fatha | HHa+Kasra | Ya | Meem+Kasra" 

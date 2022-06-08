@@ -20,9 +20,9 @@ arb_parsed2 = parse.(Orthography, arb_token)
 ```
 Finally, we can compute the numerals of the parsed tokens as follows:
 ```@repl abc2
-numeral(arb_parsed2[1])
-numeral(arb_parsed2[2])
-numeral(arb_parsed2[3])
+numerals(arb_parsed2[1])
+numerals(arb_parsed2[2])
+numerals(arb_parsed2[3])
 ```
 We can also check the type of the characters, whether it is a Lunar or Solar character. To do this, use the `isfeat` (short for 'is feature' in the sense that characters here are also referred as feature).
 ```@repl abc2
@@ -34,9 +34,9 @@ isfeat.(arb_parsed2, AbstractSolar)
 ## Vocals
 Vocals refer to categorization of the characters based on the vocals it mainly uses in pronunciation.
 ```@repl abc2
-vocal(arb_parsed2[1])
-vocal(arb_parsed2[2])
-vocal(arb_parsed2[3])
+vocals(arb_parsed2[1])
+vocals(arb_parsed2[2])
+vocals(arb_parsed2[3])
 ```
 
 ## Simple Encoding
