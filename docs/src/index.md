@@ -1,8 +1,5 @@
 # Welcome to Yunir.jl Documentation
-[![CI](https://github.com/alstat/Yunir.jl/actions/workflows/ci.yml/badge.svg)](https://github.com/alstat/Yunir.jl/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/alstat/Yunir.jl/branch/main/graph/badge.svg?token=lKsVEpMDca)](https://codecov.io/gh/alstat/Yunir.jl)
-[![](https://img.shields.io/badge/docs-dev-blue.svg)](https://alstat.github.io/Yunir.jl/dev/)
-[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://alstat.github.io/Yunir.jl/stable/)
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/alstat/Yunir.jl/blob/master/LICENSE)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6629868.svg)](https://doi.org/10.5281/zenodo.6629868)
 
