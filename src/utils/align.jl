@@ -98,7 +98,7 @@ function print_align(out)
 		if i[1] == i[2]
 			m = "ا"
 		else
-			m = "ـ"
+			m = " "
 		end
 	
 		if j % 60 == 0

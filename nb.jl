@@ -11,6 +11,9 @@ shamela0012129_enc = encode(shamela0012129_exp)
 shamela0023790_enc = encode(shamela0023790_exp)
 res = align(shamela0012129_enc, shamela0023790_enc);
 res
+
+res = align("aaa sf", "vadfa").alignment
+
 count_matches(res)
 count_mismatches(res)
 count_insertions(res)
