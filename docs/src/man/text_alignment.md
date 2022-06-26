@@ -66,12 +66,12 @@ and set it to right-justified. Here is the result under macOS's Text Editor (aft
 ```@raw html
 <img src="https://github.com/alstat/Yunir.jl/raw/main/docs/src/assets/alignment1.png" align="center"/>
 ```
-The result of the alignment is a list of group of 60 characters of reference text indicated by the Arabic 
-character ١, and the target texts indicated by the Arabic character ٢. If the character matches, a Alif (i.e., ا)
-is inserted between the rows of reference and target characters. If a tatweel (i.e., "ـ") is present in the target row,
-it means those tatweels represent the deletion of characters from the reference texts. If a tatweel is present in the reference
-text, it means an insertion of characters was done in target text. If both characters of target and reference texts are not matched,
-then a space is inserted between their rows.
+The result of the alignment is a list of group of reference text indicated by the Arabic 
+character ١, and the target texts indicated by the Arabic character ٢. If the characters of reference and target match, a Alif (i.e., ا)
+between their rows is placed. Further, if a tatweel (i.e., "ـ") is present in the target text,
+it means those tatweels represent the deletion of characters from the reference text. On the other hand, if a tatweel is present in the reference
+text, it means an insertion of characters was done in the target text. Lastly, if both characters of target and reference texts do not match,
+a space is inserted between their rows.
 
 ### Alignment statistics
 From the results above, we can extract the score of alignment which is a 
