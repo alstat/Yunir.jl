@@ -13,6 +13,7 @@ makedocs(
         "Basic Utilities" => "man/basic_utilities.md",
         "Orthographical Analysis" => "man/orthography.md",
         "Working with QuranTree.jl" => "man/qurantree.md",
+        "Text Alignment" => "man/text_alignment.md",
         "API" => "man/api.md",
         # "Arabic Grammar" => [
         #     "Introduction" => "book/introduction.md",

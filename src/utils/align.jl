@@ -4,9 +4,69 @@ mutable struct Alignment
 	score::Int64
 end
 
-function align(src::String, tgt::String; costmodel::CostModel=CostModel(match=0, mismatch=1, insertion=1, deletion=0))
-	res = pairalign(EditDistance(), tgt, src, costmodel)
+"""
+	align(src::String, tgt::String; costmodel::BioAlignments.CostModel=BioAlignments.CostModel(match=0, mismatch=1, insertion=1, deletion=0))	
+
+Align `tgt` string to `src` string using a particular `costmodel` from BioAlignments.jl.
+"""
+function align(src::String, tgt::String; costmodel::BioAlignments.CostModel=BioAlignments.CostModel(match=0, mismatch=1, insertion=1, deletion=0))
+	res = BioAlignments.pairalign(BioAlignments.EditDistance(), tgt, src, costmodel)
 	return Alignment(BioAlignments.alignment(res), BioAlignments.score(res))
+end
+
+"""
+	align(src::Array{String}, tgt::Array{String}; 
+		costmodel::CostModel=CostModel(match=0, mismatch=1, insertion=1, deletion=0),
+		store_results::Bool=true
+	)
+
+ALign `tgt` array of texts to `src` array of texts using a particular `costmodel` from BioAlignments.jl. `store_results` if results of alignment are stored or returned, 
+otherwise, only the scores are returned.
+"""
+function align(src::Array{String}, tgt::Array{String}; 
+	costmodel::CostModel=CostModel(match=0, mismatch=1, insertion=1, deletion=0),
+	store_results::Bool=true)
+	nref = length(src)
+	ntgt = length(tgt)
+	scores = Matrix{Int64,2}(undef, nref, ntgt)
+	if store_results
+		results = Matrix{Yunir.Alignment,2}(undef, nref, ntgt)
+	end
+	for i in 1:nref
+		for j in 1:ntgt
+			alignres = align(src[i], tgt[j], costmodel=costmodel)
+			if store_results
+				results[i, j] = alignres
+			end
+			scores[i, j] = score(alignres)
+		end
+		if string(i)[end] == '1'
+			if i != 11
+				@info "$(round(i/nref, digits=4)*100)%, aligning $(i)st reference milestone to all target milestone."
+			else
+				@info "$(round(i/nref, digits=4)*100)%, aligning $(i)th reference milestone to all target milestone."
+			end
+		elseif string(i)[end] == '2'
+			if i != 12
+				@info "$(round(i/nref, digits=4)*100)%, aligning $(i)nd reference milestone to all target milestone."
+			else
+				@info "$(round(i/nref, digits=4)*100)%, aligning $(i)th reference milestone to all target milestone."
+			end
+		elseif string(i)[end] == '3'
+			if i != 13
+				@info "$(round(i/nref, digits=4)*100)%, aligning $(i)rd reference milestone to all target milestone."
+			else
+				@info "$(round(i/nref, digits=4)*100)%, aligning $(i)th reference milestone to all target milestone."
+			end
+		else
+			@info "$(round(i/nref, digits=4)*100)%, aligning $(i)th reference milestone to all target milestone."
+		end
+	end
+	if store_results
+		return results, scores
+	else
+		return scores
+	end
 end
 
 function Base.show(io::IO, t::Alignment)

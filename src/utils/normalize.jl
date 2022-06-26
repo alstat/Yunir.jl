@@ -38,8 +38,12 @@ function normalize(s::String)
     s = replace(s, string(Char(0x0683)[1]) => string(Char(0x062D)))
     s = replace(s, string(Char(0x0684)[1]) => string(Char(0x062D)))
     s = replace(s, string(Char(0x0685)[1]) => string(Char(0x062D)))
-    s = replace(s, string(Char(0x0686)[1]) => string(Char(0x062D)))
+    s = replace(s, string(Char(0x0686)[1]) => string(Char(0x062C)))
     s = replace(s, string(Char(0x0687)[1]) => string(Char(0x062D)))
+    s = replace(s, string(Char(0x067E)[1]) => string(Char(0x0628)))
+    s = replace(s, string(Char(0x0698)[1]) => string(Char(0x0632)))
+    s = replace(s, string(Char(0x06AF)[1]) => string(Char(0x063A)))
+    s = replace(s, string(Char(0x06A8)[1]) => string(Char(0x0641)))
     return s
 end
 
