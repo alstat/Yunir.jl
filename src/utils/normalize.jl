@@ -1,11 +1,11 @@
-function normalize(c::Char, isarabic::Bool, encoder::AbstractEncoder)
-    ch = isarabic ? Symbol(c) : encoder.decode[Symbol(c)]
-    if !isarabic
-        return string(encoder.encode[SP_DEDIAC_MAPPING[ch]])
-    else
-        return string(SP_DEDIAC_MAPPING[ch])
-    end
-end
+# function normalize(c::Char, isarabic::Bool, encoder::AbstractEncoder)
+#     ch = isarabic ? Symbol(c) : encoder.decode[Symbol(c)]
+#     if !isarabic
+#         return string(encoder.encode[SP_DEDIAC_MAPPING[ch]])
+#     else
+#         return string(SP_DEDIAC_MAPPING[ch])
+#     end
+# end
 
 """
     normalize(s::String)
@@ -19,34 +19,59 @@ julia> normalize("بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَ�
 ```
 """
 function normalize(s::String)
-    trans = Transliterator()
-    if !in(Symbol(s[1]), collect(keys(trans.encode)))
-        if in(Symbol(s[1]), SP_DEDIAC_KEYS)
-            isarabic = true
-        else
-            isarabic = false  
-        end
-    else
-        isarabic = true
-    end
-
-    word = ""
-    for c in s
-        if c === ' '
-            word *= " "
-            continue
-        end
-        isnormalize = !isarabic ? in(trans.decode[Symbol(c)], SP_DEDIAC_KEYS) : in(Symbol(c), SP_DEDIAC_KEYS)
-        if isnormalize
-            word *= normalize(c, isarabic, trans)
-        else
-            word *= c
-        end
-    end
-    
-    word = normalize(word, :tatweel)
-    return word
+    s = replace(s, string(Char(0x0640)[1]) => "")
+    s = replace(s, string(Char(0x0622)[1]) => string(Char(0x0627)))
+    s = replace(s, string(Char(0x0653)[1]) => "")
+    s = replace(s, string(Char(0x0623)[1]) => string(Char(0x0627)))
+    s = replace(s, string(Char(0x0670)[1]) => string(Char(0x0627)))
+    s = replace(s, string(Char(0x0671)[1]) => string(Char(0x0627)))
+    s = replace(s, string(Char(0x0625)[1]) => string(Char(0x0627)))
+    s = replace(s, string(Char(0x0624)[1]) => string(Char(0x0648)))
+    s = replace(s, string(Char(0x0626)[1]) => string(Char(0x064A)))
+    s = replace(s, string(Char(0x0649)[1]) => string(Char(0x064A)))
+    s = replace(s, string(Char(0x0629)[1]) => string(Char(0x0647)))
+    s = replace(s, string(Char(0xFDFA)[1]) => "صلى الله عليه وسلم")
+    s = replace(s, string(Char(0xFDFB)[1]) => "جل جلاله")
+    s = replace(s, string(Char(0xFDFD)[1]) => "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ")
+    s = replace(s, string(Char(0x0681)[1]) => string(Char(0x062D)))
+    s = replace(s, string(Char(0x0682)[1]) => string(Char(0x062D)))
+    s = replace(s, string(Char(0x0683)[1]) => string(Char(0x062D)))
+    s = replace(s, string(Char(0x0684)[1]) => string(Char(0x062D)))
+    s = replace(s, string(Char(0x0685)[1]) => string(Char(0x062D)))
+    s = replace(s, string(Char(0x0686)[1]) => string(Char(0x062D)))
+    s = replace(s, string(Char(0x0687)[1]) => string(Char(0x062D)))
+    return s
 end
+
+# function normalize(s::String)
+#     trans = Transliterator()
+#     if !in(Symbol(s[1]), collect(keys(trans.encode)))
+#         if in(Symbol(s[1]), SP_DEDIAC_KEYS)
+#             isarabic = true
+#         else
+#             isarabic = false  
+#         end
+#     else
+#         isarabic = true
+#     end
+
+#     word = ""
+#     for c in s
+#         if c === ' '
+#             word *= " "
+#             continue
+#         end
+#         isnormalize = !isarabic ? in(trans.decode[Symbol(c)], SP_DEDIAC_KEYS) : in(Symbol(c), SP_DEDIAC_KEYS)
+#         if isnormalize
+#             word *= normalize(c, isarabic, trans)
+#         else
+#             word *= c
+#         end
+#     end
+    
+#     word = normalize(word, :tatweel)
+#     return word
+# end
 
 """
     normalize(s::String, chars::Array{Symbol,1})

@@ -6,6 +6,8 @@ abstract type AbstractLunar <: AbstractConsonant end
 abstract type AbstractVowel <: AbstractDiacritic end
 abstract type AbstractTanween <: AbstractDiacritic end
 abstract type AbstractQuranPauseMark <: AbstractCharacter end
+abstract type AbstractNumber <: AbstractCharacter end
+abstract type AbstractArabicSymbol <: AbstractCharacter end
 
 struct Tatweel end
 struct Orthography
@@ -43,6 +45,18 @@ macro consonant(name, parent, numeral, vocal)
         struct $name <: $parent end
         vocals(::Type{$name}) = $vocal
         numerals(::Type{$name}) = $numeral
+    end)
+end
+
+macro number(name)
+    esc(quote
+        struct $name <: AbstractNumber end
+    end)
+end
+
+macro arsymbol(name)
+    esc(quote
+        struct $name <: AbstractArabicSymbol end
     end)
 end
 
@@ -90,6 +104,22 @@ numerals(x::Orthography) = numerals.(x.data)
 @consonant AlifHamzatWasl AbstractLunar 1 :soft
 @consonant WawHamzaAbove AbstractLunar 6 :soft
 @consonant YaHamzaAbove AbstractLunar 10 :soft
+
+@number Zero
+@number One
+@number Two
+@number Three
+@number Four
+@number Five
+@number Six
+@number Seven
+@number Eight
+@number Nine
+
+@arsymbol Comma
+@arsymbol QuestionMark
+@arsymbol Semicolon
+@arsymbol DateSeparator
 
 macro data(expr)
     return esc(Meta.parse(string(expr) * ".data"))

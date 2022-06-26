@@ -26,7 +26,11 @@ function arabic(s::String, encoder::AbstractEncoder)
         if c === ' '
             words *= " "
         else
-            words *= decode(c, encoder)
+            try
+                words *= decode(c, encoder)
+            catch
+                words *= c
+            end
         end
     end
     return words

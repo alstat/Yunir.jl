@@ -59,7 +59,21 @@ const SIMPLE_ENCODING = Dict(
     Symbol(Char(0x06EA)) => Symbol("EmptyCenterLowStop"),
     Symbol(Char(0x06EB)) => Symbol("EmptyCenterHighStop"),
     Symbol(Char(0x06EC)) => Symbol("RoundedHighStopWithFilledCenter"),
-    Symbol(Char(0x06ED)) => Symbol("SmallLowMeem")
+    Symbol(Char(0x06ED)) => Symbol("SmallLowMeem"),
+    Symbol(Char(0x060C)) => Symbol("Comma"),
+    Symbol(Char(0x0660)) => Symbol("Zero"),
+    Symbol(Char(0x0661)) => Symbol("One"),
+    Symbol(Char(0x0662)) => Symbol("Two"),
+    Symbol(Char(0x0663)) => Symbol("Three"),
+    Symbol(Char(0x0664)) => Symbol("Four"),
+    Symbol(Char(0x0665)) => Symbol("Five"),
+    Symbol(Char(0x0666)) => Symbol("Six"),
+    Symbol(Char(0x0667)) => Symbol("Seven"),
+    Symbol(Char(0x0668)) => Symbol("Eight"),
+    Symbol(Char(0x0669)) => Symbol("Nine"),
+    Symbol(Char(0x061F)) => Symbol("QuestionMark"),
+    Symbol(Char(0x061B)) => Symbol("Semicolon"),
+    Symbol(Char(0x060D)) => Symbol("DateSeparator")
 );
 const ORTHOGRAPHY_TYPES = Dict(
     Symbol(Char(0x0621)) => Hamza,
@@ -122,9 +136,34 @@ const ORTHOGRAPHY_TYPES = Dict(
     Symbol(Char(0x06EA)) => EmptyCenterLowStop,
     Symbol(Char(0x06EB)) => EmptyCenterHighStop,
     Symbol(Char(0x06EC)) => RoundedHighStopWithFilledCenter,
-    Symbol(Char(0x06ED)) => SmallLowMeem
+    Symbol(Char(0x06ED)) => SmallLowMeem,
+    Symbol(Char(0x060C)) => Comma,
+    Symbol(Char(0x0660)) => Zero,
+    Symbol(Char(0x0661)) => One,
+    Symbol(Char(0x0662)) => Two,
+    Symbol(Char(0x0663)) => Three,
+    Symbol(Char(0x0664)) => Four,
+    Symbol(Char(0x0665)) => Five,
+    Symbol(Char(0x0666)) => Six,
+    Symbol(Char(0x0667)) => Seven,
+    Symbol(Char(0x0668)) => Eight,
+    Symbol(Char(0x0669)) => Nine,
+    Symbol(Char(0x061F)) => QuestionMark,
+    Symbol(Char(0x061B)) => Semicolon,
+    Symbol(Char(0x060D)) => DateSeparator
 );
 const BW_ENCODING = Dict(
+    Symbol(Char(0x060C)) => Symbol('='),
+    Symbol(Char(0x0660)) => Symbol('0'),
+    Symbol(Char(0x0661)) => Symbol('1'),
+    Symbol(Char(0x0662)) => Symbol('2'),
+    Symbol(Char(0x0663)) => Symbol('3'),
+    Symbol(Char(0x0664)) => Symbol('4'),
+    Symbol(Char(0x0665)) => Symbol('5'),
+    Symbol(Char(0x0666)) => Symbol('6'),
+    Symbol(Char(0x0667)) => Symbol('7'),
+    Symbol(Char(0x0668)) => Symbol('8'),
+    Symbol(Char(0x0669)) => Symbol('9'),
     Symbol(Char(0x0621)) => Symbol('\''),
     Symbol(Char(0x0622)) => Symbol('('),
     Symbol(Char(0x0623)) => Symbol('>'),
@@ -185,9 +224,11 @@ const BW_ENCODING = Dict(
     Symbol(Char(0x06EA)) => Symbol('-'),
     Symbol(Char(0x06EB)) => Symbol('+'),
     Symbol(Char(0x06EC)) => Symbol('%'),
-    Symbol(Char(0x06ED)) => Symbol(']')
+    Symbol(Char(0x06ED)) => Symbol(']'),
+    Symbol(Char(0x061F)) => Symbol('/'),
+    Symbol(Char(0x061B)) => Symbol('\\'),
+    Symbol(Char(0x060D)) => Symbol('\'')
 );
-
 const AR_DIACS_REGEX = Regex(
     string(
         Char(0x064B)[1], "|", 

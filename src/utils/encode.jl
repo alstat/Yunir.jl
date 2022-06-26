@@ -5,19 +5,27 @@ Transliterate the input `String` object using a custom `encoder`. Custom `encode
 generated using the `@transliterator`.
 """
 function encode(s::Union{Char,String}, encoder::AbstractEncoder)
-    words = ""
-    for c in s
-        if c === ' '
-            words *= " "
-        else
-            if c === '\U0622'
-                words *= string(encoder.encode[Symbol('\U0627')], encoder.encode[Symbol('\U0653')])
-            else
-                words *= string(encoder.encode[Symbol(c)])
-            end
-        end
+    for k in collect(keys(encoder.encode))
+        s = replace(s, string(k) => string(encoder.encode[k]))
     end
-    return words
+    return s
+    # words = ""
+    # for c in s
+    #     if c === ' '
+    #         words *= " "
+    #     else
+    #         if c === '\U0622'
+    #             words *= string(encoder.encode[Symbol('\U0627')], encoder.encode[Symbol('\U0653')])
+    #         else
+    #             try
+    #                 words *= string(encoder.encode[Symbol(c)])
+    #             catch
+    #                 words *= "="
+    #             end
+    #         end
+    #     end
+    # end
+    # return words
 end
 
 """
