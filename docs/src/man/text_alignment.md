@@ -64,7 +64,7 @@ not clear. What you can do is to copy the output and paste it into a text
 editor with Arabic Monospace font (e.g. [Kawkab font](https://makkuk.com/kawkab-mono/#:~:text=Kawkab%20Mono%20(%D9%83%D9%88%D9%83%D8%A8%20%D9%85%D9%88%D9%86%D9%88)%20is,a%20void%20in%20this%20niche.)),
 and set it to right-justified. Here is the result under macOS's Text Editor (after setting to right-justified):
 ```@raw html
-<img src="https://github.com/alstat/Yunir.jl/raw/main/docs/src/assets/alignment.png" align="center"/>
+<img src="https://github.com/alstat/Yunir.jl/raw/main/docs/src/assets/alignment1.png" align="center"/>
 ```
 The result of the alignment is a list of group of 60 characters of reference text indicated by the Arabic 
 character ١, and the target texts indicated by the Arabic character ٢. If the character matches, a Alif (i.e., ا)
