@@ -28,9 +28,9 @@ function align(src::Array{String}, tgt::Array{String};
 	store_results::Bool=true)
 	nref = length(src)
 	ntgt = length(tgt)
-	scores = Matrix{Int64,2}(undef, nref, ntgt)
+	scores = Matrix{Int64}(undef, nref, ntgt)
 	if store_results
-		results = Matrix{Yunir.Alignment,2}(undef, nref, ntgt)
+		results = Matrix{Yunir.Alignment}(undef, nref, ntgt)
 	end
 	for i in 1:nref
 		for j in 1:ntgt
@@ -81,6 +81,9 @@ function print_align(out)
 	text_b = "١    "
 	text_m = ["     "]
 	output = ""
+	
+	out = collect(out)
+	nout = length(out)
 	j = 1
 	for i in out
 		if i[1] == '-'
@@ -100,19 +103,32 @@ function print_align(out)
 		else
 			m = " "
 		end
-	
-		if j % 60 == 0
-			text_a = arabic(text_a) * 
-				"\n" * join(text_m) * 
-				"\n" * arabic(text_b) * "\n\n"
-			output = output * text_a
-			text_a = "٢    "
-			text_b = "١    "
-			text_m = ["     "]
+		
+		if nout < 60
+			if j != nout
+				text_a *= a
+				text_b *= b
+				push!(text_m, m)
+			else
+				text_a = arabic(text_a) * 
+					"\n" * join(text_m) * 
+					"\n" * arabic(text_b) * "\n\n"
+				output = output * text_a
+			end
 		else
-			text_a *= a
-			text_b *= b
-			push!(text_m, m)
+			if j % 60 == 0
+				text_a = arabic(text_a) * 
+					"\n" * join(text_m) * 
+					"\n" * arabic(text_b) * "\n\n"
+				output = output * text_a
+				text_a = "٢    "
+				text_b = "١    "
+				text_m = ["     "]
+			else
+				text_a *= a
+				text_b *= b
+				push!(text_m, m)
+			end
 		end
 		j += 1
 	end

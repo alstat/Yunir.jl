@@ -11,9 +11,13 @@ shamela0012129_enc = encode(shamela0012129_exp)
 shamela0023790_enc = encode(shamela0023790_exp)
 res = align(shamela0012129_enc, shamela0023790_enc);
 res
+using BioAlignments
+BioAlignments.alignment(res.alignment)
+res.alignment
 
-res = align("aaa sf", "vadfa").alignment
-
+bw_basmala = encode(expand_archars(dediac(normalize(arabic("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi")))))
+res = align(bw_basmala, bw_basmala)
+collect(res.alignment)
 count_matches(res)
 count_mismatches(res)
 count_insertions(res)
