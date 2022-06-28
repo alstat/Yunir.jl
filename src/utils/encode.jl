@@ -9,23 +9,6 @@ function encode(s::Union{Char,String}, encoder::AbstractEncoder)
         s = replace(s, string(k) => string(encoder.encode[k]))
     end
     return s
-    # words = ""
-    # for c in s
-    #     if c === ' '
-    #         words *= " "
-    #     else
-    #         if c === '\U0622'
-    #             words *= string(encoder.encode[Symbol('\U0627')], encoder.encode[Symbol('\U0653')])
-    #         else
-    #             try
-    #                 words *= string(encoder.encode[Symbol(c)])
-    #             catch
-    #                 words *= "="
-    #             end
-    #         end
-    #     end
-    # end
-    # return words
 end
 
 """

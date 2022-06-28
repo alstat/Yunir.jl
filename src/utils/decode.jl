@@ -1,7 +1,3 @@
-function decode(c::Union{Char,String}, encoder::AbstractEncoder)
-    return string(encoder.decode[Symbol(c)])
-end
-
 """
     arabic(s::String[, encoder::AbstractEncoder])
 
@@ -21,17 +17,8 @@ function arabic(s::String)
 end
 
 function arabic(s::String, encoder::AbstractEncoder)
-    words = ""
-    for c in s
-        if c === ' '
-            words *= " "
-        else
-            try
-                words *= decode(c, encoder)
-            catch
-                words *= c
-            end
-        end
+    for k in collect(keys(encoder.decode))
+        s = replace(s, string(k) => string(encoder.decode[k]))
     end
-    return words
+    return s
 end

@@ -1,12 +1,3 @@
-# function normalize(c::Char, isarabic::Bool, encoder::AbstractEncoder)
-#     ch = isarabic ? Symbol(c) : encoder.decode[Symbol(c)]
-#     if !isarabic
-#         return string(encoder.encode[SP_DEDIAC_MAPPING[ch]])
-#     else
-#         return string(SP_DEDIAC_MAPPING[ch])
-#     end
-# end
-
 """
     normalize(s::String)
 
@@ -46,36 +37,6 @@ function normalize(s::String)
     s = replace(s, string(Char(0x06A8)[1]) => string(Char(0x0641)))
     return s
 end
-
-# function normalize(s::String)
-#     trans = Transliterator()
-#     if !in(Symbol(s[1]), collect(keys(trans.encode)))
-#         if in(Symbol(s[1]), SP_DEDIAC_KEYS)
-#             isarabic = true
-#         else
-#             isarabic = false  
-#         end
-#     else
-#         isarabic = true
-#     end
-
-#     word = ""
-#     for c in s
-#         if c === ' '
-#             word *= " "
-#             continue
-#         end
-#         isnormalize = !isarabic ? in(trans.decode[Symbol(c)], SP_DEDIAC_KEYS) : in(Symbol(c), SP_DEDIAC_KEYS)
-#         if isnormalize
-#             word *= normalize(c, isarabic, trans)
-#         else
-#             word *= c
-#         end
-#     end
-    
-#     word = normalize(word, :tatweel)
-#     return word
-# end
 
 """
     normalize(s::String, chars::Array{Symbol,1})
