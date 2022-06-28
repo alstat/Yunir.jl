@@ -1,7 +1,7 @@
 name = "Yunir"
 uuid = "6ba116df-6904-454d-b214-90038a8281a6"
 authors = ["Al-Ahmadgaid B. Asaad"]
-version = "0.2.2"
+version = "0.2.3"
 
 [deps]
 BioAlignments = "00701ae9-d1dc-5365-b64a-a3a3ebf5695e"
