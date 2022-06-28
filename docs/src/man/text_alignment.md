@@ -104,3 +104,66 @@ count_insertions(res)
 count_deletions(res)
 count_aligned(res)
 ```
+
+## Multiple Alignments
+At times, especially when working with books, the input texts are long enough that it becomes
+computationally expensive to do the alignment directly. A simple solution is to partition the input 
+texts into parts and do the alignment, pairing the texts by permutation.
+For example, in the KITAB's text reuse use case the books are partition into "milestone" which is
+indicated by a prefix `ms` in the texts. To mimick this, we'll add `ms` into the 
+`shamela0012129` and `shamela0023790` as follows:
+```@repl abc
+shamela0012129 = "خرج مع ابي بكر الصديق رضي الله عنه في تجارة الي بصري ومعهم نعيمان وكان نعيمان ممن شهد——- بدرا ايضا وك——-ان علي الزاد فقال له سويبط———– اطعمني فقال حتي يجء ابو بكر فقال اما والله لاغيظنك فمروا بقوم فقال لهم سويبط -تشترون مني عبدا قا—لوا نعم فقال انه عبد له كلام وهو قاءل لكم اني حر فان كنتم اذا قال لكم هذهmsتركتموه فلا تفسدوا علي عبدي قا-لوا بل نشتريه منك فاشتروه بعشر قلاءص ثم جاءوا فوضعوا في عنقه حبلا ف—————قال نعيمان ان هذا يستهزء بكم واني حر فقالوا قد عرفنا –خبرك وانطلقوا به فلما جاء ابو بكر -اخبروه فاتبعهم ورد عليهم القلاءص واخذه فلما قدموا علي النبي صلي الله عليه وسلم اخبروه فضحك هو واصحابه من ذلك حولا";
+shamela0023790 = "خرج— ابو بكر——————– في تجارة——— ومعه- نعيمان وسويبط بن حرملة وكانا شهدا بدر—–ا وكان نعيمان علي الزاد فقال له سويبط وكان مزاحا اطعمني فقال حتي يجء ابو بكر فقال اما والله لاغيظنك فمروا بقوم فقال لهم سويبط اتشترون مني عبدا لي قالوا نعم ق-ال انه عبد له كلام وهو قاءل لكم اني حر فان كنتم اذا قال لكم هذه المقالة تركتموهmsفلا تفسدوا علي عبدي فقالوا بل نشتريه منك——– بعشر قلاءص ثم جاءوا فوضعوا في عنقه حبلا وعمامة واشتروه فقال نعيمان ان هذا يستهزء بكم واني حر قا-لوا قد اخبرنا بخبرك وانطلقوا به و—-جاء ابو بكر فاخبروه فاتبعهم فرد عليهم القلاءص واخذه فلما قدموا علي النبي صلي الله عليه وسلم اخبروه فضحك هو واصحابه منهما- حول";
+```
+We will then split this into milestones,
+```@repl abc
+shamela0012129 = string.(split(shamela0012129, "ms"))
+shamela0023790 = string.(split(shamela0023790, "ms"))
+```
+Then as before, we clean the splitted texts:
+```@repl abc
+shamela0012129_cln = clean.(shamela0012129)
+shamela0023790_cln = clean.(shamela0023790)
+```
+!!! note "Note"
+    In Julia, we suffix the name of the function with `.` to broadcast the function to each item of the list. In this case, we clean each splitted texts.
+Next, we expand the characters as before:
+```@repl abc
+shamela0012129_exp = expand_archars.(shamela0012129_cln)
+shamela0023790_exp = expand_archars.(shamela0023790_cln)
+```
+And we encode them as follows
+```@repl abc
+shamela0012129_enc = encode.(shamela0012129_exp)
+shamela0023790_enc = encode.(shamela0023790_exp)
+```
+Finally, we run the alignment.
+```@repl abc
+res, scr = align(shamela0012129_enc, shamela0023790_enc);
+```
+Note that if the input texts are Array or Matrix the `align` function returns a tuple, comprising of the result of the alignment in Matrix, and the corresponding scores in Matrix.
+
+Here is the score of the comparison, where the rows correspond to the index of the partitions of the reference text, and the 
+columns correspond to the index of the partitions of the target text.
+```@repl abc
+scr
+```
+The corresponding result of the score is also a Matrix, but it is huge since each cell of the matrix correspond to the result of the alignment and printing it would be difficult to understand. It is therefore better to simply index the Matrix to view only part of it.
+
+For example, the corresponding result of the score in the first row first column is given below
+```@repl abc
+res[1,1] # result of the score scr[1,1]
+```
+For the result of the score in the second row first column, we have
+```@repl abc
+res[2,1] # result of the score scr[2,1]
+```
+Finally, as before we can extract the statistics for each result:
+```@repl abc
+count_matches(res[2,1])
+count_mismatches(res[2,1])
+count_insertions(res[2,1])
+count_deletions(res[2,1])
+count_aligned(res[2,1])
+```
