@@ -82,7 +82,7 @@ it means those tatweels represent the deletion of characters from the reference 
 text, it means an insertion of characters was done in the target text. Lastly, if both characters of target and reference texts do not match,
 a space is inserted between their rows.
 !!! note "Note"
-    Note that if we did not normalize the word "الله" into a single character, there would be four Alif if all letters matched, but because most software prints this as single character, then there will be four Alif for a single character, and this will make the output confusing to readers. This is true for لا as well.
+    If we did not normalize the word "الله" into a single character, there would be four Alif if all letters matched, but because most software prints this as single character, then there will be four Alif for a single character, and this will make the output confusing to readers. This is true for لا as well.
 
 ### Alignment in Buckwalter
 We can actually extract the encoded version, which is in Buckwalter transliteration mapping. This can be accessed via the `.alignment` property of the `res` above. That is,

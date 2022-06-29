@@ -31,8 +31,8 @@ julia> Pkg.add("Yunir")
 Pages = [
     "man/basic_utilities.md",
     "man/orthography.md",
-    "man/qurantree.md",
     "man/text_alignment.md",
+    "man/qurantree.md",
     "man/api.md",
 ]
 Depth = 2
