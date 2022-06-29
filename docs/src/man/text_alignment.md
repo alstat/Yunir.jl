@@ -76,11 +76,12 @@ and set it to right-justified or set the text direction to right-to-left (RTL). 
 ![Alignment-Output-in-Text-Editor](../assets/alignment2.png)
 
 The result of the alignment is a list of groups of reference text indicated by the Arabic 
-character ١, and the target texts indicated by the Arabic character ٢. If the characters of reference and target match, a Alif (i.e., ا)
-between their rows is placed. Further, if a tatweel (i.e., "ـ") is present in the target text,
-it means those tatweels represent the deletion of characters from the reference text. On the other hand, if a tatweel is present in the reference
-text, it means an insertion of characters was done in the target text. Lastly, if both characters of target and reference texts do not match,
-a space is inserted between their rows.
+character ١, and the target texts indicated by the Arabic character ٢. 
+!!! note "Definitions"
+    - *Match*, if the characters of reference and target match, a Alif (i.e., ا) between their rows is placed. 
+    - *Deletion*, if a tatweel (i.e., "ـ") is present in the target text, it means those tatweels represent the deletion of characters from the reference text. 
+    - *Insertion*, if a tatweel is present in the reference text, it means an insertion of characters was done in the target text. 
+    - *Mismatch*, if both characters of target and reference texts do not match, a space is inserted between their rows.
 !!! note "Note"
     If we did not normalize the word "الله" into a single character, there would be four Alif if all letters matched, but because most software prints this as single character, then there will be four Alif for a single character, and this will make the output confusing to readers. This is true for لا as well.
 
