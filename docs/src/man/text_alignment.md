@@ -78,7 +78,7 @@ and set it to right-justified or set the text direction to right-to-left (RTL). 
 The result of the alignment is a list of groups of reference text indicated by the Arabic 
 character ١, and the target texts indicated by the Arabic character ٢. 
 !!! note "Definitions"
-    - *Match*, if the characters of reference and target match, a Alif (i.e., ا) between their rows is placed. 
+    - *Match*, if the characters of reference and target did match, a Alif (i.e., ا) between their rows is placed. 
     - *Deletion*, if a tatweel (i.e., "ـ") is present in the target text, it means those tatweels represent the deletion of characters from the reference text. 
     - *Insertion*, if a tatweel is present in the reference text, it means an insertion of characters was done in the target text. 
     - *Mismatch*, if both characters of target and reference texts do not match, a space is inserted between their rows.
