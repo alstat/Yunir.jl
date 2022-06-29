@@ -44,21 +44,22 @@ shamela0023790_cln = clean(shamela0023790)
 !!! warning "Caution"
     It is important that all non-Arabic characters be removed since any special character might be transliterated to a particular Arabic character once transliterating the output back to Arabic, and the result might mislead. See the section "How it works" above.
     
-Next, we need to expand the special Arabic characters such as Allah, الله, since some text editors
-combines this into the unicode [U+FDF2](https://www.compart.com/en/unicode/U+FDF2). This is also true
-with Lam-Alif, ﻻ, [U+FEFB](https://www.compart.com/en/unicode/U+FEFB). We will add space between these letters
-to display the alignment of the characters properly, with a caveat that it should be understood that these characters are connected when encountering their sequence in the output. So that, "الله" becomes "ا ل ل ه" and "ﻻ" becomes "ل ا" in the output. The function to use is `expand_archars`.
+Next, we need to normalize the word Allah, الله, into a single Unicode [U+FDF2](https://www.compart.com/en/unicode/U+FDF2). This is because this word or name consist of 4 consonants, but most software assigns this into a single Unicode when detected, and hence it is better to convert it in the first place. This is also true with Lam-Alif, ﻻ, composed of two letters but we can assign it to a single Unicode [U+FEFB](https://www.compart.com/en/unicode/U+FEFB). To do this, we define a mapping of these characters for the normalizer and then use it to normalize the input texts.
 ```@repl abc
-shamela0012129_exp = expand_archars(shamela0012129_cln)
-shamela0023790_exp = expand_archars(shamela0023790_cln)
+mapping = Dict(
+    "الله" => "ﷲ",
+    "لا" => "ﻻ"
+);
+shamela0012129_nrm = normalize(shamela0012129_cln, mapping)
+shamela0023790_nrm = normalize(shamela0023790_cln, mapping)
 ```
 ### Encoding
 As emphasized above, Yunir.jl is based on [BioAlignments.jl](https://github.com/BioJulia/BioAlignments.jl) APIs to do
 the pairwise alignment. To do this, [BioAlignments.jl](https://github.com/BioJulia/BioAlignments.jl) requires 
 a Roman character input. Therefore, the input Arabic texts need to be encoded or transliterated to Roman characters.
 ```@repl abc
-shamela0012129_enc = encode(shamela0012129_exp)
-shamela0023790_enc = encode(shamela0023790_exp)
+shamela0012129_enc = encode(shamela0012129_nrm)
+shamela0023790_enc = encode(shamela0023790_nrm)
 ```
 ### Alignment
 Finally, we can do the alignment as follows:
@@ -70,9 +71,9 @@ Unfortunately, many software and text editors including the Julia REPL
 have default left-to-right printing, and hence the alignment above is
 not clear. What you can do is to copy the output above and paste it into a text
 editor with Arabic Monospace font (e.g. [Kawkab font](https://makkuk.com/kawkab-mono/#:~:text=Kawkab%20Mono%20(%D9%83%D9%88%D9%83%D8%A8%20%D9%85%D9%88%D9%86%D9%88)%20is,a%20void%20in%20this%20niche.)),
-and set it to right-justified. Here is the result under macOS's Text Editor (after setting the page to right-justified):
+and set it to right-justified or set the text direction to right-to-left (RTL). Here is the result under the Notepad++ (after setting the text direction to RTL):
 
-![Alignment-Output-in-Text-Editor](../assets/alignment1.png)
+![Alignment-Output-in-Text-Editor](../assets/alignment2.png)
 
 The result of the alignment is a list of groups of reference text indicated by the Arabic 
 character ١, and the target texts indicated by the Arabic character ٢. If the characters of reference and target match, a Alif (i.e., ا)
@@ -80,6 +81,8 @@ between their rows is placed. Further, if a tatweel (i.e., "ـ") is present in t
 it means those tatweels represent the deletion of characters from the reference text. On the other hand, if a tatweel is present in the reference
 text, it means an insertion of characters was done in the target text. Lastly, if both characters of target and reference texts do not match,
 a space is inserted between their rows.
+!!! note "Note"
+    Note that if we did not normalize the word "الله" into a single character, there would be four Alif if all letters matched, but because most software prints this as single character, then there will be four Alif for a single character, and this will make the output confusing to readers. This is true for لا as well.
 
 ### Alignment in Buckwalter
 We can actually extract the encoded version, which is in Buckwalter transliteration mapping. This can be accessed via the `.alignment` property of the `res` above. That is,
@@ -128,15 +131,19 @@ shamela0023790_cln = clean.(shamela0023790)
 ```
 !!! note "Note"
     In Julia, we suffix the name of the function with `.` to broadcast the function to each item of the list. In this case, we clean each splitted texts.
-Next, we expand the characters as before:
+Next, we normalize the characters as before:
 ```@repl abc
-shamela0012129_exp = expand_archars.(shamela0012129_cln)
-shamela0023790_exp = expand_archars.(shamela0023790_cln)
+mapping = Dict(
+    "الله" => "ﷲ",
+    "لا" => "ﻻ"
+);
+shamela0012129_nrm = normalize(shamela0012129_cln, mapping)
+shamela0023790_nrm = normalize(shamela0023790_cln, mapping)
 ```
 And we encode them as follows
 ```@repl abc
-shamela0012129_enc = encode.(shamela0012129_exp)
-shamela0023790_enc = encode.(shamela0023790_exp)
+shamela0012129_enc = encode.(shamela0012129_nrm)
+shamela0023790_enc = encode.(shamela0023790_nrm)
 ```
 Finally, we run the alignment.
 ```@repl abc

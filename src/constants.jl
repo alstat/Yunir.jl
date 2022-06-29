@@ -227,7 +227,9 @@ const BW_ENCODING = Dict(
     Symbol(Char(0x06ED)) => Symbol(']'),
     Symbol(Char(0x061F)) => Symbol('/'),
     Symbol(Char(0x061B)) => Symbol('B'),
-    Symbol(Char(0x060D)) => Symbol('c')
+    Symbol(Char(0x060D)) => Symbol('c'),
+    Symbol(Char(0xFEFB)) => Symbol('L'),
+    Symbol(Char(0xFDF2)) => Symbol('G')
 );
 const AR_DIACS_REGEX = Regex(
     string(

@@ -24,6 +24,14 @@ function normalize(s::String, char_mapping::Dict=DEFAULT_NORMALIZER)
     return s
 end
 
+function normalize(astr::Array{String}, char_mapping::Dict=DEFAULT_NORMALIZER)
+    out = String[]
+    for s in astr
+        push!(out, normalize(s, char_mapping))
+    end
+    return out
+end
+
 # "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ" === "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ"
 
 """
