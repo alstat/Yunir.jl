@@ -18,10 +18,77 @@ shamela0023790_exp = normalize(shamela0023790_cln, mapping)
 
 shamela0012129_enc = encode(shamela0012129_exp)
 shamela0023790_enc = encode(shamela0023790_exp)
-res = align(shamela0012129_enc, shamela0023790_enc);
-res
-using BioAlignments
+etgt = shamela0023790_enc
+eref = shamela0012129_enc
+res = align(eref, etgt);
+typeof(res)
+
+out = collect(res.alignment)
+out
+
+using CairoMakie
+# reference        
+function generate_xys(res::Alignment, text::Symbol=:reference, nchars::Int64=60)
+    xs, ys, zs = Int[], [1], Float32[]
+    j = 1; k = 1;
+    if text === :reference
+        out = filter(x -> x[2] != '-', collect(res))
+    elseif text === :target
+        out = filter(x -> x[1] != '-', collect(res))
+    else
+        throw("text only takes :reference or :target as input.")
+    end
+    for i in out
+        if j % nchars == 0
+            k += 1
+            ys = [1]
+        else
+            if i[2] == i[1]
+                push!(xs, k)
+                push!(ys, ys[end] - 1)
+                push!(zs, ys[end] - 1)
+            else
+                push!(ys, ys[end] - 1)
+            end
+        end
+        j += 1
+    end
+    return xs, zs .+ nchars
+end
+
+xr, yr = generate_xys(res)
+xt, yt = generate_xys(res, :target)
+
+pr = plot(xr, yr)
+pt = plot(xt, yt)
+
+plot(pr, pt)
+
+using Makie          
+# target        
+xs, ys, zs = Int[], [1], Float32[]
+j = 1; k = 1; l = 1; m = 1
+for i in out
+    if j % 60 == 0
+        m += 1
+        ys = [1]
+    else
+        if i[2] == i[1]
+            push!(xs, m)
+            push!(ys, ys[end] - 1)
+            push!(zs, ys[end] - 1)
+        elseif i[2] != "_"
+            push!(ys, ys[end] - 1)
+        end
+    end
+    j += 1
+end
+zs
+plot(xs, zs .+ 60)
+
+
 BioAlignments.alignment(res.alignment)
+using BioAlignments
 res.alignment
 
 bw_basmala = encode(expand_archars(dediac(normalize(arabic("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi")))))
