@@ -16,12 +16,13 @@ include("alignment/align.jl")
 include("utils/encode.jl")
 include("utils/parse.jl")
 include("tokenizers/tokenize.jl")
+include("alignment/vis.jl")
 
 # data
 export CAMeLData, MorphologyDB, locate, load
 export BW_ENCODING, AR_DIACS_REGEX, SP_REGEX_CHARS, PUNCTUATIONS_REGEX, DEFAULT_NORMALIZER
 
-export expand_archars, isfeat, vocals, numerals, parse, arabic, clean, dediac, encode, normalize, tokenize, disambig, predict, install_camel
+export plot, expand_archars, isfeat, vocals, numerals, parse, arabic, clean, dediac, encode, normalize, tokenize, disambig, predict, install_camel
 export align, score, count_matches, count_aligned, count_mismatches, count_insertions, count_deletions, collect
 export Alignment, AbstractCAMeLDB, AbstractEncoder, SimpleEncoding
 export @transliterator, genproperties

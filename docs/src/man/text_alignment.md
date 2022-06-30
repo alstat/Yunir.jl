@@ -24,6 +24,13 @@ We will consider a simple example based on "text reuse" case study of [KITAB pro
 ```
 ### Data processing
 To have a quality output, we will need to process the texts to remove unnecessary noise. First, we need to remove all non-Arabic characters. The following will input the two candidate books:
+```@setup abc
+using Pkg
+Pkg.add("CairoMakie")
+Pkg.add("Colors")
+using CairoMakie
+CairoMakie.activate!(type = "svg")
+```
 ```@repl abc
 using Yunir
 
@@ -64,8 +71,8 @@ shamela0023790_enc = encode(shamela0023790_nrm)
 ### Alignment
 Finally, we can do the alignment as follows:
 ```@repl abc
-res = align(shamela0012129_enc, shamela0023790_enc);
-res
+res1 = align(shamela0012129_enc, shamela0023790_enc);
+res1
 ```
 Unfortunately, many software and text editors including the Julia REPL 
 have default left-to-right printing, and hence the alignment above is
@@ -88,7 +95,7 @@ character ١, and the target texts indicated by the Arabic character ٢.
 ### Alignment in Buckwalter
 We can actually extract the encoded version, which is in Buckwalter transliteration mapping. This can be accessed via the `.alignment` property of the `res` above. That is,
 ```@repl abc
-res.alignment
+res1.alignment
 ```
 This is the same with the result above, but this one is the Buckwalter encoded Arabic input.
 
@@ -98,15 +105,15 @@ From the results above, we can extract the score of alignment which is a
 distance measure between the reference and the target texts. The lower the score
 the similar the two texts therefore.
 ```@repl abc
-score(res)
+score(res1)
 ```
 Other statistics are as follows
 ```@repl abc
-count_matches(res)
-count_mismatches(res)
-count_insertions(res)
-count_deletions(res)
-count_aligned(res)
+count_matches(res1)
+count_mismatches(res1)
+count_insertions(res1)
+count_deletions(res1)
+count_aligned(res1)
 ```
 
 ## Multiple Alignments
@@ -148,7 +155,7 @@ shamela0023790_enc = encode.(shamela0023790_nrm)
 ```
 Finally, we run the alignment.
 ```@repl abc
-res, scr = align(shamela0012129_enc, shamela0023790_enc);
+res2, scr = align(shamela0012129_enc, shamela0023790_enc);
 ```
 Note that if the input texts are Array or Matrix the `align` function returns a tuple, comprising of the result of the alignment in Matrix, and the corresponding scores in Matrix.
 
@@ -161,17 +168,67 @@ The corresponding result of the score is also a Matrix, but it is huge since eac
 
 For example, the corresponding result of the score in the first row first column is given below
 ```@repl abc
-res[1,1] # result of the score scr[1,1]
+res2[1,1] # result of the score scr[1,1]
 ```
 For the result of the score in the second row first column, we have
 ```@repl abc
-res[2,1] # result of the score scr[2,1]
+res2[2,1] # result of the score scr[2,1]
 ```
 Finally, as before we can extract the statistics for each result:
 ```@repl abc
-count_matches(res[2,1])
-count_mismatches(res[2,1])
-count_insertions(res[2,1])
-count_deletions(res[2,1])
-count_aligned(res[2,1])
+count_matches(res2[2,1])
+count_mismatches(res2[2,1])
+count_insertions(res2[2,1])
+count_deletions(res2[2,1])
+count_aligned(res2[2,1])
+```
+## Visualization
+In this section, we are going to display the alignment by plotting the results.
+```@example abc
+using CairoMakie
+f, a, xys = plot(res1, :matches)
+a[1].xlabel = "Shamela0023790"
+a[1].xlabelsize = 20
+a[1].xticks = 0:2:unique(xys[1][1])[end]
+a[3].xlabel = "Shamela0012129"
+a[3].xlabelsize = 20
+a[3].xticks = 0:2:unique(xys[2][1])[end]
+f
+```
+The figure above is divided into three subplots arranged in rows. You can think of the figure as two input text displayed in horizontal. In this orientation, x-axis becomes the rows of the texts, that is, you can think of the x-axis as the rows of the texts in the book. In this case, we have two books, the reference and the target books. Each dot in reference and target corresponds to characters that have matched. The lines and curves in the middle (colored in red) represent the connections to the rows of the texts where the matched happened. Further, the y-axis correspond to the length of the rows, in this case 60 characters per row. As you can see, the top tick label of the y-axis is 0 and the bottom tick label of the y-axis is 60, this is because the writing of Arabic is right-to-left, and so we can think of the 0-tick at the top as the starting index of the first character in both texts, and the row ends at the 60-tick at the bottom.
+
+We added further customization of the plot, readers are encouraged to explore.
+
+As for the plot of insertions of characters, we have:
+```@example abc
+f, a, xys = plot(res1, :insertions)
+a[1].xlabel = "Shamela0023790"
+a[1].xlabelsize = 20
+a[1].xticks = 0:2:unique(xys[1][1])[end]
+a[3].xlabel = "Shamela0012129"
+a[3].xlabelsize = 20
+a[3].xticks = 0:2:unique(xys[2][1])[end]
+f
+```
+For deletions, we have:
+```@example abc
+f, a, xys = plot(res1, :deletions)
+a[1].xlabel = "Shamela0023790"
+a[1].xlabelsize = 20
+a[1].xticks = 0:2:unique(xys[1][1])[end]
+a[3].xlabel = "Shamela0012129"
+a[3].xlabelsize = 20
+a[3].xticks = 0:2:unique(xys[2][1])[end]
+f
+```
+And for mismatches, we have
+```@example abc
+f, a, xys = plot(res1, :mismatches)
+a[1].xlabel = "Shamela0023790"
+a[1].xlabelsize = 20
+a[1].xticks = 0:2:unique(xys[1][1])[end]
+a[3].xlabel = "Shamela0012129"
+a[3].xlabelsize = 20
+a[3].xticks = 0:2:unique(xys[2][1])[end]
+f
 ```
