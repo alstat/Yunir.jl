@@ -59,10 +59,19 @@ end
 xr, yr = generate_xys(res)
 xt, yt = generate_xys(res, :target)
 
-pr = plot(xr, yr)
-pt = plot(xt, yt)
-
-plot(pr, pt)
+f = Figure()
+a = f[1,1] = GridLayout()
+axt = Axis(a[1,1], xaxisposition=:top)
+axr = Axis(a[2,1])
+axt.yticks = string.(Int64.(collect(60:-20:0)))
+axr.yticks = 60:-20:0
+axt.ylabel = "Target"
+axr.ylabel = "Reference"
+collect(0:20:60)
+# linkxaxes!(axt, axr)
+plot!(axr, xr, yr)
+plot!(axt, xt, yt)
+f
 
 using Makie          
 # target        
