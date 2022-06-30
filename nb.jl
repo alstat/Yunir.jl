@@ -28,13 +28,33 @@ out
 
 using CairoMakie
 # reference        
-function generate_xys(res::Alignment, text::Symbol=:reference, nchars::Int64=60)
+function generate_xys(res::Alignment, text::Symbol=:reference, type::Symbol=:matches, nchars::Int64=60)
     xs, ys, zs = Int[], [1], Float32[]
     j = 1; k = 1;
     if text === :reference
-        out = filter(x -> x[2] != '-', collect(res))
+        if type === :matches
+            out = filter(x -> x[2] != '-', collect(res))
+        elseif type === :insertions
+            out = collect(res)
+        elseif type === :deletions
+            out = filter(x -> x[2] != '-', collect(res))
+        elseif type === :mismatches
+            out = filter(x -> x[2] != '-', collect(res))
+        else
+            throw("type takes :matches, :insertions, :deletions and :mismatches only.")
+        end
     elseif text === :target
-        out = filter(x -> x[1] != '-', collect(res))
+        if type === :matches
+            out = filter(x -> x[1] != '-', collect(res))
+        elseif type === :insertions
+            out = filter(x -> x[1] != '-', collect(res))
+        elseif type === :deletions
+            out = collect(res)
+        elseif type === :mismatches
+            out = filter(x -> x[1] != '-', collect(res))
+        else
+            throw("type takes :matches, :insertions, :deletions and :mismatches only.")
+        end
     else
         throw("text only takes :reference or :target as input.")
     end
@@ -44,11 +64,39 @@ function generate_xys(res::Alignment, text::Symbol=:reference, nchars::Int64=60)
             ys = [1]
         else
             if i[2] == i[1]
-                push!(xs, k)
                 push!(ys, ys[end] - 1)
-                push!(zs, ys[end] - 1)
+                if type === :matches
+                    push!(xs, k)
+                    push!(zs, ys[end] - 1)
+                end
             else
-                push!(ys, ys[end] - 1)
+                if type === :matches
+                    push!(ys, ys[end] - 1)
+                elseif type === :insertions
+                    if i[2] === '-'
+                        push!(xs, k)
+                        push!(ys, ys[end] - 1)
+                        push!(zs, ys[end] - 1)
+                    else
+                        push!(ys, ys[end] - 1)
+                    end
+                elseif type === :deletions
+                    if i[1] === '-'
+                        push!(xs, k)
+                        push!(ys, ys[end] - 1)
+                        push!(zs, ys[end] - 1)
+                    else
+                        push!(ys, ys[end] - 1)
+                    end
+                else
+                    if i[1] != '-' && i[2] != '-' && i[1] != i[2]
+                        push!(xs, k)
+                        push!(ys, ys[end] - 1)
+                        push!(zs, ys[end] - 1)
+                    else
+                        push!(ys, ys[end] - 1)
+                    end 
+                end
             end
         end
         j += 1
@@ -56,18 +104,69 @@ function generate_xys(res::Alignment, text::Symbol=:reference, nchars::Int64=60)
     return xs, zs .+ nchars
 end
 
-xr, yr = generate_xys(res)
-xt, yt = generate_xys(res, :target)
+xr, yr = generate_xys(res, :reference, :matches)
+xt, yt = generate_xys(res, :target, :matches)
+yr
+yt
 
+p = lines([xr[1], xt[1]], [0, 1], color=:red)
+for i in 2:length(xr)
+    lines!([xr[i], xt[i]], [0, 1], color=:red)
+end
+p
+
+function Makie.plot(res::Alignment, type::Symbol=:matches)
+    if type === :matches
+        xr, yr = generate_xys(res)
+        xt, yt = generate_xys(res, :target)
+    elseif type === :insertions
+        xr, yr = generate_xys(res, :reference, :insertions)
+        xt, yt = generate_xys(res, :target, :insertions)
+    elseif type === :deletions
+        xr, yr = generate_xys(res, :reference, :deletions)
+        xt, yt = generate_xys(res, :target, :deletions)
+    elseif type === :mismatches
+        xr, yr = generate_xys(res, :reference, :mismatches)
+        xt, yt = generate_xys(res, :target, :mismatches)
+    else
+        throw("type takes :matches, :insertions, :deletions and :mismatches only.")
+    end
+    f = Figure()
+    a = f[1,1] = GridLayout()
+    axt = Axis(a[1,1], xaxisposition=:top)
+    axr = Axis(a[2,1])
+    axt.yticks = 60:-20:0
+    axr.yticks = 60:-20:0
+    axt.ylabel = "Target"
+    axr.ylabel = "Reference"
+    ylims!(axt, low=-2, high=62)
+    ylims!(axr, low=-2, high=62)
+    linkxaxes!(axt, axr)
+    linkyaxes!(axt, axr)
+    plot!(axr, xr, yr)
+    plot!(axt, xt, yt)
+    return f, (axt, axr) 
+end
+etgt = shamela0023790_enc
+eref = shamela0012129_enc
+
+f, a = plot(res, :insertions)
+a[1].xlabel = "Shamela0023790"
+a[1].xlabelsize = 20
+a[2].xlabel = "Shamela0012129"
+a[2].xlabelsize = 20
+f
+a
+a[]
 f = Figure()
 a = f[1,1] = GridLayout()
 axt = Axis(a[1,1], xaxisposition=:top)
 axr = Axis(a[2,1])
-axt.yticks = string.(Int64.(collect(60:-20:0)))
+axt.yticks = 60:-20:0
 axr.yticks = 60:-20:0
 axt.ylabel = "Target"
 axr.ylabel = "Reference"
-collect(0:20:60)
+
 # linkxaxes!(axt, axr)
 plot!(axr, xr, yr)
 plot!(axt, xt, yt)
