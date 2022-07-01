@@ -254,7 +254,8 @@ costmodel = CostModel(match=0, mismatch=10, insertion=3, deletion=1)
 Then if a mismatch happened, the algorithm will instead consider it a deletion as much as possible to avoid a distance score of 10 (for mismatch) and go for a distance of 1 (for deletion) instead.
 
 Consider the following example,
-```@repl def
+```@example def
+using Yunir
 etgt = "رضي الله عنه"
 eref = "صلي الله عليه وسلم"
 mapping = Dict("الله" => "ﷲ",)
@@ -265,7 +266,7 @@ res_c1 = align(encode(eref_nrm), encode(etgt_nrm), costmodel=costmodel)
 res_c1
 ```
 Now, compare the result if we increased the mismatch and insertion in the cost model.
-```@repl def
+```@example def
 costmodel = CostModel(match=0, mismatch=10, insertion=5, deletion=1)
 res_c2 = align(encode(eref_nrm), encode(etgt_nrm), costmodel=costmodel)
 res_c2
