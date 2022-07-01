@@ -22,7 +22,7 @@ include("alignment/vis.jl")
 export CAMeLData, MorphologyDB, locate, load
 export BW_ENCODING, AR_DIACS_REGEX, SP_REGEX_CHARS, PUNCTUATIONS_REGEX, DEFAULT_NORMALIZER
 
-export plot, expand_archars, isfeat, vocals, numerals, parse, arabic, clean, dediac, encode, normalize, tokenize, disambig, predict, install_camel
+export expand_archars, isfeat, vocals, numerals, parse, arabic, clean, dediac, encode, normalize, tokenize, disambig, predict, install_camel
 export align, score, count_matches, count_aligned, count_mismatches, count_insertions, count_deletions, collect
 export Alignment, AbstractCAMeLDB, AbstractEncoder, SimpleEncoding
 export @transliterator, genproperties

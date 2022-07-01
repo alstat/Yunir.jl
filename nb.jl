@@ -293,3 +293,16 @@ costmodel = CostModel(match=0, mismatch=3, insertion=1, deletion=1);
 out = pairalign(EditDistance(), "abcd hgf", "adcde jhb", costmodel)
 out
 count_mismatches(alignment(out))
+
+
+#\
+using Yunir
+using BioAlignments
+etgt = "رضي الله عنه"
+eref = "صلي الله عليه وسلم"
+mapping = Dict("الله" => "ﷲ",)
+etgt_nrm = normalize(etgt, mapping)
+eref_nrm = normalize(eref, mapping)
+costmodel = CostModel(match=0, mismatch=1, insertion=1, deletion=1)
+res = align(encode(eref_nrm), encode(etgt_nrm), costmodel=costmodel)
+res

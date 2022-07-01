@@ -24,7 +24,7 @@ ALign `tgt` array of texts to `src` array of texts using a particular `costmodel
 otherwise, only the scores are returned.
 """
 function align(src::Array{String}, tgt::Array{String}; 
-	costmodel::CostModel=CostModel(match=0, mismatch=1, insertion=1, deletion=0),
+	costmodel::CostModel=CostModel(match=0, mismatch=1, insertion=1, deletion=1),
 	store_results::Bool=true)
 	nref = length(src)
 	ntgt = length(tgt)

@@ -75,7 +75,7 @@ res1 = align(shamela0012129_enc, shamela0023790_enc);
 res1
 ```
 Unfortunately, many software and text editors including the Julia REPL have default left-to-right printing, and hence the alignment above is not clear. What you can do is to copy the output above and paste it into a text editor with Arabic Monospace font (e.g. [Kawkab font](https://makkuk.com/kawkab-mono/#:~:text=Kawkab%20Mono%20(%D9%83%D9%88%D9%83%D8%A8%20%D9%85%D9%88%D9%86%D9%88)%20is,a%20void%20in%20this%20niche.)),
-and set it to right-justified or set the text direction to right-to-left (RTL). Here is the result under the Notepad++ (after setting the text direction to RTL):
+and set it to right-justified or set the text direction to right-to-left (RTL). Here is the result under the [Notepad++](https://notepad-plus-plus.org/) (after setting the text direction to RTL):
 
 ![Alignment-Output-in-Text-Editor](../assets/alignment2.png)
 
@@ -257,11 +257,23 @@ mapping = Dict("الله" => "ﷲ",)
 etgt_nrm = normalize(etgt, mapping)
 eref_nrm = normalize(eref, mapping)
 costmodel = CostModel(match=0, mismatch=1, insertion=1, deletion=1);
-align(encode(eref_nrm), encode(etgt_nrm), costmodel=costmodel)
+res_c1 = align(encode(eref_nrm), encode(etgt_nrm), costmodel=costmodel)
+res_c1
 ```
 Now, compare the result if we increased the mismatch and insertion in the cost model.
 ```@example def
-costmodel = CostModel(match=0, mismatch=10, insertion=5, deletion=1);
-align(encode(eref_nrm), encode(etgt_nrm), costmodel=costmodel)
+costmodel = CostModel(match=0, mismatch=10, insertion=5, deletion=1)
+res_c2 = align(encode(eref_nrm), encode(etgt_nrm), costmodel=costmodel)
+res_c2
 ```
-Notice, how 
+You can copy and paste the result to any text editor with Arabic monospace, like in [Notepad++](https://notepad-plus-plus.org/) screenshot above to see the alignment properly.
+
+You will notice that, in `res_c1` above we have 3 mismatches, but in `res_c2` the algorithm avoided assigning mismatches and instead prioritized deletions and insertions. This can be confirmed below:
+```@repl def
+count_mismatches(res_c1)
+count_deletions(res_c1)
+count_insertions(res_c1)
+count_mismatches(res_c2)
+count_deletions(res_c2)
+count_insertions(res_c2)
+```
