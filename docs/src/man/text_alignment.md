@@ -233,7 +233,11 @@ f
 The pairwise alignment above works by minimizing a cost function, which is define by a cost model. It is important that we understand how the cost model is setup so that we can give proper scoring for the mismatches, matches, deletions and insertions. To define a cost model, we use [BioAligments.jl](https://github.com/BioJulia/BioAlignments.jl)'s `CostModel` struct.
 
 The default cost model is given by
-```@repl d
+```@setup def
+using Pkg
+Pkg.add("BioAlignments")
+```
+```@repl def
 using BioAlignments
 costmodel = CostModel(match=0, mismatch=1, insertion=1, deletion=1)
 ```
@@ -243,7 +247,7 @@ costmodel = CostModel(match=0, mismatch=1, insertion=1, deletion=1)
     The alignment is optimized by minimizing the cost function defined by the cost model, by prioritizing matches since it gives the algorithm a lower distance (which is 0)
 
 If we set the costmodel to the following,
-```@repl d
+```@repl def
 using BioAlignments
 costmodel = CostModel(match=0, mismatch=10, insertion=3, deletion=1)
 ```
