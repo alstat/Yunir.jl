@@ -55,7 +55,7 @@
 
 ٢    هم القﻻءص واخذه فلما قدموا علي النبي صلي ﷲ عليه وسلم اخبروه
      ااااااااااااااااااااااااااااااااااااااااااااااااااااااااااا
-١    هم القﻻءص واخذه فلما قدموا علي النبي صلي ﷲ عليه وسلم اخبروه</code></pre><p>Unfortunately, many software and text editors including the Julia REPL have default left-to-right printing, and hence the alignment above is not clear. What you can do is to copy the output above and paste it into a text editor with Arabic Monospace font (e.g. <a href="https://makkuk.com/kawkab-mono/#:~:text=Kawkab%20Mono%20(%D9%83%D9%88%D9%83%D8%A8%20%D9%85%D9%88%D9%86%D9%88)%20is,a%20void%20in%20this%20niche.">Kawkab font</a>), and set it to right-justified or set the text direction to right-to-left (RTL). Here is the result under the Notepad++ (after setting the text direction to RTL):</p><p><img src="../../assets/alignment2.png" alt="Alignment-Output-in-Text-Editor"/></p><p>The result of the alignment is a list of groups of reference text indicated by the Arabic  character ١, and the target texts indicated by the Arabic character ٢. </p><div class="admonition is-info"><header class="admonition-header">Definitions</header><div class="admonition-body"><ul><li><em>Match</em>, if the characters of reference and target did match, a Alif (i.e., ا) between their rows is placed. </li><li><em>Deletion</em>, if a tatweel (i.e., &quot;ـ&quot;) is present in the target text, it means those tatweels represent the deletion of characters from the reference text. </li><li><em>Insertion</em>, if a tatweel is present in the reference text, it means an insertion of characters was done in the target text. </li><li><em>Mismatch</em>, if both characters of target and reference texts did not match, a space is inserted between their rows.</li></ul></div></div><div class="admonition is-info"><header class="admonition-header">Note</header><div class="admonition-body"><p>If we did not normalize the word &quot;الله&quot; into a single character, there would be four Alif if all letters did match, but because most software prints this as a single character, then there will be four Alif for a single character, and this will make the output confusing to readers. This is true for لا as well.</p></div></div><h3 id="Alignment-in-Buckwalter"><a class="docs-heading-anchor" href="#Alignment-in-Buckwalter">Alignment in Buckwalter</a><a id="Alignment-in-Buckwalter-1"></a><a class="docs-heading-anchor-permalink" href="#Alignment-in-Buckwalter" title="Permalink"></a></h3><p>We can actually extract the encoded version, which is in extended Buckwalter transliteration mapping. This can be accessed via the <code>.alignment</code> property of the <code>res</code> above. That is,</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; res1.alignment</code><code class="nohighlight hljs ansi" style="display:block;">BioAlignments.PairwiseAlignment{String, String}:
+١    هم القﻻءص واخذه فلما قدموا علي النبي صلي ﷲ عليه وسلم اخبروه</code></pre><p>Unfortunately, many software and text editors including the Julia REPL have default left-to-right printing, and hence the alignment above is not clear. What you can do is to copy the output above and paste it into a text editor with Arabic Monospace font (e.g. <a href="https://makkuk.com/kawkab-mono/#:~:text=Kawkab%20Mono%20(%D9%83%D9%88%D9%83%D8%A8%20%D9%85%D9%88%D9%86%D9%88)%20is,a%20void%20in%20this%20niche.">Kawkab font</a>), and set it to right-justified or set the text direction to right-to-left (RTL). Here is the result under the <a href="https://notepad-plus-plus.org/">Notepad++</a> (after setting the text direction to RTL):</p><p><img src="../../assets/alignment2.png" alt="Alignment-Output-in-Text-Editor"/></p><p>The result of the alignment is a list of groups of reference text indicated by the Arabic  character ١, and the target texts indicated by the Arabic character ٢. </p><div class="admonition is-info"><header class="admonition-header">Definitions</header><div class="admonition-body"><ul><li><em>Match</em>, if the characters of reference and target did match, a Alif (i.e., ا) between their rows is placed. </li><li><em>Deletion</em>, if a tatweel (i.e., &quot;ـ&quot;) is present in the target text, it means those tatweels represent the deletion of characters from the reference text. </li><li><em>Insertion</em>, if a tatweel is present in the reference text, it means an insertion of characters was done in the target text. </li><li><em>Mismatch</em>, if both characters of target and reference texts did not match, a space is inserted between their rows.</li></ul></div></div><div class="admonition is-info"><header class="admonition-header">Note</header><div class="admonition-body"><p>If we did not normalize the word &quot;الله&quot; into a single character, there would be four Alif if all letters did match, but because most software prints this as a single character, then there will be four Alif for a single character, and this will make the output confusing to readers. This is true for لا as well.</p></div></div><h3 id="Alignment-in-Buckwalter"><a class="docs-heading-anchor" href="#Alignment-in-Buckwalter">Alignment in Buckwalter</a><a id="Alignment-in-Buckwalter-1"></a><a class="docs-heading-anchor-permalink" href="#Alignment-in-Buckwalter" title="Permalink"></a></h3><p>We can actually extract the encoded version, which is in extended Buckwalter transliteration mapping. This can be accessed via the <code>.alignment</code> property of the <code>res</code> above. That is,</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; res1.alignment</code><code class="nohighlight hljs ansi" style="display:block;">BioAlignments.PairwiseAlignment{String, String}:
   seq:   1 xrj--- Abw bk---------r-------- fy tjArp--------- wmEh- nEym  30
            |||   ||| |||         |        |||||||||         ||||| |||||
   ref:   1 xrj mE Aby bkr AlSdyq rDy G Enh fy tjArp Aly bSry wmEhm nEym  60
@@ -119,8 +119,8 @@
  &quot;xrj Abw bkr fy tjArp wmEh nEymA&quot; ⋯ 233 bytes ⋯ &quot;*A qAl lkm h*h AlmqAlp trktmwh&quot;
  &quot;fL tfsdwA Ely Ebdy fqAlwA bl n\$&quot; ⋯ 225 bytes ⋯ &quot;brwh fDHk hw wASHAbh mnhmA Hwl&quot;</code></pre><p>Finally, we run the alignment.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; res2, scr = align(shamela0012129_enc, shamela0023790_enc);</code><code class="nohighlight hljs ansi" style="display:block;">[ Info: 50.0%, aligning 1st reference milestone to all target milestone.
 [ Info: 100.0%, aligning 2nd reference milestone to all target milestone.</code></pre><p>Note that if the input texts are Array or Matrix the <code>align</code> function returns a tuple, comprising of the result of the alignment in Matrix, and the corresponding scores in Matrix.</p><p>Here is the score of the comparison, where the rows correspond to the index of the partitions of the reference text, and the  columns correspond to the index of the partitions of the target text.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; scr</code><code class="nohighlight hljs ansi" style="display:block;">2×2 Matrix{Int64}:
-  55  156
- 165   27</code></pre><p>The corresponding result of the score is also a Matrix, but it is huge since each cell of the matrix correspond to the result of the alignment and printing it would be difficult to understand. It is therefore better to simply index the Matrix to view only part of it.</p><p>For example, the corresponding result of the score in the first row first column is given below</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; res2[1,1] # result of the score scr[1,1]</code><code class="nohighlight hljs ansi" style="display:block;">PairwiseAlignment
+  87  216
+ 218   50</code></pre><p>The corresponding result of the score is also a Matrix, but it is huge since each cell of the matrix correspond to the result of the alignment and printing it would be difficult to understand. It is therefore better to simply index the Matrix to view only part of it.</p><p>For example, the corresponding result of the score in the first row first column is given below</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; res2[1,1] # result of the score scr[1,1]</code><code class="nohighlight hljs ansi" style="display:block;">PairwiseAlignment
 ١-reference
 ٢-target
 
@@ -128,47 +128,43 @@
      ااا   ااا ااا         ا        ااااااااا         ااااا اااا
 ١    خرج مع ابي بكر الصديق رضي ﷲ عنه في تجارة الي بصري ومعهم نعي
 
-٢    ان وسويبط بن ـحرملة وكانـــا شهدا بدرا وكاــن نعيمان علي ال
-     ااا  ا     اا   ا     اا    اااا اااااا  ا   ا    ااااااااا
-١    ان ــوـــكان نعيمـــــان ممن شهدـ بدرا ــايضا ــوكان علي ال
+٢    ان وسويبط بن حرملة وكانا شهدا بدرا وكان نعيمان علي الزاد فق
+     ااا  ا   ا ا   ا  ا   ا اااا اااااا  ا      ااااااااااااااا
+١    ان ــوكان ـنـعيمان ـممنـ شهدـ بدرا ــايضا وكان علي الزاد فق
 
-٢    اد فقال له سويبط وكان مزاحا اطعمني فقال حتي يجء ابو بكر فقا
-     اااااااااااااااا           اااااااااااااااااااااااااااااااا
-١    اد فقال له سويبطـــــــــــ اطعمني فقال حتي يجء ابو بكر فقا
+٢    ل له سويبط وكان مزاحا اطعمني فقال حتي يجء ابو بكر فقال اما
+     اااااااااا           اااااااااااااااااااااااااااااااااااااا
+١    ل له سويبطـــــــــــ اطعمني فقال حتي يجء ابو بكر فقال اما
 
-٢     اما وﷲ ﻻغيظنك فمروا بقوم فقال لهم سويبط اتشترون مني عبدا ل
-     ااااااااااااااااااااااااااااااااااااااااا ااااااااااااااا
-١     اما وﷲ ﻻغيظنك فمروا بقوم فقال لهم سويبط ـتشترون مني عبداــ
+٢    ﷲ ﻻغيظنك فمروا بقوم فقال لهم سويبط اتشترون مني عبدا لي قالو
+     ااااااااااااااااااااااااااااااااااا ااااااااااااااا   ااااا
+١    ﷲ ﻻغيظنك فمروا بقوم فقال لهم سويبط ـتشترون مني عبداـــ قالو
 
-٢     قالوا نعم ـقال انه عبد له كﻻم وهو قاءل لكم اني حر فان كنتم
-     ااااااااااا ااااااااااااااااااااااااااااااااااااااااااااااا
-١     قالوا نعم فقال انه عبد له كﻻم وهو قاءل لكم اني حر فان كنتم</code></pre><p>For the result of the score in the second row first column, we have</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; res2[2,1] # result of the score scr[2,1]</code><code class="nohighlight hljs ansi" style="display:block;">PairwiseAlignment
+٢     نعم ـقال انه عبد له كﻻم وهو قاءل لكم اني حر فان كنتم اذا ق
+     ااااا ااااااااااااااااااااااااااااااااااااااااااااااااااااا
+١     نعم فقال انه عبد له كﻻم وهو قاءل لكم اني حر فان كنتم اذا ق</code></pre><p>For the result of the score in the second row first column, we have</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; res2[2,1] # result of the score scr[2,1]</code><code class="nohighlight hljs ansi" style="display:block;">PairwiseAlignment
 ١-reference
 ٢-target
 
-٢    خرج ابو بكـــر في تـــجارة ومعـه نعــيمان ـوسويبط بــن حرمل
-      ا       ا    اا اا    ا  ا  ا  ا ا  ا   ا   ا   اا  ا  ا
-١    ترـــــــكتموه فﻻ تفسدواــ ــعلي ـعبديـــ قالوــا بل نشترـي
+٢    خرج ابو بكر في تـجارة ومعه نعيمان وسويبط بن حرملة وكانا شهد
+      ا    ا    اا اا     ا       ا    ا   ا ا ا  ا     ا  ا
+١    ترـكتموـــه فﻻ تفسدوا علي عبدي قالوـا بل ـنشتريه منك فاشترو
 
-٢     وكانا ــشـــهدا بـدرا وكان نعيمان علي الزاد فـــقاــل ــله
-     ا   ا ا  ا   ا  اا  ا ا    ا   ا  ا    ا  ا اا    ا   ا   ا
-١     ــمنك فاشتروهــ بعشرـ قﻻءص ــثمــ ـــجاءواـ فوضعوا في عنقه
+٢     بدرا وكان نعيمان علي الزاد فقال له سويبط وكان مزاحاـ اطعمن
+     اا   ا    ا    ا         ا اا     اا   ا ا  ا ا    ا اا   ا
+١     بعشر قﻻءص ثم جاءوا فوضعواـ في عنقه ــحبﻻ فقال نعيمان اـــن
 
-٢    سويبط وكاــنـ مزاحا اطعمني فقال حتيـ يجء ابـــوـــ بكر فقال
-        ا ا  ا  ا  ا ا  اا   ا ا  ا ا  ا    اا ا   ا   ا  اااااا
-١    ــحبﻻ فقال نعيمـاـن اـــنـ هذاـ ــيستهزء ـبكم واني ـحر فقال
+٢     فقال حتــي يجء ـابو بكر فقال اما وﷲ ﻻغيظنك فمرــواـ بقوـــ
+     ا  ا   ا   ا   ا ا  ا  اااااا   اا  ا    ا ا  ا  اا   اا
+١     هذا يستهزء بكم واني ـحر فقالــوا قد ـعرفنا خبرك وانطلقوا ب
 
-٢    اما وﷲ ﻻغيظنك فمرــواـ بقوـــم فقالــ لهم ـسويبـط اتشترون ـ
-       اا  ا    ا ا  ا  اا   اا    اا  ا  ا   ا  ا ا  اا   اا ا
-١    ـوا قد ـعرفنا خبرك وانطلقوا به فــلما جاء ابو بكر اـخبروه ف
+٢     فقال لهم ـسويبـط اتشترون مني عبدا لي قالوا نعم قال انه عبد
+     اا   ا   ا  ا ا  اا   اا ا    ا   ا     ا     اا اا    ا
+١     فلما جاء ابو بكر اـخبروه فاتبعـهم ورد علـــيهم ـالقﻻءص ـوا
 
-٢    ــــمني عبدا ـليــ قالـــــواـــ نعمـ قـــاــلـ اـنه عبد ـل
-         ا  ا  ا ا اا  ا اا     اا   ا  ا اا   ا  ا اا ا   ا ا ا
-١    تبعهمــ وردـ عليهم ـالقﻻءص واخذه فلما قدموا علي النـــبي صل
-
-٢     كﻻم ــوهو قاءل لكم اني حرــ فان كنتم ـاـذا قال لكمـ هذه ال
-     ا   ا   ا ا     ا ااا    ا  اا   ا   ا ا  ا    ا  ا ا ا
-١     ــﷲ عليهـ ـــوسلـم اــخبروه فـضحك هو واصحاــبه ــمن ـذــــ</code></pre><p>Finally, as before we can extract the statistics for each result:</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; count_matches(res2[2,1])</code><code class="nohighlight hljs ansi" style="display:block;">129</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; count_mismatches(res2[2,1])</code><code class="nohighlight hljs ansi" style="display:block;">82</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; count_insertions(res2[2,1])</code><code class="nohighlight hljs ansi" style="display:block;">83</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; count_deletions(res2[2,1])</code><code class="nohighlight hljs ansi" style="display:block;">78</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; count_aligned(res2[2,1])</code><code class="nohighlight hljs ansi" style="display:block;">372</code></pre><h2 id="Visualization"><a class="docs-heading-anchor" href="#Visualization">Visualization</a><a id="Visualization-1"></a><a class="docs-heading-anchor-permalink" href="#Visualization" title="Permalink"></a></h2><p>In this section, we are going to display the alignment by plotting the results.</p><pre><code class="language-julia hljs">using CairoMakie
+٢    له كﻻمـ ـوهوـ قاءل لـكم اني حر فان كنتم اذا قال لكم هذه اــ
+      اا  ا ا   ا ا     ا   ا  اا      ا   ااا          اا   ا
+١    ذه فلما قدموا علي النبي صلي ﷲ عليه وسلم اخبروه فضحك هو واصح</code></pre><p>Finally, as before we can extract the statistics for each result:</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; count_matches(res2[2,1])</code><code class="nohighlight hljs ansi" style="display:block;">95</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; count_mismatches(res2[2,1])</code><code class="nohighlight hljs ansi" style="display:block;">175</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; count_insertions(res2[2,1])</code><code class="nohighlight hljs ansi" style="display:block;">24</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; count_deletions(res2[2,1])</code><code class="nohighlight hljs ansi" style="display:block;">19</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; count_aligned(res2[2,1])</code><code class="nohighlight hljs ansi" style="display:block;">313</code></pre><h2 id="Visualization"><a class="docs-heading-anchor" href="#Visualization">Visualization</a><a id="Visualization-1"></a><a class="docs-heading-anchor-permalink" href="#Visualization" title="Permalink"></a></h2><p>In this section, we are going to display the alignment by plotting the results.</p><pre><code class="language-julia hljs">using CairoMakie
 f, a, xys = plot(res1, :matches)
 a[1].xlabel = &quot;Shamela0023790&quot;
 a[1].xlabelsize = 20
@@ -4228,5 +4224,7 @@ mapping = Dict(&quot;الله&quot; =&gt; &quot;ﷲ&quot;,)
 etgt_nrm = normalize(etgt, mapping)
 eref_nrm = normalize(eref, mapping)
 costmodel = CostModel(match=0, mismatch=1, insertion=1, deletion=1);
-align(encode(eref_nrm), encode(etgt_nrm), costmodel=costmodel)</code></pre><p>Now, compare the result if we increased the mismatch and insertion in the cost model.</p><pre><code class="language- hljs">costmodel = CostModel(match=0, mismatch=10, insertion=5, deletion=1);
-align(encode(eref_nrm), encode(etgt_nrm), costmodel=costmodel)</code></pre><p>Notice, how </p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../orthography/">« Orthographical Analysis</a><a class="docs-footer-nextpage" href="../qurantree/">Working with QuranTree.jl »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.19 on <span class="colophon-date" title="Friday 1 July 2022 15:58">Friday 1 July 2022</span>. Using Julia version 1.7.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+res_c1 = align(encode(eref_nrm), encode(etgt_nrm), costmodel=costmodel)
+res_c1</code></pre><p>Now, compare the result if we increased the mismatch and insertion in the cost model.</p><pre><code class="language- hljs">costmodel = CostModel(match=0, mismatch=10, insertion=5, deletion=1)
+res_c2 = align(encode(eref_nrm), encode(etgt_nrm), costmodel=costmodel)
+res_c2</code></pre><p>You can copy and paste the result to any text editor with Arabic monospace, like in <a href="https://notepad-plus-plus.org/">Notepad++</a> screenshot above to see the alignment properly.</p><p>You will notice that, in <code>res_c1</code> above we have 3 mismatches, but in <code>res_c2</code> the algorithm avoided assigning mismatches and instead prioritized deletions and insertions. This can be confirmed below:</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; count_mismatches(res_c1)</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: count_mismatches not defined</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; count_deletions(res_c1)</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: count_deletions not defined</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; count_insertions(res_c1)</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: count_insertions not defined</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; count_mismatches(res_c2)</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: count_mismatches not defined</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; count_deletions(res_c2)</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: count_deletions not defined</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; count_insertions(res_c2)</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: count_insertions not defined</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../orthography/">« Orthographical Analysis</a><a class="docs-footer-nextpage" href="../qurantree/">Working with QuranTree.jl »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.19 on <span class="colophon-date" title="Friday 1 July 2022 16:21">Friday 1 July 2022</span>. Using Julia version 1.7.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
