@@ -7,7 +7,7 @@ to sequence of Arabic texts. Yunir.jl uses `align` function for aligning two tex
 The way it works is that, [BioAlignments.jl](https://github.com/BioJulia/BioAlignments.jl) requires a Roman characters as input for pairwise alignment. Therefore, any Arabic characters must first be transliterated to Roman characters. This is possible using Yunir.jl's `encode` function. The resulting alignment, which is in Roman characters, is then transliterated back to Arabic for easy interpretation.
 
 ## KITAB project's text reuse 
-We will consider a simple example based on "text reuse" case study of [KITAB project](https://kitab-project.org/methods/text-reuse). The following are portions of two books with IDs Shamela0012129-ara1 and Shamela0023790-ara1. The goal is to compare the two by aligning the characters, and see the similarity based on matches, mismatches, deletions and insertions of characters.
+We will consider a simple example based on "text reuse" case study of [KITAB project](https://kitab-project.org/methods/text-reuse). The following are portions of two books with IDs Shamela0012129-ara1 and Shamela0023790-ara1 which was detected by "passim" (the tool used by KITAB project) as similar. The goal is to compare the two input texts by aligning the characters, and see the similarity based on matches, mismatches, deletions and insertions of characters. In the example texts below, we'll confirm the matches and see how Yunir.jl's APIs work on text alignment.
 ```@raw html
 <table>
     <thead>
@@ -23,7 +23,7 @@ We will consider a simple example based on "text reuse" case study of [KITAB pro
 </table>
 ```
 ### Data processing
-To have a quality output, we will need to process the texts to remove unnecessary noise. First, we need to remove all non-Arabic characters. The following will input the two candidate books:
+To have a quality output, we will need to process the texts to remove unnecessary noise. First, we need to remove all non-Arabic characters. To start with, the following will input the two candidate texts:
 ```@setup abc
 using Pkg
 Pkg.add("CairoMakie")
@@ -43,7 +43,7 @@ shamela0012129_cln = clean(shamela0012129)
 shamela0023790_cln = clean(shamela0023790)
 ```
 !!! tips "Tips"
-    The `clean` function removes the non-Arabic characters through regex, which is set at the third argument of the function. That is, `clean(shamela0012129)` is actually equivalent to:
+    The `clean` function removes the non-Arabic characters through RegEx or [Regular Expression](https://en.wikipedia.org/wiki/Regular_expression), which is set at the third argument of the function. That is, `clean(shamela0012129)` is actually equivalent to:
     ```julia
     clean(shamela0012129; replace_non_ar="", target_regex=r"[A-Za-z0-9\(:×\|\–\[\«\»\]~\)_@./#&+\—-]*")
     ```
@@ -62,8 +62,8 @@ shamela0023790_nrm = normalize(shamela0023790_cln, mapping)
 ```
 ### Encoding
 As emphasized above, Yunir.jl is based on [BioAlignments.jl](https://github.com/BioJulia/BioAlignments.jl) APIs to do
-the pairwise alignment. To do this, [BioAlignments.jl](https://github.com/BioJulia/BioAlignments.jl) requires 
-a Roman character input. Therefore, the input Arabic texts need to be encoded or transliterated to Roman characters.
+the pairwise alignment, and [BioAlignments.jl](https://github.com/BioJulia/BioAlignments.jl) requires 
+a Roman input character. Therefore, the input Arabic texts need to be encoded or transliterated to Roman characters.
 ```@repl abc
 shamela0012129_enc = encode(shamela0012129_nrm)
 shamela0023790_enc = encode(shamela0023790_nrm)
@@ -74,10 +74,7 @@ Finally, we can do the alignment as follows:
 res1 = align(shamela0012129_enc, shamela0023790_enc);
 res1
 ```
-Unfortunately, many software and text editors including the Julia REPL 
-have default left-to-right printing, and hence the alignment above is
-not clear. What you can do is to copy the output above and paste it into a text
-editor with Arabic Monospace font (e.g. [Kawkab font](https://makkuk.com/kawkab-mono/#:~:text=Kawkab%20Mono%20(%D9%83%D9%88%D9%83%D8%A8%20%D9%85%D9%88%D9%86%D9%88)%20is,a%20void%20in%20this%20niche.)),
+Unfortunately, many software and text editors including the Julia REPL have default left-to-right printing, and hence the alignment above is not clear. What you can do is to copy the output above and paste it into a text editor with Arabic Monospace font (e.g. [Kawkab font](https://makkuk.com/kawkab-mono/#:~:text=Kawkab%20Mono%20(%D9%83%D9%88%D9%83%D8%A8%20%D9%85%D9%88%D9%86%D9%88)%20is,a%20void%20in%20this%20niche.)),
 and set it to right-justified or set the text direction to right-to-left (RTL). Here is the result under the Notepad++ (after setting the text direction to RTL):
 
 ![Alignment-Output-in-Text-Editor](../assets/alignment2.png)
@@ -88,12 +85,12 @@ character ١, and the target texts indicated by the Arabic character ٢.
     - *Match*, if the characters of reference and target did match, a Alif (i.e., ا) between their rows is placed. 
     - *Deletion*, if a tatweel (i.e., "ـ") is present in the target text, it means those tatweels represent the deletion of characters from the reference text. 
     - *Insertion*, if a tatweel is present in the reference text, it means an insertion of characters was done in the target text. 
-    - *Mismatch*, if both characters of target and reference texts do not match, a space is inserted between their rows.
+    - *Mismatch*, if both characters of target and reference texts did not match, a space is inserted between their rows.
 !!! note "Note"
-    If we did not normalize the word "الله" into a single character, there would be four Alif if all letters matched, but because most software prints this as single character, then there will be four Alif for a single character, and this will make the output confusing to readers. This is true for لا as well.
+    If we did not normalize the word "الله" into a single character, there would be four Alif if all letters did match, but because most software prints this as a single character, then there will be four Alif for a single character, and this will make the output confusing to readers. This is true for لا as well.
 
 ### Alignment in Buckwalter
-We can actually extract the encoded version, which is in Buckwalter transliteration mapping. This can be accessed via the `.alignment` property of the `res` above. That is,
+We can actually extract the encoded version, which is in extended Buckwalter transliteration mapping. This can be accessed via the `.alignment` property of the `res` above. That is,
 ```@repl abc
 res1.alignment
 ```
@@ -101,7 +98,7 @@ This is the same with the result above, but this one is the Buckwalter encoded A
 
 The number in the left side is the index of the first character in the row, whereas the number in the right side is the index of the last character in the row.
 ### Alignment statistics
-From the results above, we can extract the score of alignment which is a 
+From the results above, we can extract the score of the alignment which is a 
 distance measure between the reference and the target texts. The lower the score
 the similar the two texts therefore.
 ```@repl abc
@@ -120,7 +117,7 @@ count_aligned(res1)
 At times, especially when working with books, the input texts are long enough that it becomes
 computationally expensive to do the alignment directly. A simple solution is to partition the input 
 texts into parts and do the alignment, pairing the texts by permutation.
-For example, in the KITAB's text reuse use case the books are partition into "milestone" which is
+For example, in the KITAB's text reuse use case the books are partitioned into "milestone" which is
 indicated by a prefix `ms` in the texts. To mimick this, we'll add `ms` into the 
 `shamela0012129` and `shamela0023790` as follows:
 ```@repl abc
@@ -195,9 +192,9 @@ a[3].xlabelsize = 20
 a[3].xticks = 0:2:unique(xys[2][1])[end]
 f
 ```
-The figure above is divided into three subplots arranged in rows. You can think of the figure as two input text displayed in horizontal. In this orientation, x-axis becomes the rows of the texts, that is, you can think of the x-axis as the rows of the texts in the book. In this case, we have two books, the reference and the target books. Each dot in reference and target corresponds to characters that have matched. The lines and curves in the middle (colored in red) represent the connections to the rows of the texts where the matched happened. Further, the y-axis correspond to the length of the rows, in this case 60 characters per row. As you can see, the top tick label of the y-axis is 0 and the bottom tick label of the y-axis is 60, this is because the writing of Arabic is right-to-left, and so we can think of the 0-tick at the top as the starting index of the first character in both texts, and the row ends at the 60-tick at the bottom.
+The figure above is divided into three subplots arranged in rows. You can think of the figure as two input text displayed in horizontal (i.e, sideways) orientation. In this orientation, the x-axis becomes the rows of the texts, that is, you can think of the x-axis as the rows of the texts in the book. In this case, we have two books, the reference and the target books. Each dot in reference and target corresponds to the characters that have matched. The lines and curves in the middle (colored in red) represent the connections of the rows of the texts where the matched happened. Further, the y-axis correspond to the length of the rows, in this case 60 characters per row. As you can see, the top tick label of the y-axis is 0 and the bottom tick label of the y-axis is 60, this is because the writing of Arabic is right-to-left, and so we can think of the 0th-tick at the top as the starting index of the first character in both texts, and the row ends at the 60th-tick at the bottom.
 
-We added further customization of the plot, readers are encouraged to explore.
+We added further customization to the plot, readers are encouraged to explore the API.
 
 As for the plot of insertions of characters, we have:
 ```@example abc
@@ -232,3 +229,39 @@ a[3].xlabelsize = 20
 a[3].xticks = 0:2:unique(xys[2][1])[end]
 f
 ```
+## Cost Model
+The pairwise alignment above works by minimizing a cost function, which is define by a cost model. It is important that we understand how the cost model is setup so that we can give proper scoring for the mismatches, matches, deletions and insertions. To define a cost model, we use [BioAligments.jl](https://github.com/BioJulia/BioAlignments.jl)'s `CostModel` struct.
+
+The default cost model is given by
+```@repl d
+using BioAlignments
+costmodel = CostModel(match=0, mismatch=1, insertion=1, deletion=1)
+```
+!!! note "Interpretation of CostModel"
+    The instantiated `costmodel` above tells us that, if a matched happened between the characters of the reference and the target texts, we set it to 0. Otherwise, that is, if mismatch, insertions or deletions happened, then the distance is 1.
+!!! note "Optimization of the Alignment"
+    The alignment is optimized by minimizing the cost function defined by the cost model, by prioritizing matches since it gives the algorithm a lower distance (which is 0)
+
+If we set the costmodel to the following,
+```@repl d
+using BioAlignments
+costmodel = CostModel(match=0, mismatch=10, insertion=3, deletion=1)
+```
+Then if a mismatch happened, the algorithm will instead consider it a deletion as much as possible to avoid a distance score of 10 (for mismatch) and go for a distance of 1 (for deletion) instead.
+
+Consider the following example,
+```@example def
+etgt = "رضي الله عنه"
+eref = "صلي الله عليه وسلم"
+mapping = Dict("الله" => "ﷲ",)
+etgt_nrm = normalize(etgt, mapping)
+eref_nrm = normalize(eref, mapping)
+costmodel = CostModel(match=0, mismatch=1, insertion=1, deletion=1);
+align(encode(eref_nrm), encode(etgt_nrm), costmodel=costmodel)
+```
+Now, compare the result if we increased the mismatch and insertion in the cost model.
+```@example def
+costmodel = CostModel(match=0, mismatch=10, insertion=5, deletion=1);
+align(encode(eref_nrm), encode(etgt_nrm), costmodel=costmodel)
+```
+Notice, how 

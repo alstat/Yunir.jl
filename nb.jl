@@ -17,10 +17,12 @@ shamela0012129_enc = encode(shamela0012129_exp)
 shamela0023790_enc = encode(shamela0023790_exp)
 etgt = shamela0023790_enc
 eref = shamela0012129_enc
-res = align(eref, etgt);
 
+costmodel = CostModel(match=0, mismatch=1, insertion=1, deletion=1);
+res = align(eref, etgt; costmodel=costmodel);
+res.score
 using CairoMakie
-f, a, xys = plot(res, :mismatches)
+f, a, xys = plot(res, :insertions)
 f
 # reference        
 function generate_xys(res::Alignment, text::Symbol=:reference, type::Symbol=:matches, nchars::Int64=60)
@@ -265,10 +267,29 @@ reference = clean.(split(join(macarif, " "), "ms"))
 target = map(x -> x != "" ? x : "   ", target)
 reference = map(x -> x != "" ? x : "   ", reference)
 
-etgt = encode.(expand_archars.(normalize.(dediac.(target))));
+mapping = Dict(
+    "الله" => "ﷲ",
+    "لا" => "ﻻ"
+)
+
+target = normalize(target, mapping)
+reference = normalize(reference, mapping)
+
+etgt = encode.(normalize.(dediac.(target)));
 etgt = string.(strip.(replace.(etgt, r"\s+" => " ")));
 etgt
-eref = encode.(expand_archars.(normalize.(dediac.(reference))));
+eref = encode.(normalize.(dediac.(reference)));
 eref = string.(strip.(replace.(eref, r"\s+" => " ")));
 
-@time res, scr = align(eref, etgt);
+@time res, scr = align(eref, etgt); # 1.23 hours
+
+using CairoMakie
+f, a, xys = plot(res[1,end-1], :matches)
+f
+
+
+costmodel = CostModel(match=0, mismatch=3, insertion=1, deletion=1);
+
+out = pairalign(EditDistance(), "abcd hgf", "adcde jhb", costmodel)
+out
+count_mismatches(alignment(out))

@@ -5,11 +5,11 @@ mutable struct Alignment
 end
 
 """
-	align(src::String, tgt::String; costmodel::BioAlignments.CostModel=BioAlignments.CostModel(match=0, mismatch=1, insertion=1, deletion=0))	
+	align(src::String, tgt::String; costmodel::BioAlignments.CostModel=BioAlignments.CostModel(match=0, mismatch=1, insertion=1, deletion=1))	
 
 Align `tgt` string to `src` string using a particular `costmodel` from BioAlignments.jl.
 """
-function align(src::String, tgt::String; costmodel::BioAlignments.CostModel=BioAlignments.CostModel(match=0, mismatch=1, insertion=1, deletion=0))
+function align(src::String, tgt::String; costmodel::BioAlignments.CostModel=BioAlignments.CostModel(match=0, mismatch=1, insertion=1, deletion=1))
 	res = BioAlignments.pairalign(BioAlignments.EditDistance(), tgt, src, costmodel)
 	return Alignment(BioAlignments.alignment(res), BioAlignments.score(res))
 end
