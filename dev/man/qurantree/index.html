@@ -74,31 +74,31 @@ Pkg.add(&quot;QuranTree&quot;)</code></pre></div></div><h2 id="Normalization"><a
  &quot;&lt;ila`hi {ln~aAsi&quot;
  &quot;min \$ar~i {lowasowaAsi {loxan~aAsi&quot;
  &quot;{l~a*iY yuwasowisu fiY Suduwri {ln~aAsi&quot;
- &quot;mina {lojin~api wa{ln~aAsi&quot;</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; ikhlas_nrm = normalize.(ikhlas_vrs)</code><code class="nohighlight hljs ansi" style="display:block;">6-element Vector{String}:
- &quot;qulo &gt;aEuw*u birab~i {ln~aAsi&quot;
- &quot;maliki {ln~aAsi&quot;
- &quot;&lt;ila`hi {ln~aAsi&quot;
- &quot;min \$ar~i {lowasowaAsi {loxan~aAsi&quot;
- &quot;{l~a*iY yuwasowisu fiY Suduwri {ln~aAsi&quot;
- &quot;mina {lojin~api wa{ln~aAsi&quot;</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; arabic.(ikhlas_nrm)</code><code class="nohighlight hljs ansi" style="display:block;">6-element Vector{String}:
- &quot;قُلْ أَعُوذُ بِرَبِّ ٱلنَّاسِ&quot;
- &quot;مَلِكِ ٱلنَّاسِ&quot;
- &quot;إِلَٰهِ ٱلنَّاسِ&quot;
- &quot;مِن شَرِّ ٱلْوَسْوَاسِ ٱلْخَنَّاسِ&quot;
- &quot;ٱلَّذِى يُوَسْوِسُ فِى صُدُورِ ٱلنَّاسِ&quot;
- &quot;مِنَ ٱلْجِنَّةِ وَٱلنَّاسِ&quot;</code></pre><h2 id="Dediacritization"><a class="docs-heading-anchor" href="#Dediacritization">Dediacritization</a><a id="Dediacritization-1"></a><a class="docs-heading-anchor-permalink" href="#Dediacritization" title="Permalink"></a></h2><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; ikhlas_ddc = dediac.(ikhlas_vrs)</code><code class="nohighlight hljs ansi" style="display:block;">6-element Vector{String}:
- &quot;qulo &gt;aEuw*u birab~i {ln~aAsi&quot;
- &quot;maliki {ln~aAsi&quot;
- &quot;&lt;ila`hi {ln~aAsi&quot;
- &quot;min \$ar~i {lowasowaAsi {loxan~aAsi&quot;
- &quot;{l~a*iY yuwasowisu fiY Suduwri {ln~aAsi&quot;
- &quot;mina {lojin~api wa{ln~aAsi&quot;</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; arabic.(ikhlas_ddc)</code><code class="nohighlight hljs ansi" style="display:block;">6-element Vector{String}:
- &quot;قُلْ أَعُوذُ بِرَبِّ ٱلنَّاسِ&quot;
- &quot;مَلِكِ ٱلنَّاسِ&quot;
- &quot;إِلَٰهِ ٱلنَّاسِ&quot;
- &quot;مِن شَرِّ ٱلْوَسْوَاسِ ٱلْخَنَّاسِ&quot;
- &quot;ٱلَّذِى يُوَسْوِسُ فِى صُدُورِ ٱلنَّاسِ&quot;
- &quot;مِنَ ٱلْجِنَّةِ وَٱلنَّاسِ&quot;</code></pre><h2 id="Transliteration"><a class="docs-heading-anchor" href="#Transliteration">Transliteration</a><a id="Transliteration-1"></a><a class="docs-heading-anchor-permalink" href="#Transliteration" title="Permalink"></a></h2><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; ar_ikhlas = verses(tnzldata[114])</code><code class="nohighlight hljs ansi" style="display:block;">6-element Vector{String}:
+ &quot;mina {lojin~api wa{ln~aAsi&quot;</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; ikhlas_nrm = normalize.(ikhlas_vrs; isarabic=false)</code><code class="nohighlight hljs ansi" style="display:block;">6-element Vector{String}:
+ &quot;qulo AaEuw*u birab~i Aln~aAsi&quot;
+ &quot;maliki Aln~aAsi&quot;
+ &quot;AilaAhi Aln~aAsi&quot;
+ &quot;min \$ar~i AlowasowaAsi Aloxan~aAsi&quot;
+ &quot;Al~a*iy yuwasowisu fiy Suduwri Aln~aAsi&quot;
+ &quot;mina Alojin~ahi waAln~aAsi&quot;</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; arabic.(ikhlas_nrm)</code><code class="nohighlight hljs ansi" style="display:block;">6-element Vector{String}:
+ &quot;قُلْ اَعُوذُ بِرَبِّ النَّاسِ&quot;
+ &quot;مَلِكِ النَّاسِ&quot;
+ &quot;اِلَاهِ النَّاسِ&quot;
+ &quot;مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ&quot;
+ &quot;الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ&quot;
+ &quot;مِنَ الْجِنَّهِ وَالنَّاسِ&quot;</code></pre><h2 id="Dediacritization"><a class="docs-heading-anchor" href="#Dediacritization">Dediacritization</a><a id="Dediacritization-1"></a><a class="docs-heading-anchor-permalink" href="#Dediacritization" title="Permalink"></a></h2><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; ikhlas_ddc = dediac.(ikhlas_vrs; isarabic=false)</code><code class="nohighlight hljs ansi" style="display:block;">6-element Vector{String}:
+ &quot;ql &gt;Ew* brb {lnAs&quot;
+ &quot;mlk {lnAs&quot;
+ &quot;&lt;lh {lnAs&quot;
+ &quot;mn \$r {lwswAs {lxnAs&quot;
+ &quot;{l*Y ywsws fY Sdwr {lnAs&quot;
+ &quot;mn {ljnp w{lnAs&quot;</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; arabic.(ikhlas_ddc)</code><code class="nohighlight hljs ansi" style="display:block;">6-element Vector{String}:
+ &quot;قل أعوذ برب ٱلناس&quot;
+ &quot;ملك ٱلناس&quot;
+ &quot;إله ٱلناس&quot;
+ &quot;من شر ٱلوسواس ٱلخناس&quot;
+ &quot;ٱلذى يوسوس فى صدور ٱلناس&quot;
+ &quot;من ٱلجنة وٱلناس&quot;</code></pre><h2 id="Transliteration"><a class="docs-heading-anchor" href="#Transliteration">Transliteration</a><a id="Transliteration-1"></a><a class="docs-heading-anchor-permalink" href="#Transliteration" title="Permalink"></a></h2><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; ar_ikhlas = verses(tnzldata[114])</code><code class="nohighlight hljs ansi" style="display:block;">6-element Vector{String}:
  &quot;بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ قُلْ أَعُوذُ بِرَبِّ ٱلنَّاسِ&quot;
  &quot;مَلِكِ ٱلنَّاسِ&quot;
  &quot;إِلَٰهِ ٱلنَّاسِ&quot;
@@ -110,4 +110,4 @@ Pkg.add(&quot;QuranTree&quot;)</code></pre></div></div><h2 id="Normalization"><a
  &quot;&lt;ila`hi {ln~aAsi&quot;
  &quot;min \$ar~i {lowasowaAsi {loxan~aAsi&quot;
  &quot;{l~a*iY yuwasowisu fiY Suduwri {ln~aAsi&quot;
- &quot;mina {lojin~api wa{ln~aAsi&quot;</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../text_alignment/">« Text Alignment</a><a class="docs-footer-nextpage" href="../api/">API »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.19 on <span class="colophon-date" title="Saturday 2 July 2022 04:29">Saturday 2 July 2022</span>. Using Julia version 1.7.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+ &quot;mina {lojin~api wa{ln~aAsi&quot;</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../text_alignment/">« Text Alignment</a><a class="docs-footer-nextpage" href="../api/">API »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.19 on <span class="colophon-date" title="Saturday 2 July 2022 04:40">Saturday 2 July 2022</span>. Using Julia version 1.7.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
