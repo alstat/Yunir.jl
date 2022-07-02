@@ -96,16 +96,16 @@ arabic(encode(ar_basmala))
 ### Dediacritization and Normalization on Custom Transliteration
 As mentioned above, dediacritization and normalization also works on new custom transliteration. For example, dediacritizing the encoded `ar_basmala` would give us:
 ```@repl abc
-dediac(encode(ar_basmala))
+dediac(encode(ar_basmala); isarabic=false)
 
-dediac(encode(ar_basmala)) |> arabic
+dediac(encode(ar_basmala); isarabic=false) |> arabic
 ```
 And for normalization, 
 
 ```@repl abc
-normalize(encode(ar_basmala))
+normalize(encode(ar_basmala); isarabic=false)
 
-normalize(encode(ar_basmala)) |> arabic
+normalize(encode(ar_basmala); isarabic=false) |> arabic
 ```
 ### Reset Transliteration
 To reset the transliteration back to Buckwalter, simply specify `:default` as the argument for the macro `@transliterator` as follows:
@@ -116,6 +116,6 @@ With this, all functions dependent on transliteration will also get updated.
 ```@repl abc
 encode(ar_basmala)
 encode(ar_basmala) === bw_basmala
-dediac(encode(ar_basmala))
-normalize(encode(ar_basmala))
+dediac(encode(ar_basmala); isarabic=false)
+normalize(encode(ar_basmala); isarabic=false)
 ```

@@ -1150,7 +1150,7 @@ version = "1.4.0+3"
 deps = ["BioAlignments", "CairoMakie", "Colors", "Makie", "QuranTree", "Test"]
 path = "C:\\Users\\Nang Asaad\\Documents\\Gai2\\dev\\Yunir.jl"
 uuid = "6ba116df-6904-454d-b214-90038a8281a6"
-version = "0.2.5"
+version = "0.2.6"
 
 [[Zlib_jll]]
 deps = ["Libdl"]
