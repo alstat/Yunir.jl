@@ -9,7 +9,8 @@ julia> normalize("بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَ�
 "بِسْمِ اللَّهِ الرَّحْمَانِ الرَّحِيمِ"
 ```
 """
-function normalize(s::String, char_mapping::Dict=DEFAULT_NORMALIZER)
+function normalize(s::String, char_mapping::Dict=DEFAULT_NORMALIZER; isarabic::Bool=true)
+    s = isarabic ? s : arabic(s)
     if s == string(Char(0xFDFA)[1])
         return "صلى الله عليه وسلم"
     elseif s == string(Char(0xFDFB)[1])
@@ -21,13 +22,13 @@ function normalize(s::String, char_mapping::Dict=DEFAULT_NORMALIZER)
             s = replace(s, string(k) => string(char_mapping[k]))
         end
     end
-    return s
+    return isarabic ? s : encode(s)
 end
 
-function normalize(astr::Array{String}, char_mapping::Dict=DEFAULT_NORMALIZER)
+function normalize(astr::Array{String}, char_mapping::Dict=DEFAULT_NORMALIZER; isarabic::Bool=true)
     out = String[]
     for s in astr
-        push!(out, normalize(s, char_mapping))
+        push!(out, normalize(s, char_mapping; isarabic=isarabic))
     end
     return out
 end
@@ -45,11 +46,12 @@ julia> ar_basmala = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلر
 julia> normalize(ar_basmala, [:alif_khanjareeya, :hamzat_wasl]) === "بِسْمِ اللَّهِ الرَّحْمَانِ الرَّحِيمِ"
 ```
 """
-function normalize(s::String, chars::Array{Symbol,1})
+function normalize(s::String, chars::Array{Symbol,1}; isarabic::Bool=true)
+    s = isarabic ? s : arabic(s)
     for char in chars
-        s = normalize(s, char)        
+        s = normalize(s, char; isarabic=isarabic)        
     end
-    return s
+    return isarabic ? s : encode(s)
 end
 
 """
@@ -63,10 +65,7 @@ julia> ar_basmala = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلر
 julia> normalize(ar_basmala, :alif_khanjareeya) === "بِسْمِ ٱللَّهِ ٱلرَّحْمَانِ ٱلرَّحِيمِ"
 ```
 """
-function normalize(s::String, char::Symbol)
-    trans = Transliterator()
-    isarabic = in(Symbol(s[1]), collect(keys(trans.encode))) ? true : false
-
+function normalize(s::String, char::Symbol; isarabic::Bool=true)
     s = isarabic ? s : arabic(s)
     if char === :tatweel
         word = replace(s, string(Char(0x0640)[1]) => "")

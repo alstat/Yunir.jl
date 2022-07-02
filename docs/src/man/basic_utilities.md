@@ -12,7 +12,7 @@ dediac(ar_basmala)
 Or using Buckwalter as follows:
 ```@repl abc
 bw_basmala = "bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi";
-dediac(bw_basmala)
+dediac(bw_basmala; isarabic=false)
 ```
 With Julia's broadcasting feature, the above dediacritization can be applied to arrays by simply adding `.` to the name of the function.
 ```@repl abc
@@ -25,7 +25,7 @@ dediac.(sentence0)
 The function to use is `normalize`, which works on Arabic, Buckwalter and custom transliterated characters. For example, using the `ar_basmala` and `bw_basmala` defined above, the normalized version would be
 ```@repl abc
 normalize(ar_basmala)
-normalize(bw_basmala)
+normalize(bw_basmala; isarabic=false)
 ```
 You can also normalize specific characters, for example:
 ```@repl abc

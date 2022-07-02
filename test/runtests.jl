@@ -7,9 +7,9 @@ ar_basmala = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّح�
 
 @info "dediac and arabic"
 bw_basmala = "bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi"
-@test dediac(bw_basmala) === "bsm {llh {lrHmn {lrHym"
-@test arabic(dediac(bw_basmala)) === "بسم ٱلله ٱلرحمن ٱلرحيم"
-@test dediac(arabic(bw_basmala)) === arabic(dediac(bw_basmala))
+@test dediac(bw_basmala; isarabic=false) === "bsm {llh {lrHmn {lrHym"
+@test arabic(dediac(bw_basmala; isarabic=false)) === "بسم ٱلله ٱلرحمن ٱلرحيم"
+@test dediac(arabic(bw_basmala)) === arabic(dediac(bw_basmala; isarabic=false))
 
 @info "normalizing"
 ar_basmala = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ"
