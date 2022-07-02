@@ -17,7 +17,7 @@ shamela0012129_enc = encode(shamela0012129_exp)
 shamela0023790_enc = encode(shamela0023790_exp)
 etgt = shamela0023790_enc
 eref = shamela0012129_enc
-
+using BioAlignments
 costmodel = CostModel(match=0, mismatch=1, insertion=1, deletion=1);
 res = align(eref, etgt; costmodel=costmodel);
 res.score
@@ -25,7 +25,7 @@ using CairoMakie
 f, a, xys = plot(res, :insertions)
 f
 # reference        
-function generate_xys(res::Alignment, text::Symbol=:reference, type::Symbol=:matches, nchars::Int64=60)
+function generate_xys(res::Yunir.Alignment, text::Symbol=:reference, type::Symbol=:matches, nchars::Int64=60)
     xs, ys, zs = Int[], [1], Float32[]
     j = 1; k = 1;
     if text === :reference
@@ -104,11 +104,13 @@ end
 xr, yr, nc = generate_xys(res, :reference, :mismatches)
 xt, yt, nc = generate_xys(res, :target, :mismatches)
 sigmoid(x) = 1/(1+exp(-x))
-p = lines(LinRange(xr[1], xt[1], 15), sigmoid.(LinRange(-4, 4, 15)), color=:red)
+p = lines(LinRange(xr[1], xt[1], 15), sigmoid.(LinRange(-3, 3, 15)), color=:red)
 for i in 2:length(xr)
-    lines!(LinRange(xr[i], xt[i], 15), sigmoid.(LinRange(-4, 4, 15)), color=:red)
+    lines!(LinRange(xr[i], xt[i], 15), sigmoid.(LinRange(-3, 3, 15)), color=:red)
 end
+p
 
+maximum(sigmoid.(LinRange(-3, 3, 15)))
 using Colors
 function Makie.plot(res::Alignment, 
     type::Symbol=:matches,
