@@ -25,12 +25,12 @@ arabic(verses(crpsdata[114])[1])
 ```@repl abc
 ikhlas = crpsdata[114]
 ikhlas_vrs = verses(ikhlas)
-ikhlas_nrm = normalize.(ikhlas_vrs)
+ikhlas_nrm = normalize.(ikhlas_vrs; isarabic=false)
 arabic.(ikhlas_nrm)
 ```
 ## Dediacritization
 ```@repl abc
-ikhlas_ddc = dediac.(ikhlas_vrs)
+ikhlas_ddc = dediac.(ikhlas_vrs; isarabic=false)
 arabic.(ikhlas_ddc)
 ```
 ## Transliteration
