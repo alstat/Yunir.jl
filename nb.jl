@@ -22,7 +22,7 @@ costmodel = CostModel(match=0, mismatch=1, insertion=1, deletion=1);
 res = align(eref, etgt; costmodel=costmodel);
 res.score
 using CairoMakie
-f, a, xys = plot(res, :insertions)
+f, a, xys = plot(res, :deletions)
 f
 # reference        
 function generate_xys(res::Yunir.Alignment, text::Symbol=:reference, type::Symbol=:matches, nchars::Int64=60)
@@ -104,12 +104,12 @@ end
 xr, yr, nc = generate_xys(res, :reference, :mismatches)
 xt, yt, nc = generate_xys(res, :target, :mismatches)
 sigmoid(x) = 1/(1+exp(-x))
-p = lines(LinRange(xr[1], xt[1], 15), sigmoid.(LinRange(-3, 3, 15)), color=:red)
+p = lines(LinRange(xr[1], xt[1], 15), tan.(LinRange(pi/2.3, -pi/2.3, 50)), color=:red)
 for i in 2:length(xr)
-    lines!(LinRange(xr[i], xt[i], 15), sigmoid.(LinRange(-3, 3, 15)), color=:red)
+    lines!(LinRange(xr[i], xt[i], 15), tan.(LinRange(pi/2.3, -pi/2.3, 50)), color=:red)
 end
 p
-
+lines(tan.(LinRange(pi/2.3, -pi/2.3, 50)))
 maximum(sigmoid.(LinRange(-3, 3, 15)))
 using Colors
 function Makie.plot(res::Alignment, 

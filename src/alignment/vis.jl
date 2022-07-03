@@ -114,16 +114,16 @@ function Makie.plot(res::Alignment,
     axt.ylabel = "Target"
     axr.ylabel = "Reference"
     ylims!(axt, low=-2, high=nc+2)
-    ylims!(mid, low=0.05, high=0.95)
+    ylims!(mid, low=-4.5, high=4.5)
     ylims!(axr, low=-2, high=nc+2)
     linkxaxes!(axt, mid, axr)
     linkyaxes!(axt, axr)
     plot!(axr, xr, yr; referencestyles...)
     plot!(axt, xt, yt; targetstyles...)
-    lines!(mid, LinRange(xr[1], xt[1], 15), sigmoid.(LinRange(-3, 3, 15)); midstyles...)
+    lines!(mid, LinRange(xr[1], xt[1], 50), tan.(LinRange(-pi/2.3, pi/2.3, 50)); midstyles...)
     tlen = length(xr) > length(xt) ? length(xt) : length(xr)
     for i in 2:tlen
-        lines!(mid, LinRange(xr[i], xt[i], 15), sigmoid.(LinRange(-3, 3, 15)); midstyles...)
+        lines!(mid, LinRange(xr[i], xt[i], 50), tan.(LinRange(-pi/2.3, pi/2.3, 50)); midstyles...)
     end
     hidedecorations!(mid)
     rowgap!(a, 10)
