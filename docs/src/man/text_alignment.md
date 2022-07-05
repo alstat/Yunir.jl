@@ -282,3 +282,7 @@ count_mismatches(res_c2)
 count_deletions(res_c2)
 count_insertions(res_c2)
 ```
+## Visualizing Aggregated Alignment
+What we've seen so far, in terms of visualization of the alignment, is at the level of pairwise alignment of individual milestone. This maybe useful to some use cases, but for studies where we look at the macro level alignment, that is, at the level of the book itself or full text, we need to aggregate the results.
+
+The following example is taken from [Kitab.jl](https://github.com/alstat/Kitab.jl):

@@ -76,7 +76,43 @@ function generate_xys(res::Alignment, text::Symbol=:reference, type::Symbol=:mat
     return xs, zs .+ nchars, nchars
 end
 
-sigmoid(x) = 1/(1+exp(-x))
+function generate_xys(ares::Matrix{Alignment}, 
+    type::Symbol=:matches)
+    refs_xrs = []
+    refs_yrs = []
+    refs_ncs = []
+
+    tgts_xrs = []
+    tgts_yrs = []
+    tgts_ncs = []
+    tgts = ares[1,:]
+    for res in refs
+        if type === :matches
+            xr, yr, nr = generate_xys(res)
+            xt, yt, nt = generate_xys(res, :target)
+        elseif type === :insertions
+            xr, yr, nr = generate_xys(res, :reference, :insertions)
+            xt, yt, nt = generate_xys(res, :target, :insertions)
+        elseif type === :deletions
+            xr, yr, nr = generate_xys(res, :reference, :deletions)
+            xt, yt, nt = generate_xys(res, :target, :deletions)
+        elseif type === :mismatches
+            xr, yr, nr = generate_xys(res, :reference, :mismatches)
+            xt, yt, nt = generate_xys(res, :target, :mismatches)
+        else
+            throw("type takes :matches, :insertions, :deletions and :mismatches only.")
+        end
+        push!(refs_xrs, xr)
+        push!(refs_yrs, yr)
+        push!(refs_ncs, nr)
+
+        push!(tgts_xrs, xt)
+        push!(tgts_yrs, yt)
+        push!(tgts_ncs, nt)
+    end
+    return (refs_xrs, refs_yrs, refs_ncs), (tgts_xrs, tgts_yrs, tgts_ncs)
+end
+
 function Makie.plot(res::Alignment, 
     type::Symbol=:matches,
     targetstyles::NamedTuple=(
