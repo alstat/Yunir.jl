@@ -284,9 +284,13 @@ eref = encode.(normalize.(dediac.(reference)));
 eref = string.(strip.(replace.(eref, r"\s+" => " ")));
 
 using CairoMakie
-@time res, scr = align(eref, etgt); # 1.23 hours
-ff, aa, xyss = plot(res[1,1], :insertions)
+@time res, scr = align(eref[1:20], etgt[1:30]); # 1.23 hours
+ff, aa, xyss = plot(res, :insertions)
 ff
+
+
+idx = findmin(scr, dims=2)[2][findmin(scr, dims=2)[1] .< 1000]
+f, ax, xys = plot(res, idx)
 res
 scr
 fig, ax, hm = heatmap(1:size(scr, 1), 1:size(scr, 2), scr);
@@ -464,12 +468,19 @@ if maximum(xt) > maximum(xr)
 else
     vlines!(axt, maximum(xt)+maximum(xt)*0.01; color=:orange)
 end
+axt.xgridvisible = false
+axr.xgridvisible = false
+axt.ygridvisible = false
+axr.ygridvisible = false
 plot!(axr, ref_idx, [1,1], color=(:white, 0))
 plot!(axt, tgt_idx, [1,1], color=(:white, 0))
 plot!(axr, xr, vcat(o[1][2]...), color=:blue, markersize=2)
 lines!(mid, xr[1], xt[1], 50), tan.(LinRange(-pi/2.3, pi/2.3, 50))
-j = 0; N = length(unique([(i, j) for (i,j) in zip(xr[3:end], xt)]))
-for i in unique([(i, j) for (i,j) in zip(xr[3:end], xt)])
+# tlen = length(xr) > length(xt) ? length(xt) : length(xr)
+j = 0; 
+con_idx = length(xr) > length(xt) ? unique([(i, j) for (i,j) in zip(xr[3:end], xt)]) : unique([(i, j) for (i,j) in zip(xr, xt)])
+N = length(con_idx)
+for i in con_idx
     if j % 10 == 0
         @info "Processing $(round((j/N)*100, digits=2))%"
     end
@@ -483,18 +494,64 @@ ylims!(axr, low=-2, high=nc+2)
 linkxaxes!(axt, mid, axr)
 linkyaxes!(axt, axr)
 xlen = maximum(xt) > maximum(xr) ? maximum(xt) : maximum(xr)
-xlims!(axt, low=ceil(-xlen*0.01), high=ceil(xlen+xlen*0.01))
-xlims!(axt, low=ceil(-xlen*0.01), high=ceil(xlen+xlen*0.01))
+xlims!(axr, low=ceil(-maximum(xr)*0.01), high=ceil(maximum(xr)+maximum(xr)*0.01))
+xlims!(axt, low=ceil(-maximum(xt)*0.01), high=ceil(maximum(xt)+maximum(xt)*0.01))
 hidedecorations!(mid)
 rowgap!(a, 10)
 f
-scr
-xt
-maximum(xt)
 
 
-
-
+idx = findmin(scr[1:end-1,1:end-1], dims=2)[2][findmin(scr[1:end-1,1:end-1], dims=2)[1] .< 1000]
+findmin(scr[1:end-1,1:end-1], dims=2)[1][findmin(scr[1:end-1,1:end-1], dims=2)[1] .< 1000]
+nc = 60
+type=:matches
+ares = res
+idcs = idx
+f, ax, xys = plot(res, idx)
+f
+function Makie.plot(ares::Matrix{Yunir.Alignment}, idcs::Vector{CartesianIndex{2}},
+    type::Symbol = :matches, nc::Int64 = 60)
+    xys = generate_xys(ares, idcs, type) 
+    f = Figure()
+    a = f[1,1] = GridLayout()
+    xr = vcat(xys[1][1]...)
+    xt = vcat(xys[2][1]...)
+    axt = Axis(a[1:2,1], xaxisposition=:top)
+    mid = Axis(a[3,1], leftspinevisible=false, rightspinevisible=false, topspinevisible=false, bottomspinevisible=false)
+    axr = Axis(a[4:5,1])
+    axt.yticks = (0:20:nc, string.(collect(nc:-20:0)))
+    axr.yticks = (0:20:nc, string.(collect(nc:-20:0)))
+    axt.ylabel = "Target"
+    axr.ylabel = "Reference"
+    if maximum(xt) > maximum(xr)
+        vlines!(axr, maximum(xr)+maximum(xr)*0.01; color=:orange)
+    else
+        vlines!(axt, maximum(xt)+maximum(xt)*0.01; color=:orange)
+    end
+    plot!(axr, xr, vcat(xys[1][2]...), color=:blue, markersize=2)
+    lines!(mid, xr[1], xt[1], 50), tan.(LinRange(-pi/2.3, pi/2.3, 50))
+    con_idx = length(xr) > length(xt) ? unique([(i, j) for (i,j) in zip(xr[3:end], xt)]) : unique([(i, j) for (i,j) in zip(xr, xt)])
+    j = 0; N = length(con_idx)
+    for i in con_idx
+        if j % 10 == 0
+            @info "Processing $(round((j/N)*100, digits=2))%"
+        end
+        lines!(mid, LinRange(i[1], i[2], 50), tan.(LinRange(-pi/2.3, pi/2.3, 50)), color=(:red, 0.1), linewidth=0.1)
+        j += 1
+    end
+    plot!(axt, xt, vcat(xys[2][2]...), color=:blue, markersize=1)
+    ylims!(axt, low=-2, high=nc+2)
+    ylims!(mid, low=-4.5, high=4.5)
+    ylims!(axr, low=-2, high=nc+2)
+    linkxaxes!(axt, mid, axr)
+    linkyaxes!(axt, axr)
+    xlen = maximum(xt) > maximum(xr) ? maximum(xt) : maximum(xr)
+    xlims!(axr, low=ceil(-xlen*0.01), high=ceil(xlen+xlen*0.01))
+    xlims!(axt, low=ceil(-xlen*0.01), high=ceil(xlen+xlen*0.01))
+    hidedecorations!(mid)
+    rowgap!(a, 10)
+    return f, (axt, mid, axr), ((xt, yt), (xr, yr))
+end
 function Makie.plot(res::Alignment, 
     type::Symbol=:matches,
     targetstyles::NamedTuple=(
