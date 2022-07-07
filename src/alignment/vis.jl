@@ -120,8 +120,8 @@ function generate_xys(ares::Matrix{Yunir.Alignment}, scr_indcs::Vector{Cartesian
     return (refs_xrs, refs_yrs, refs_ncs), (tgts_xrs, tgts_yrs, tgts_ncs)
 end
 
-function Makie.plot(res::Alignment, 
-    type::Symbol=:matches,
+function Makie.plot(res::Alignment,
+    type::Symbol=:matches;
     targetstyles::NamedTuple=(
         color=colorant"#3AB0FF",
     ),
@@ -174,7 +174,17 @@ function Makie.plot(res::Alignment,
 end
 
 function Makie.plot(ares::Matrix{Yunir.Alignment}, idcs::Vector{CartesianIndex{2}},
-    type::Symbol = :matches, nc::Int64 = 60)
+    type::Symbol=:matches, nc::Int64=60; 
+    targetstyles::NamedTuple=(
+        color=:blue, markersize=1
+    ),
+    referencestyles::NamedTuple=(
+        color=:blue, markersize=2
+    ),
+    midstyles::NamedTuple=(
+        color=:red, linewidth=0.5
+    ),
+    endlinestyle::NamedTuple=(color=:orange, linewidth=2))
     xys = generate_xys(ares, idcs, type) 
     f = Figure()
     a = f[1,1] = GridLayout()
@@ -188,24 +198,24 @@ function Makie.plot(ares::Matrix{Yunir.Alignment}, idcs::Vector{CartesianIndex{2
     axt.ylabel = "Target"
     axr.ylabel = "Reference"
     if maximum(xt) > maximum(xr)
-        vlines!(axr, maximum(xr)+maximum(xr)*0.01; color=:orange, linewidth=2)
+        vlines!(axr, maximum(xr)+maximum(xr)*0.01; endlinestyle...)
     else
-        vlines!(axt, maximum(xt)+maximum(xt)*0.01; color=:orange, linewidth=2)
+        vlines!(axt, maximum(xt)+maximum(xt)*0.01; endlinestyle...)
     end
     yr = vcat(xys[1][2]...)
-    plot!(axr, xr, yr, color=:blue, markersize=2)
-    lines!(mid, xr[1], xt[1], 50), tan.(LinRange(-pi/2.3, pi/2.3, 50))
+    plot!(axr, xr, yr; referencestyles...)
+    # lines!(mid, xr[1], xt[1], 50), tan.(LinRange(-pi/2.3, pi/2.3, 50))
     con_idx = length(xr) > length(xt) ? unique([(i, j) for (i,j) in zip(xr[3:end], xt)]) : unique([(i, j) for (i,j) in zip(xr, xt)])
     j = 0; N = length(con_idx)
     for i in con_idx
         if j % 10 == 0
             @info "Processing $(round((j/N)*100, digits=2))%"
         end
-        lines!(mid, LinRange(i[1], i[2], 50), tan.(LinRange(-pi/2.3, pi/2.3, 50)), color=(:red, 0.1), linewidth=0.1)
+        lines!(mid, LinRange(i[1], i[2], 50), tan.(LinRange(-pi/2.3, pi/2.3, 50)); midstyles...)
         j += 1
     end
     yt = vcat(xys[2][2]...)
-    plot!(axt, xt, yt, color=:blue, markersize=1)
+    plot!(axt, xt, yt; targetstyles...)
     ylims!(axt, low=-2, high=nc+2)
     ylims!(mid, low=-4.5, high=4.5)
     ylims!(axr, low=-2, high=nc+2)

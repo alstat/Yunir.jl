@@ -256,6 +256,7 @@ count_aligned(res)
 score(res)
 
 using Kitab
+using Yunir
 macarif_url = "https://raw.githubusercontent.com/OpenITI/RELEASE/f70348b43c92e97582e63b6c4b4a8596e6d4ac84/data/0276IbnQutaybaDinawari/0276IbnQutaybaDinawari.Macarif/0276IbnQutaybaDinawari.Macarif.Shamela0012129-ara1.mARkdown";
 cuyunakhbar_url = "https://raw.githubusercontent.com/OpenITI/RELEASE/f70348b43c92e97582e63b6c4b4a8596e6d4ac84/data/0276IbnQutaybaDinawari/0276IbnQutaybaDinawari.CuyunAkhbar/0276IbnQutaybaDinawari.CuyunAkhbar.Shamela0023790-ara1.completed";
 Kitab.get(OpenITIDB, [macarif_url, cuyunakhbar_url])
@@ -285,7 +286,7 @@ eref = string.(strip.(replace.(eref, r"\s+" => " ")));
 
 using CairoMakie
 @time res, scr = align(eref[1:20], etgt[1:30]); # 1.23 hours
-ff, aa, xyss = plot(res, :insertions)
+ff, aa, xyss = plot(res[1,1], :insertions)
 ff
 
 
@@ -443,12 +444,13 @@ function generate_xys(res::Yunir.Alignment, text::Symbol=:reference, type::Symbo
     end
     return xs, zs .+ nchars, nchars
 end
-
+scr
 # plotting aggregated vis
-idx = findmin(scr[1:end-1,1:end-1], dims=2)[2][findmin(scr[1:end-1,1:end-1], dims=2)[1] .< 1000]
+idx = findmin(scr, dims=2)[2][findmin(scr, dims=2)[1] .< 1150]
 findmin(scr[1:end-1,1:end-1], dims=2)[1][findmin(scr[1:end-1,1:end-1], dims=2)[1] .< 1000]
-o = generate_xys(res, idx, :insertions)
-
+# o = Yunir.generate_xys(res, idx, :insertions)
+ff, a, xx = plot(res, idx; midstyles=(color=(:red, 0.7), linewidth=0.1))
+ff
 nc = 60
 ref_idx = [1,Int64(ceil(sum([length(i) for i in eref])/nchar))]
 tgt_idx = [1,Int64(ceil(sum([length(i) for i in etgt])/nchar))]
