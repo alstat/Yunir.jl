@@ -283,9 +283,9 @@ count_deletions(res_c2)
 count_insertions(res_c2)
 ```
 ## Visualizing Aggregated Alignment
-What we've seen so far, in terms of visualization of the alignment, is at the level of pairwise alignment of individual milestone. This maybe useful to some use cases, but for studies where we look at the macro level alignment, that is, at the level of the book itself or full text, we need to aggregate the results.
+What we've seen so far is at the level of pairwise alignment of individual milestone. This maybe useful for some use cases, but for studies where we look at the macro level alignment, that is, at the level of the book itself or full text, it would require an aggregated visualization of the results.
 
-The following example is a simple example, but we recommend you to checkout [Kitab.jl](https://github.com/alstat/Kitab.jl) for a comprehensive example.
+The following is a simple demo, but we recommend you to checkout [Kitab.jl](https://github.com/alstat/Kitab.jl) for a comprehensive example.
 
 In this example, we are going to use portion of two books, the المعارف and عيون الأخبار both by Ibn Qutayba Dinawari. To download this, we run the following using the Kitab.jl library.
 ```@setup hij
@@ -303,12 +303,12 @@ list(OpenITIDB)
 cuyunakhbar = load(OpenITIDB, 1)
 macarif = load(OpenITIDB, 2)
 ```
-We then split this data into milestone, which is indicated by a prefix `ms` in the text (note that OpenITI annotates the book by adding milestone indicator for partitioning the book). 
-```
+We then split this data into milestone, which is indicated by a prefix `ms` in the text (OpenITI annotates the book by adding milestone indicator for partitioning the book). 
+```@repl hij
 target = clean.(split(join(cuyunakhbar, " "), "ms"))
 reference = clean.(split(join(macarif, " "), "ms"))
 ```
-We replace empty lines with spaces, users can also delete this line.
+We then replace empty lines with spaces, users can also delete these lines.
 ```@repl hij
 target = map(x -> x != "" ? x : "   ", target)
 reference = map(x -> x != "" ? x : "   ", reference)
@@ -345,7 +345,7 @@ using CairoMakie
 f1, a1, xy1 = plot(res[1,1], :insertions)
 f1
 ```
-Finally, to plot all the milestones in one figure, we first filter the scores to those with lower score or distance, to find those milestones more similar with
+Finally, to plot all the milestones in one figure, we first filter the scores to those with lower scores or distances, so that we'll have milestones that are indeed similar.
 ```@repl hij
 idx = findmin(scr, dims=2)[2][findmin(scr, dims=2)[1] .< 1150]
 f2, a2, xy2 = plot(res, idx; midstyles=(color=(:red, 0.7), linewidth=0.1))
