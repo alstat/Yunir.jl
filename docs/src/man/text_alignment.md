@@ -351,4 +351,4 @@ idx = findmin(scr, dims=2)[2][findmin(scr, dims=2)[1] .< 1150]
 f2, a2, xy2 = plot(res, idx; midstyles=(color=(:red, 0.7), linewidth=0.1))
 f2
 ```
-The `idx` contains the indices of the pairwise alignment with score lower than 1150.
+The `idx` contains the indices of the pairwise alignment with score lower than 1150. The orange line in the reference plot indicates the end of line of the reference text.
