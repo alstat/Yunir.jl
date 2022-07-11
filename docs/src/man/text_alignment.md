@@ -334,19 +334,19 @@ Finally, we can run the alignment for the first 20 milestones of macarif, and fi
 res, scr = align(eref[1:20], etgt[1:30]);
 ```
 We can then plot the heatmap of the scores:
-```@repl hij
+```@example hij
+using CairoMakie
 fig, ax, hm = heatmap(1:size(scr, 1), 1:size(scr, 2), scr);
 Colorbar(fig[:, end+1], hm)
 fig
 ```
 The x-axis contains the index of the reference milestones, and the y-axis contains the target milestone indices. We can plot the alignment of first milestone of reference against first milestone of target
-```@repl hij
-using CairoMakie
+```@example hij
 f1, a1, xy1 = plot(res[1,1], :insertions)
 f1
 ```
 Finally, to plot all the milestones in one figure, we first filter the scores to those with lower scores or distances, so that we'll have milestones that are indeed similar.
-```@repl hij
+```@example hij
 idx = findmin(scr, dims=2)[2][findmin(scr, dims=2)[1] .< 1150]
 f2, a2, xy2 = plot(res, idx; midstyles=(color=(:red, 0.7), linewidth=0.1))
 f2
