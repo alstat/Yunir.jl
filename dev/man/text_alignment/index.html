@@ -3774,13 +3774,13 @@ res_c2</code></pre><pre class="documenter-example-output"><code class="nohighlig
          ااااا   ا    
 ١    ــصلي ﷲ عـليه وسل
 
-</code></pre><p>You can copy and paste the result to any text editor with Arabic monospace, like in <a href="https://notepad-plus-plus.org/">Notepad++</a> screenshot above to see the alignment properly.</p><p>You will notice that, in <code>res_c1</code> above we have 3 mismatches, but in <code>res_c2</code> the algorithm avoided assigning mismatches and instead prioritized deletions and insertions. This can be confirmed below:</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; count_mismatches(res_c1)</code><code class="nohighlight hljs ansi" style="display:block;">3</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; count_deletions(res_c1)</code><code class="nohighlight hljs ansi" style="display:block;">6</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; count_insertions(res_c1)</code><code class="nohighlight hljs ansi" style="display:block;">0</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; count_mismatches(res_c2)</code><code class="nohighlight hljs ansi" style="display:block;">0</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; count_deletions(res_c2)</code><code class="nohighlight hljs ansi" style="display:block;">9</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; count_insertions(res_c2)</code><code class="nohighlight hljs ansi" style="display:block;">3</code></pre><h2 id="Visualizing-Aggregated-Alignment"><a class="docs-heading-anchor" href="#Visualizing-Aggregated-Alignment">Visualizing Aggregated Alignment</a><a id="Visualizing-Aggregated-Alignment-1"></a><a class="docs-heading-anchor-permalink" href="#Visualizing-Aggregated-Alignment" title="Permalink"></a></h2><p>What we&#39;ve seen so far, in terms of visualization of the alignment, is at the level of pairwise alignment of individual milestone. This maybe useful to some use cases, but for studies where we look at the macro level alignment, that is, at the level of the book itself or full text, we need to aggregate the results.</p><p>The following example is a simple example, but we recommend you to checkout <a href="https://github.com/alstat/Kitab.jl">Kitab.jl</a> for a comprehensive example.</p><p>In this example, we are going to use portion of two books, the المعارف and عيون الأخبار both by Ibn Qutayba Dinawari. To download this, we run the following using the Kitab.jl library.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; using Kitab</code><code class="nohighlight hljs ansi" style="display:block;"></code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; using Yunir</code><code class="nohighlight hljs ansi" style="display:block;"></code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; macarif_url = &quot;https://raw.githubusercontent.com/OpenITI/RELEASE/f70348b43c92e97582e63b6c4b4a8596e6d4ac84/data/0276IbnQutaybaDinawari/0276IbnQutaybaDinawari.Macarif/0276IbnQutaybaDinawari.Macarif.Shamela0012129-ara1.mARkdown&quot;;</code><code class="nohighlight hljs ansi" style="display:block;"></code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; cuyunakhbar_url = &quot;https://raw.githubusercontent.com/OpenITI/RELEASE/f70348b43c92e97582e63b6c4b4a8596e6d4ac84/data/0276IbnQutaybaDinawari/0276IbnQutaybaDinawari.CuyunAkhbar/0276IbnQutaybaDinawari.CuyunAkhbar.Shamela0023790-ara1.completed&quot;;</code><code class="nohighlight hljs ansi" style="display:block;"></code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; Kitab.get(OpenITIDB, [macarif_url, cuyunakhbar_url])</code><code class="nohighlight hljs ansi" style="display:block;">┌ Info: Downloading
+</code></pre><p>You can copy and paste the result to any text editor with Arabic monospace, like in <a href="https://notepad-plus-plus.org/">Notepad++</a> screenshot above to see the alignment properly.</p><p>You will notice that, in <code>res_c1</code> above we have 3 mismatches, but in <code>res_c2</code> the algorithm avoided assigning mismatches and instead prioritized deletions and insertions. This can be confirmed below:</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; count_mismatches(res_c1)</code><code class="nohighlight hljs ansi" style="display:block;">3</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; count_deletions(res_c1)</code><code class="nohighlight hljs ansi" style="display:block;">6</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; count_insertions(res_c1)</code><code class="nohighlight hljs ansi" style="display:block;">0</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; count_mismatches(res_c2)</code><code class="nohighlight hljs ansi" style="display:block;">0</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; count_deletions(res_c2)</code><code class="nohighlight hljs ansi" style="display:block;">9</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; count_insertions(res_c2)</code><code class="nohighlight hljs ansi" style="display:block;">3</code></pre><h2 id="Visualizing-Aggregated-Alignment"><a class="docs-heading-anchor" href="#Visualizing-Aggregated-Alignment">Visualizing Aggregated Alignment</a><a id="Visualizing-Aggregated-Alignment-1"></a><a class="docs-heading-anchor-permalink" href="#Visualizing-Aggregated-Alignment" title="Permalink"></a></h2><p>What we&#39;ve seen so far is at the level of pairwise alignment of individual milestone. This maybe useful for some use cases, but for studies where we look at the macro level alignment, that is, at the level of the book itself or full text, it would require an aggregated visualization of the results.</p><p>The following is a simple demo, but we recommend you to checkout <a href="https://github.com/alstat/Kitab.jl">Kitab.jl</a> for a comprehensive example.</p><p>In this example, we are going to use portion of two books, the المعارف and عيون الأخبار both by Ibn Qutayba Dinawari. To download this, we run the following using the Kitab.jl library.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; using Kitab</code><code class="nohighlight hljs ansi" style="display:block;"></code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; using Yunir</code><code class="nohighlight hljs ansi" style="display:block;"></code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; macarif_url = &quot;https://raw.githubusercontent.com/OpenITI/RELEASE/f70348b43c92e97582e63b6c4b4a8596e6d4ac84/data/0276IbnQutaybaDinawari/0276IbnQutaybaDinawari.Macarif/0276IbnQutaybaDinawari.Macarif.Shamela0012129-ara1.mARkdown&quot;;</code><code class="nohighlight hljs ansi" style="display:block;"></code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; cuyunakhbar_url = &quot;https://raw.githubusercontent.com/OpenITI/RELEASE/f70348b43c92e97582e63b6c4b4a8596e6d4ac84/data/0276IbnQutaybaDinawari/0276IbnQutaybaDinawari.CuyunAkhbar/0276IbnQutaybaDinawari.CuyunAkhbar.Shamela0023790-ara1.completed&quot;;</code><code class="nohighlight hljs ansi" style="display:block;"></code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; Kitab.get(OpenITIDB, [macarif_url, cuyunakhbar_url])</code><code class="nohighlight hljs ansi" style="display:block;">┌ Info: Downloading
 │   source = &quot;https://raw.githubusercontent.com/OpenITI/RELEASE/f70348b43c92e97582e63b6c4b4a8596e6d4ac84/data/0276IbnQutaybaDinawari/0276IbnQutaybaDinawari.Macarif/0276IbnQutaybaDinawari.Macarif.Shamela0012129-ara1.mARkdown&quot;
 │   dest = &quot;/home/runner/.julia/packages/Kitab/xakoh/src/../db/RELEASE/data/0276IbnQutaybaDinawari/0276IbnQutaybaDinawari.Macarif/0276IbnQutaybaDinawari.Macarif.Shamela0012129-ara1.mARkdown.txt&quot;
 │   progress = 1.0
-│   time_taken = &quot;0.12 s&quot;
+│   time_taken = &quot;0.13 s&quot;
 │   time_remaining = &quot;0.0 s&quot;
-│   average_speed = &quot;9.424 MiB/s&quot;
+│   average_speed = &quot;8.510 MiB/s&quot;
 │   downloaded = &quot;1.140 MiB&quot;
 │   remaining = &quot;0 bytes&quot;
 └   total = &quot;1.140 MiB&quot;
@@ -3788,9 +3788,9 @@ res_c2</code></pre><pre class="documenter-example-output"><code class="nohighlig
 │   source = &quot;https://raw.githubusercontent.com/OpenITI/RELEASE/f70348b43c92e97582e63b6c4b4a8596e6d4ac84/data/0276IbnQutaybaDinawari/0276IbnQutaybaDinawari.CuyunAkhbar/0276IbnQutaybaDinawari.CuyunAkhbar.Shamela0023790-ara1.completed&quot;
 │   dest = &quot;/home/runner/.julia/packages/Kitab/xakoh/src/../db/RELEASE/data/0276IbnQutaybaDinawari/0276IbnQutaybaDinawari.CuyunAkhbar/0276IbnQutaybaDinawari.CuyunAkhbar.Shamela0023790-ara1.completed.txt&quot;
 │   progress = 1.0
-│   time_taken = &quot;0.11 s&quot;
+│   time_taken = &quot;0.09 s&quot;
 │   time_remaining = &quot;0.0 s&quot;
-│   average_speed = &quot;19.533 MiB/s&quot;
+│   average_speed = &quot;22.894 MiB/s&quot;
 │   downloaded = &quot;2.129 MiB&quot;
 │   remaining = &quot;0 bytes&quot;
 └   total = &quot;2.129 MiB&quot;</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; list(OpenITIDB)</code><code class="nohighlight hljs ansi" style="display:block;">2×4 DataFrame
@@ -3839,10 +3839,224 @@ res_c2</code></pre><pre class="documenter-example-output"><code class="nohighlig
  &quot;~~«بالمدائن» أخا ل «رستم» وسرح «رستم» لقتال «سعد» فنزل «القادسية» وأقام&quot;
  &quot;~~بها حتى قتل. وبلغ ذلك «يزدجرد» وعلم أن مدتهم قد تصرمت فسار إلى «فارس» ثم&quot;
  &quot;~~هرب إلى «مرو» في طريق «سجستان» فقتل هناك.&quot;
- &quot;# وكان جميع ملكه عشرين سنة. PageV01P667 ms393&quot;</code></pre><p>We then split this data into milestone, which is indicated by a prefix <code>ms</code> in the text (note that OpenITI annotates the book by adding milestone indicator for partitioning the book). </p><pre><code class="nohighlight hljs">target = clean.(split(join(cuyunakhbar, &quot; &quot;), &quot;ms&quot;))
-reference = clean.(split(join(macarif, &quot; &quot;), &quot;ms&quot;))</code></pre><p>We replace empty lines with spaces, users can also delete this line.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; target = map(x -&gt; x != &quot;&quot; ? x : &quot;   &quot;, target)</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: target not defined</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; reference = map(x -&gt; x != &quot;&quot; ? x : &quot;   &quot;, reference)</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: reference not defined</code></pre><p>Like other examples above, we encode the following words to their unicode character.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; mapping = Dict(
+ &quot;# وكان جميع ملكه عشرين سنة. PageV01P667 ms393&quot;</code></pre><p>We then split this data into milestone, which is indicated by a prefix <code>ms</code> in the text (OpenITI annotates the book by adding milestone indicator for partitioning the book). </p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; target = clean.(split(join(cuyunakhbar, &quot; &quot;), &quot;ms&quot;))</code><code class="nohighlight hljs ansi" style="display:block;">755-element Vector{String}:
+ &quot;    \t   \t   \t   \t أبو محمد عبد&quot; ⋯ 3313 bytes ⋯ &quot;، وكتب الهند ولكن دون أن يذكر &quot;
+ &quot; اسما لكتاب هندي اعتمد عليه  ي&quot; ⋯ 3129 bytes ⋯ &quot;والنصارى ثم يليه كتاب الإخوان &quot;
+ &quot;، ويحث فيه على حسن اختيار الإخ&quot; ⋯ 2982 bytes ⋯ &quot;التاريخ لابن الأثير وغيرها من &quot;
+ &quot; المصادر والمراجع ونظرت فيه   &quot; ⋯ 2989 bytes ⋯ &quot;والنهر يقال له بالعجمية الروذ &quot;
+ &quot; بضم الراء وسكون الواو، والنسب&quot; ⋯ 2850 bytes ⋯ &quot;ني عبد الله بن قتيبة رجل صدوق &quot;
+ &quot;، وقال الحاكم أجمعت الأمة على &quot; ⋯ 2751 bytes ⋯ &quot;اجتمع بالمازني في دار عيسى بن &quot;
+ &quot; جعفر الهاشمي تشاغل وبادر بالخ&quot; ⋯ 2832 bytes ⋯ &quot; اللغوي وقال أخذ ابن قتيبة عن &quot;
+ &quot; الرياشي وغيره   وقد ترجم له ا&quot; ⋯ 2759 bytes ⋯ &quot;لمحدثين وأعيانهم ودرستويه بضم &quot;
+ &quot; الدال والراء وسكون السين وضم &quot; ⋯ 2804 bytes ⋯ &quot;ليد بن عبد الملك بن مروان وقد &quot;
+ &quot; ترجم له الحميدي فقال إنه إمام&quot; ⋯ 2886 bytes ⋯ &quot;ب الإبل ويضم  بابا كتاب الحرب &quot;
+ ⋮
+ &quot; ولم يكن الشعر من شأنه، فقال ه&quot; ⋯ 2676 bytes ⋯ &quot;س؟ فخرجنا تمشيان، ونظر إليهما &quot;
+ &quot; وهو على المرقب، فظن أنهما ممن&quot; ⋯ 2630 bytes ⋯ &quot;نية إلى قابوس من سن سنة فليرض &quot;
+ &quot; بأن يحكم عليه بها ومن سأل مسأ&quot; ⋯ 2660 bytes ⋯ &quot;اء الغليل، وتنفس الهموم ارتاد &quot;
+ &quot; امرؤ قبل حلوله، وتثبت قبل إقد&quot; ⋯ 2629 bytes ⋯ &quot;ل العباس بن الأحنف بسيط  أشكو &quot;
+ &quot; الذي أذاقوني مودتهم  حتى إذا &quot; ⋯ 2651 bytes ⋯ &quot; يا أحسن الناس من قرن إلى قدم &quot;
+ &quot;  لم ألق مثلك في حل ولا حرم   &quot; ⋯ 2699 bytes ⋯ &quot;ا   رقود الضحى لا تقرب الجيرة &quot;
+ &quot; القصى  ولا الجيرة الأدنين إلا&quot; ⋯ 2717 bytes ⋯ &quot;ال واحد منهم كنت أقول يا أمير &quot;
+ &quot; المؤمنين  أهيم بدعد ما حييت وإ&quot; ⋯ 367 bytes ⋯ &quot;شعر الثلاثة يا أمير المؤمنين  &quot;
+ &quot;&quot;</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; reference = clean.(split(join(macarif, &quot; &quot;), &quot;ms&quot;))</code><code class="nohighlight hljs ansi" style="display:block;">394-element Vector{String}:
+ &quot;    \t   \t   \t   \t أبو محمد عبد&quot; ⋯ 3148 bytes ⋯ &quot;جلا ويضع أخرى من شدة أذى الحر &quot;
+ &quot;  ومن بعد مصرع المعتز كان مصرع&quot; ⋯ 2812 bytes ⋯ &quot;الجامع حين فشت الكتب المترجمة &quot;
+ &quot; تحمل مناهج جديدة، وعبر عنها ف&quot; ⋯ 2602 bytes ⋯ &quot;لد والثانية في القاهرة سنة  م &quot;
+ &quot;   وكانت هاتان الطبعتان ينقصهم&quot; ⋯ 3080 bytes ⋯ &quot;ا الشق الذي التزمه المستشرقون &quot;
+ &quot; وأضفنا إليه تلك الزيادات الشا&quot; ⋯ 2661 bytes ⋯ &quot;، وكانت وفاة ابن قتيبة سنة  ه &quot;
+ &quot;  أجل لقد ضمنت مقدمتي تفصيلا ا&quot; ⋯ 2713 bytes ⋯ &quot;دها ابن حبيب عنه من تسمية ذاك &quot;
+ &quot; الكتاب باسم المنمق ، وما ندري&quot; ⋯ 2792 bytes ⋯ &quot;لكتابين؟ وهل هذه المقابلات هي &quot;
+ &quot; كل ما بين الكتابين من مخالفات&quot; ⋯ 2666 bytes ⋯ &quot;  أزواد الركب من قريش  وكانوا &quot;
+ &quot; إذا سافروا لم يختبز معهم أحد &quot; ⋯ 2617 bytes ⋯ &quot;م ، فقال السهمي   وأما ما بعد &quot;
+ &quot; هذا فقد ساق المنمق زيادة طويل&quot; ⋯ 2607 bytes ⋯ &quot;سهم من نبله بإزاره فخدشه خدشا &quot;
+ ⋮
+ &quot; مدائن، ثم انصرف إلى مملكته، و&quot; ⋯ 2701 bytes ⋯ &quot;يتلومون، حتى ولدت غلاما، فسمى &quot;
+ &quot;  سابور وهو الملقب ب ذي الأكتا&quot; ⋯ 2888 bytes ⋯ &quot;عرف الفراسة، نظر التمثال الذي &quot;
+ &quot; فيه، وقد كان قبل ذلك نظر إلى &quot; ⋯ 2892 bytes ⋯ &quot;السوس ، فصاروا أطباء أهل فارس &quot;
+ &quot; لذلك، ولما ورثوا عمن سكنها من&quot; ⋯ 2759 bytes ⋯ &quot; وسأله عن خبره، فأعلمه أنه من &quot;
+ &quot; أهل فارس ، لجأ إليه لأمر أحدث&quot; ⋯ 2895 bytes ⋯ &quot;، وأسر من أولاده وقرابته وهلك &quot;
+ &quot; فيروز فيمن هلك  وكان على سجست&quot; ⋯ 2850 bytes ⋯ &quot;ين سنة  كسرى أنوشروان بن قباذ &quot;
+ &quot;  ثم ملك بعده كسرى أنوشروان ، &quot; ⋯ 2940 bytes ⋯ &quot;، وخفف المئونة على الناس ورفع &quot;
+ &quot; الخراج، وظهر الطاعون، فهلك في&quot; ⋯ 2275 bytes ⋯ &quot;اك  وكان جميع ملكه عشرين سنة  &quot;
+ &quot;&quot;</code></pre><p>We then replace empty lines with spaces, users can also delete these lines.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; target = map(x -&gt; x != &quot;&quot; ? x : &quot;   &quot;, target)</code><code class="nohighlight hljs ansi" style="display:block;">755-element Vector{String}:
+ &quot;    \t   \t   \t   \t أبو محمد عبد&quot; ⋯ 3313 bytes ⋯ &quot;، وكتب الهند ولكن دون أن يذكر &quot;
+ &quot; اسما لكتاب هندي اعتمد عليه  ي&quot; ⋯ 3129 bytes ⋯ &quot;والنصارى ثم يليه كتاب الإخوان &quot;
+ &quot;، ويحث فيه على حسن اختيار الإخ&quot; ⋯ 2982 bytes ⋯ &quot;التاريخ لابن الأثير وغيرها من &quot;
+ &quot; المصادر والمراجع ونظرت فيه   &quot; ⋯ 2989 bytes ⋯ &quot;والنهر يقال له بالعجمية الروذ &quot;
+ &quot; بضم الراء وسكون الواو، والنسب&quot; ⋯ 2850 bytes ⋯ &quot;ني عبد الله بن قتيبة رجل صدوق &quot;
+ &quot;، وقال الحاكم أجمعت الأمة على &quot; ⋯ 2751 bytes ⋯ &quot;اجتمع بالمازني في دار عيسى بن &quot;
+ &quot; جعفر الهاشمي تشاغل وبادر بالخ&quot; ⋯ 2832 bytes ⋯ &quot; اللغوي وقال أخذ ابن قتيبة عن &quot;
+ &quot; الرياشي وغيره   وقد ترجم له ا&quot; ⋯ 2759 bytes ⋯ &quot;لمحدثين وأعيانهم ودرستويه بضم &quot;
+ &quot; الدال والراء وسكون السين وضم &quot; ⋯ 2804 bytes ⋯ &quot;ليد بن عبد الملك بن مروان وقد &quot;
+ &quot; ترجم له الحميدي فقال إنه إمام&quot; ⋯ 2886 bytes ⋯ &quot;ب الإبل ويضم  بابا كتاب الحرب &quot;
+ ⋮
+ &quot; ولم يكن الشعر من شأنه، فقال ه&quot; ⋯ 2676 bytes ⋯ &quot;س؟ فخرجنا تمشيان، ونظر إليهما &quot;
+ &quot; وهو على المرقب، فظن أنهما ممن&quot; ⋯ 2630 bytes ⋯ &quot;نية إلى قابوس من سن سنة فليرض &quot;
+ &quot; بأن يحكم عليه بها ومن سأل مسأ&quot; ⋯ 2660 bytes ⋯ &quot;اء الغليل، وتنفس الهموم ارتاد &quot;
+ &quot; امرؤ قبل حلوله، وتثبت قبل إقد&quot; ⋯ 2629 bytes ⋯ &quot;ل العباس بن الأحنف بسيط  أشكو &quot;
+ &quot; الذي أذاقوني مودتهم  حتى إذا &quot; ⋯ 2651 bytes ⋯ &quot; يا أحسن الناس من قرن إلى قدم &quot;
+ &quot;  لم ألق مثلك في حل ولا حرم   &quot; ⋯ 2699 bytes ⋯ &quot;ا   رقود الضحى لا تقرب الجيرة &quot;
+ &quot; القصى  ولا الجيرة الأدنين إلا&quot; ⋯ 2717 bytes ⋯ &quot;ال واحد منهم كنت أقول يا أمير &quot;
+ &quot; المؤمنين  أهيم بدعد ما حييت وإ&quot; ⋯ 367 bytes ⋯ &quot;شعر الثلاثة يا أمير المؤمنين  &quot;
+ &quot;   &quot;</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; reference = map(x -&gt; x != &quot;&quot; ? x : &quot;   &quot;, reference)</code><code class="nohighlight hljs ansi" style="display:block;">394-element Vector{String}:
+ &quot;    \t   \t   \t   \t أبو محمد عبد&quot; ⋯ 3148 bytes ⋯ &quot;جلا ويضع أخرى من شدة أذى الحر &quot;
+ &quot;  ومن بعد مصرع المعتز كان مصرع&quot; ⋯ 2812 bytes ⋯ &quot;الجامع حين فشت الكتب المترجمة &quot;
+ &quot; تحمل مناهج جديدة، وعبر عنها ف&quot; ⋯ 2602 bytes ⋯ &quot;لد والثانية في القاهرة سنة  م &quot;
+ &quot;   وكانت هاتان الطبعتان ينقصهم&quot; ⋯ 3080 bytes ⋯ &quot;ا الشق الذي التزمه المستشرقون &quot;
+ &quot; وأضفنا إليه تلك الزيادات الشا&quot; ⋯ 2661 bytes ⋯ &quot;، وكانت وفاة ابن قتيبة سنة  ه &quot;
+ &quot;  أجل لقد ضمنت مقدمتي تفصيلا ا&quot; ⋯ 2713 bytes ⋯ &quot;دها ابن حبيب عنه من تسمية ذاك &quot;
+ &quot; الكتاب باسم المنمق ، وما ندري&quot; ⋯ 2792 bytes ⋯ &quot;لكتابين؟ وهل هذه المقابلات هي &quot;
+ &quot; كل ما بين الكتابين من مخالفات&quot; ⋯ 2666 bytes ⋯ &quot;  أزواد الركب من قريش  وكانوا &quot;
+ &quot; إذا سافروا لم يختبز معهم أحد &quot; ⋯ 2617 bytes ⋯ &quot;م ، فقال السهمي   وأما ما بعد &quot;
+ &quot; هذا فقد ساق المنمق زيادة طويل&quot; ⋯ 2607 bytes ⋯ &quot;سهم من نبله بإزاره فخدشه خدشا &quot;
+ ⋮
+ &quot; مدائن، ثم انصرف إلى مملكته، و&quot; ⋯ 2701 bytes ⋯ &quot;يتلومون، حتى ولدت غلاما، فسمى &quot;
+ &quot;  سابور وهو الملقب ب ذي الأكتا&quot; ⋯ 2888 bytes ⋯ &quot;عرف الفراسة، نظر التمثال الذي &quot;
+ &quot; فيه، وقد كان قبل ذلك نظر إلى &quot; ⋯ 2892 bytes ⋯ &quot;السوس ، فصاروا أطباء أهل فارس &quot;
+ &quot; لذلك، ولما ورثوا عمن سكنها من&quot; ⋯ 2759 bytes ⋯ &quot; وسأله عن خبره، فأعلمه أنه من &quot;
+ &quot; أهل فارس ، لجأ إليه لأمر أحدث&quot; ⋯ 2895 bytes ⋯ &quot;، وأسر من أولاده وقرابته وهلك &quot;
+ &quot; فيروز فيمن هلك  وكان على سجست&quot; ⋯ 2850 bytes ⋯ &quot;ين سنة  كسرى أنوشروان بن قباذ &quot;
+ &quot;  ثم ملك بعده كسرى أنوشروان ، &quot; ⋯ 2940 bytes ⋯ &quot;، وخفف المئونة على الناس ورفع &quot;
+ &quot; الخراج، وظهر الطاعون، فهلك في&quot; ⋯ 2275 bytes ⋯ &quot;اك  وكان جميع ملكه عشرين سنة  &quot;
+ &quot;   &quot;</code></pre><p>Like other examples above, we encode the following words to their unicode character.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; mapping = Dict(
            &quot;الله&quot; =&gt; &quot;ﷲ&quot;,
            &quot;لا&quot; =&gt; &quot;ﻻ&quot;
        )</code><code class="nohighlight hljs ansi" style="display:block;">Dict{String, String} with 2 entries:
   &quot;لا&quot;   =&gt; &quot;ﻻ&quot;
-  &quot;الله&quot; =&gt; &quot;ﷲ&quot;</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; target = normalize(target, mapping)</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: target not defined</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; reference = normalize(reference, mapping)</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: reference not defined</code></pre><p>We further clean the data by normalization and dediacritization:</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; etgt = encode.(normalize.(dediac.(target)));</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: target not defined</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; etgt = string.(strip.(replace.(etgt, r&quot;\s+&quot; =&gt; &quot; &quot;)));</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: etgt not defined</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; eref = encode.(normalize.(dediac.(reference)));</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: reference not defined</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; eref = string.(strip.(replace.(eref, r&quot;\s+&quot; =&gt; &quot; &quot;)));</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: eref not defined</code></pre><p>Finally, we can run the alignment for the first 20 milestones of macarif, and first 30 milestones of cuyunakhbar:</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; res, scr = align(eref[1:20], etgt[1:30]);</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: eref not defined</code></pre><p>We can then plot the heatmap of the scores:</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; fig, ax, hm = heatmap(1:size(scr, 1), 1:size(scr, 2), scr);</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: scr not defined</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; Colorbar(fig[:, end+1], hm)</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: fig not defined</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; fig</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: fig not defined</code></pre><p>The x-axis contains the index of the reference milestones, and the y-axis contains the target milestone indices. We can plot the alignment of first milestone of reference against first milestone of target</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; using CairoMakie</code><code class="nohighlight hljs ansi" style="display:block;"></code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; f1, a1, xy1 = plot(res[1,1], :insertions)</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: res not defined</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; f1</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: f1 not defined</code></pre><p>Finally, to plot all the milestones in one figure, we first filter the scores to those with lower score or distance, to find those milestones more similar with</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; idx = findmin(scr, dims=2)[2][findmin(scr, dims=2)[1] .&lt; 1150]</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: scr not defined</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; f2, a2, xy2 = plot(res, idx; midstyles=(color=(:red, 0.7), linewidth=0.1))</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: res not defined</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; f2</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: f2 not defined</code></pre><p>The <code>idx</code> contains the indices of the pairwise alignment with score lower than 1150.</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../orthography/">« Orthographical Analysis</a><a class="docs-footer-nextpage" href="../qurantree/">Working with QuranTree.jl »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.20 on <span class="colophon-date" title="Monday 11 July 2022 13:56">Monday 11 July 2022</span>. Using Julia version 1.7.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+  &quot;الله&quot; =&gt; &quot;ﷲ&quot;</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; target = normalize(target, mapping)</code><code class="nohighlight hljs ansi" style="display:block;">755-element Vector{String}:
+ &quot;    \t   \t   \t   \t أبو محمد عبد&quot; ⋯ 3290 bytes ⋯ &quot;، وكتب الهند ولكن دون أن يذكر &quot;
+ &quot; اسما لكتاب هندي اعتمد عليه  ي&quot; ⋯ 3116 bytes ⋯ &quot;والنصارى ثم يليه كتاب الإخوان &quot;
+ &quot;، ويحث فيه على حسن اختيار الإخ&quot; ⋯ 2974 bytes ⋯ &quot; التاريخ ﻻبن الأثير وغيرها من &quot;
+ &quot; المصادر والمراجع ونظرت فيه   &quot; ⋯ 2979 bytes ⋯ &quot;والنهر يقال له بالعجمية الروذ &quot;
+ &quot; بضم الراء وسكون الواو، والنسب&quot; ⋯ 2832 bytes ⋯ &quot;لمغني عبد ﷲ بن قتيبة رجل صدوق &quot;
+ &quot;، وقال الحاكم أجمعت الأمة على &quot; ⋯ 2742 bytes ⋯ &quot;اجتمع بالمازني في دار عيسى بن &quot;
+ &quot; جعفر الهاشمي تشاغل وبادر بالخ&quot; ⋯ 2826 bytes ⋯ &quot; اللغوي وقال أخذ ابن قتيبة عن &quot;
+ &quot; الرياشي وغيره   وقد ترجم له ا&quot; ⋯ 2737 bytes ⋯ &quot;لمحدثين وأعيانهم ودرستويه بضم &quot;
+ &quot; الدال والراء وسكون السين وضم &quot; ⋯ 2781 bytes ⋯ &quot;ليد بن عبد الملك بن مروان وقد &quot;
+ &quot; ترجم له الحميدي فقال إنه إمام&quot; ⋯ 2855 bytes ⋯ &quot;ب الإبل ويضم  بابا كتاب الحرب &quot;
+ ⋮
+ &quot; ولم يكن الشعر من شأنه، فقال ه&quot; ⋯ 2654 bytes ⋯ &quot;س؟ فخرجنا تمشيان، ونظر إليهما &quot;
+ &quot; وهو على المرقب، فظن أنهما ممن&quot; ⋯ 2570 bytes ⋯ &quot;نية إلى قابوس من سن سنة فليرض &quot;
+ &quot; بأن يحكم عليه بها ومن سأل مسأ&quot; ⋯ 2643 bytes ⋯ &quot;اء الغليل، وتنفس الهموم ارتاد &quot;
+ &quot; امرؤ قبل حلوله، وتثبت قبل إقد&quot; ⋯ 2617 bytes ⋯ &quot;ل العباس بن الأحنف بسيط  أشكو &quot;
+ &quot; الذي أذاقوني مودتهم  حتى إذا &quot; ⋯ 2638 bytes ⋯ &quot; يا أحسن الناس من قرن إلى قدم &quot;
+ &quot;  لم ألق مثلك في حل وﻻ حرم   ي&quot; ⋯ 2685 bytes ⋯ &quot;ما   رقود الضحى ﻻ تقرب الجيرة &quot;
+ &quot; القصى  وﻻ الجيرة الأدنين إﻻ ت&quot; ⋯ 2695 bytes ⋯ &quot;ال واحد منهم كنت أقول يا أمير &quot;
+ &quot; المؤمنين  أهيم بدعد ما حييت وإ&quot; ⋯ 359 bytes ⋯ &quot;أشعر الثﻻثة يا أمير المؤمنين  &quot;
+ &quot;   &quot;</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; reference = normalize(reference, mapping)</code><code class="nohighlight hljs ansi" style="display:block;">394-element Vector{String}:
+ &quot;    \t   \t   \t   \t أبو محمد عبد&quot; ⋯ 3114 bytes ⋯ &quot;رجﻻ ويضع أخرى من شدة أذى الحر &quot;
+ &quot;  ومن بعد مصرع المعتز كان مصرع&quot; ⋯ 2793 bytes ⋯ &quot;الجامع حين فشت الكتب المترجمة &quot;
+ &quot; تحمل مناهج جديدة، وعبر عنها ف&quot; ⋯ 2594 bytes ⋯ &quot;لد والثانية في القاهرة سنة  م &quot;
+ &quot;   وكانت هاتان الطبعتان ينقصهم&quot; ⋯ 3070 bytes ⋯ &quot;ا الشق الذي التزمه المستشرقون &quot;
+ &quot; وأضفنا إليه تلك الزيادات الشا&quot; ⋯ 2650 bytes ⋯ &quot;، وكانت وفاة ابن قتيبة سنة  ه &quot;
+ &quot;  أجل لقد ضمنت مقدمتي تفصيﻻ ات&quot; ⋯ 2695 bytes ⋯ &quot;دها ابن حبيب عنه من تسمية ذاك &quot;
+ &quot; الكتاب باسم المنمق ، وما ندري&quot; ⋯ 2757 bytes ⋯ &quot;الكتابين؟ وهل هذه المقابﻻت هي &quot;
+ &quot; كل ما بين الكتابين من مخالفات&quot; ⋯ 2636 bytes ⋯ &quot;  أزواد الركب من قريش  وكانوا &quot;
+ &quot; إذا سافروا لم يختبز معهم أحد &quot; ⋯ 2588 bytes ⋯ &quot;م ، فقال السهمي   وأما ما بعد &quot;
+ &quot; هذا فقد ساق المنمق زيادة طويل&quot; ⋯ 2571 bytes ⋯ &quot;سهم من نبله بإزاره فخدشه خدشا &quot;
+ ⋮
+ &quot; مدائن، ثم انصرف إلى مملكته، و&quot; ⋯ 2693 bytes ⋯ &quot; يتلومون، حتى ولدت غﻻما، فسمى &quot;
+ &quot;  سابور وهو الملقب ب ذي الأكتا&quot; ⋯ 2883 bytes ⋯ &quot;عرف الفراسة، نظر التمثال الذي &quot;
+ &quot; فيه، وقد كان قبل ذلك نظر إلى &quot; ⋯ 2889 bytes ⋯ &quot;السوس ، فصاروا أطباء أهل فارس &quot;
+ &quot; لذلك، ولما ورثوا عمن سكنها من&quot; ⋯ 2749 bytes ⋯ &quot; وسأله عن خبره، فأعلمه أنه من &quot;
+ &quot; أهل فارس ، لجأ إليه لأمر أحدث&quot; ⋯ 2872 bytes ⋯ &quot;ه، وأسر من أوﻻده وقرابته وهلك &quot;
+ &quot; فيروز فيمن هلك  وكان على سجست&quot; ⋯ 2833 bytes ⋯ &quot;ين سنة  كسرى أنوشروان بن قباذ &quot;
+ &quot;  ثم ملك بعده كسرى أنوشروان ، &quot; ⋯ 2937 bytes ⋯ &quot;، وخفف المئونة على الناس ورفع &quot;
+ &quot; الخراج، وظهر الطاعون، فهلك في&quot; ⋯ 2260 bytes ⋯ &quot;اك  وكان جميع ملكه عشرين سنة  &quot;
+ &quot;   &quot;</code></pre><p>We further clean the data by normalization and dediacritization:</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; etgt = encode.(normalize.(dediac.(target)));</code><code class="nohighlight hljs ansi" style="display:block;"></code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; etgt = string.(strip.(replace.(etgt, r&quot;\s+&quot; =&gt; &quot; &quot;)));</code><code class="nohighlight hljs ansi" style="display:block;"></code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; eref = encode.(normalize.(dediac.(reference)));</code><code class="nohighlight hljs ansi" style="display:block;"></code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; eref = string.(strip.(replace.(eref, r&quot;\s+&quot; =&gt; &quot; &quot;)));</code><code class="nohighlight hljs ansi" style="display:block;"></code></pre><p>Finally, we can run the alignment for the first 20 milestones of macarif, and first 30 milestones of cuyunakhbar:</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; res, scr = align(eref[1:20], etgt[1:30]);</code><code class="nohighlight hljs ansi" style="display:block;">[ Info: 5.0%, aligning 1st reference milestone to all target milestone.
+[ Info: 10.0%, aligning 2nd reference milestone to all target milestone.
+[ Info: 15.0%, aligning 3rd reference milestone to all target milestone.
+[ Info: 20.0%, aligning 4th reference milestone to all target milestone.
+[ Info: 25.0%, aligning 5th reference milestone to all target milestone.
+[ Info: 30.0%, aligning 6th reference milestone to all target milestone.
+[ Info: 35.0%, aligning 7th reference milestone to all target milestone.
+[ Info: 40.0%, aligning 8th reference milestone to all target milestone.
+[ Info: 45.0%, aligning 9th reference milestone to all target milestone.
+[ Info: 50.0%, aligning 10th reference milestone to all target milestone.
+[ Info: 55.00000000000001%, aligning 11th reference milestone to all target milestone.
+[ Info: 60.0%, aligning 12th reference milestone to all target milestone.
+[ Info: 65.0%, aligning 13th reference milestone to all target milestone.
+[ Info: 70.0%, aligning 14th reference milestone to all target milestone.
+[ Info: 75.0%, aligning 15th reference milestone to all target milestone.
+[ Info: 80.0%, aligning 16th reference milestone to all target milestone.
+[ Info: 85.0%, aligning 17th reference milestone to all target milestone.
+[ Info: 90.0%, aligning 18th reference milestone to all target milestone.
+[ Info: 95.0%, aligning 19th reference milestone to all target milestone.
+[ Info: 100.0%, aligning 20th reference milestone to all target milestone.</code></pre><p>We can then plot the heatmap of the scores:</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; fig, ax, hm = heatmap(1:size(scr, 1), 1:size(scr, 2), scr);</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: heatmap not defined</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; Colorbar(fig[:, end+1], hm)</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: fig not defined</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; fig</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: fig not defined</code></pre><p>The x-axis contains the index of the reference milestones, and the y-axis contains the target milestone indices. We can plot the alignment of first milestone of reference against first milestone of target</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; using CairoMakie</code><code class="nohighlight hljs ansi" style="display:block;"></code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; f1, a1, xy1 = plot(res[1,1], :insertions)</code><code class="nohighlight hljs ansi" style="display:block;">[ Info: Processing 0.0%
+[ Info: Processing 18.52%
+[ Info: Processing 37.04%
+[ Info: Processing 55.56%
+[ Info: Processing 74.07%
+[ Info: Processing 92.59%
+(Scene (800px, 600px):
+  0 Plots
+  3 Child Scenes:
+    ├ Scene (800px, 600px)
+    ├ Scene (800px, 600px)
+    └ Scene (800px, 600px), (Axis (2 plots), Axis (55 plots), Axis (2 plots)), (([2, 2, 3, 3, 3, 3, 3, 3, 3, 3  …  28, 28, 28, 28, 28, 29, 29, 30, 30, 30], Float32[49.0, 26.0, 36.0, 35.0, 33.0, 32.0, 28.0, 26.0, 25.0, 11.0  …  22.0, 19.0, 12.0, 11.0, 4.0, 33.0, 31.0, 56.0, 51.0, 50.0]), ([2, 2, 3, 3, 3, 3, 3, 3, 3, 4  …  30, 30, 30, 30, 30, 31, 31, 32, 32, 32], Float32[41.0, 9.0, 14.0, 13.0, 11.0, 10.0, 6.0, 4.0, 3.0, 49.0  …  23.0, 16.0, 15.0, 8.0, 4.0, 36.0, 34.0, 58.0, 53.0, 52.0])))</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; f1</code><code class="nohighlight hljs ansi" style="display:block;">Figure()</code></pre><p>Finally, to plot all the milestones in one figure, we first filter the scores to those with lower scores or distances, so that we&#39;ll have milestones that are indeed similar.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; idx = findmin(scr, dims=2)[2][findmin(scr, dims=2)[1] .&lt; 1150]</code><code class="nohighlight hljs ansi" style="display:block;">10-element Vector{CartesianIndex{2}}:
+ CartesianIndex(3, 20)
+ CartesianIndex(7, 20)
+ CartesianIndex(8, 20)
+ CartesianIndex(9, 9)
+ CartesianIndex(10, 6)
+ CartesianIndex(12, 20)
+ CartesianIndex(13, 20)
+ CartesianIndex(18, 25)
+ CartesianIndex(19, 20)
+ CartesianIndex(20, 26)</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; f2, a2, xy2 = plot(res, idx; midstyles=(color=(:red, 0.7), linewidth=0.1))</code><code class="nohighlight hljs ansi" style="display:block;">[ Info: Processing 0.0%
+[ Info: Processing 2.02%
+[ Info: Processing 4.03%
+[ Info: Processing 6.05%
+[ Info: Processing 8.06%
+[ Info: Processing 10.08%
+[ Info: Processing 12.1%
+[ Info: Processing 14.11%
+[ Info: Processing 16.13%
+[ Info: Processing 18.15%
+[ Info: Processing 20.16%
+[ Info: Processing 22.18%
+[ Info: Processing 24.19%
+[ Info: Processing 26.21%
+[ Info: Processing 28.23%
+[ Info: Processing 30.24%
+[ Info: Processing 32.26%
+[ Info: Processing 34.27%
+[ Info: Processing 36.29%
+[ Info: Processing 38.31%
+[ Info: Processing 40.32%
+[ Info: Processing 42.34%
+[ Info: Processing 44.35%
+[ Info: Processing 46.37%
+[ Info: Processing 48.39%
+[ Info: Processing 50.4%
+[ Info: Processing 52.42%
+[ Info: Processing 54.44%
+[ Info: Processing 56.45%
+[ Info: Processing 58.47%
+[ Info: Processing 60.48%
+[ Info: Processing 62.5%
+[ Info: Processing 64.52%
+[ Info: Processing 66.53%
+[ Info: Processing 68.55%
+[ Info: Processing 70.56%
+[ Info: Processing 72.58%
+[ Info: Processing 74.6%
+[ Info: Processing 76.61%
+[ Info: Processing 78.63%
+[ Info: Processing 80.65%
+[ Info: Processing 82.66%
+[ Info: Processing 84.68%
+[ Info: Processing 86.69%
+[ Info: Processing 88.71%
+[ Info: Processing 90.73%
+[ Info: Processing 92.74%
+[ Info: Processing 94.76%
+[ Info: Processing 96.77%
+[ Info: Processing 98.79%
+(Scene (800px, 600px):
+  0 Plots
+  3 Child Scenes:
+    ├ Scene (800px, 600px)
+    ├ Scene (800px, 600px)
+    └ Scene (800px, 600px), (Axis (2 plots), Axis (497 plots), Axis (3 plots)), (([1201, 1201, 1201, 1201, 1201, 1201, 1201, 1201, 1201, 1201  …  1585, 1586, 1586, 1586, 1586, 1586, 1586, 1586, 1586, 1586], Float32[56.0, 53.0, 51.0, 46.0, 36.0, 32.0, 29.0, 26.0, 25.0, 18.0  …  4.0, 59.0, 53.0, 48.0, 47.0, 46.0, 42.0, 40.0, 39.0, 37.0]), ([181, 181, 181, 181, 181, 181, 181, 181, 181, 181  …  1225, 1226, 1226, 1226, 1226, 1226, 1226, 1226, 1226, 1226], Float32[55.0, 52.0, 51.0, 46.0, 37.0, 33.0, 29.0, 26.0, 25.0, 18.0  …  5.0, 55.0, 48.0, 43.0, 42.0, 41.0, 37.0, 34.0, 33.0, 29.0])))</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; f2</code><code class="nohighlight hljs ansi" style="display:block;">Figure()</code></pre><p>The <code>idx</code> contains the indices of the pairwise alignment with score lower than 1150.</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../orthography/">« Orthographical Analysis</a><a class="docs-footer-nextpage" href="../qurantree/">Working with QuranTree.jl »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.20 on <span class="colophon-date" title="Monday 11 July 2022 14:13">Monday 11 July 2022</span>. Using Julia version 1.7.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
