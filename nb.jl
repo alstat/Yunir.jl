@@ -22,7 +22,7 @@ costmodel = CostModel(match=0, mismatch=1, insertion=1, deletion=1);
 res = align(eref, etgt; costmodel=costmodel);
 res.score
 using CairoMakie
-f, a, xys = plot(res, :deletions)
+f, a, xys = plot(res, :insertions)
 f
 # reference        
 function generate_xys(res::Yunir.Alignment, text::Symbol=:reference, type::Symbol=:matches, nchars::Int64=60)

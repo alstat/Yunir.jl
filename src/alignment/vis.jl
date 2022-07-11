@@ -129,7 +129,7 @@ function Makie.plot(res::Alignment,
         color=colorant"#3AB0FF",
     ),
     midstyles::NamedTuple=(
-        color=(colorant"#F87474", 0.6),
+        color=colorant"#F87474",
     )
     )
     if type === :matches
@@ -163,10 +163,14 @@ function Makie.plot(res::Alignment,
     linkyaxes!(axt, axr)
     plot!(axr, xr, yr; referencestyles...)
     plot!(axt, xt, yt; targetstyles...)
-    lines!(mid, LinRange(xr[1], xt[1], 50), tan.(LinRange(-pi/2.3, pi/2.3, 50)); midstyles...)
-    tlen = length(xr) > length(xt) ? length(xt) : length(xr)
-    for i in 2:tlen
-        lines!(mid, LinRange(xr[i], xt[i], 50), tan.(LinRange(-pi/2.3, pi/2.3, 50)); midstyles...)
+    con_idx = length(xr) > length(xt) ? unique([(i, j) for (i,j) in zip(xr[3:end], xt)]) : unique([(i, j) for (i,j) in zip(xr, xt)])
+    j = 0; N = length(con_idx)
+    for i in con_idx
+        if j % 10 == 0
+            @info "Processing $(round((j/N)*100, digits=2))%"
+        end
+        lines!(mid, LinRange(i[1], i[2], 50), tan.(LinRange(-pi/2.3, pi/2.3, 50)); midstyles...)
+        j += 1
     end
     hidedecorations!(mid)
     rowgap!(a, 10)

@@ -285,4 +285,70 @@ count_insertions(res_c2)
 ## Visualizing Aggregated Alignment
 What we've seen so far, in terms of visualization of the alignment, is at the level of pairwise alignment of individual milestone. This maybe useful to some use cases, but for studies where we look at the macro level alignment, that is, at the level of the book itself or full text, we need to aggregate the results.
 
-The following example is taken from [Kitab.jl](https://github.com/alstat/Kitab.jl):
+The following example is a simple example, but we recommend you to checkout [Kitab.jl](https://github.com/alstat/Kitab.jl) for a comprehensive example.
+
+In this example, we are going to use portion of two books, the المعارف and عيون الأخبار both by Ibn Qutayba Dinawari. To download this, we run the following using the Kitab.jl library.
+```@setup hij
+using Pkg
+Pkg.add("Kitab")
+Pkg.add("CairoMakie")
+```
+```@repl hij
+using Kitab
+using Yunir
+macarif_url = "https://raw.githubusercontent.com/OpenITI/RELEASE/f70348b43c92e97582e63b6c4b4a8596e6d4ac84/data/0276IbnQutaybaDinawari/0276IbnQutaybaDinawari.Macarif/0276IbnQutaybaDinawari.Macarif.Shamela0012129-ara1.mARkdown";
+cuyunakhbar_url = "https://raw.githubusercontent.com/OpenITI/RELEASE/f70348b43c92e97582e63b6c4b4a8596e6d4ac84/data/0276IbnQutaybaDinawari/0276IbnQutaybaDinawari.CuyunAkhbar/0276IbnQutaybaDinawari.CuyunAkhbar.Shamela0023790-ara1.completed";
+Kitab.get(OpenITIDB, [macarif_url, cuyunakhbar_url])
+list(OpenITIDB)
+cuyunakhbar = load(OpenITIDB, 1)
+macarif = load(OpenITIDB, 2)
+```
+We then split this data into milestone, which is indicated by a prefix `ms` in the text (note that OpenITI annotates the book by adding milestone indicator for partitioning the book). 
+```
+target = clean.(split(join(cuyunakhbar, " "), "ms"))
+reference = clean.(split(join(macarif, " "), "ms"))
+```
+We replace empty lines with spaces, users can also delete this line.
+```@repl hij
+target = map(x -> x != "" ? x : "   ", target)
+reference = map(x -> x != "" ? x : "   ", reference)
+```
+Like other examples above, we encode the following words to their unicode character.
+```@repl hij
+mapping = Dict(
+    "الله" => "ﷲ",
+    "لا" => "ﻻ"
+)
+target = normalize(target, mapping)
+reference = normalize(reference, mapping)
+```
+We further clean the data by normalization and dediacritization:
+```@repl hij
+etgt = encode.(normalize.(dediac.(target)));
+etgt = string.(strip.(replace.(etgt, r"\s+" => " ")));
+eref = encode.(normalize.(dediac.(reference)));
+eref = string.(strip.(replace.(eref, r"\s+" => " ")));
+```
+Finally, we can run the alignment for the first 20 milestones of macarif, and first 30 milestones of cuyunakhbar:
+```@repl hij
+res, scr = align(eref[1:20], etgt[1:30]);
+```
+We can then plot the heatmap of the scores:
+```@repl hij
+fig, ax, hm = heatmap(1:size(scr, 1), 1:size(scr, 2), scr);
+Colorbar(fig[:, end+1], hm)
+fig
+```
+The x-axis contains the index of the reference milestones, and the y-axis contains the target milestone indices. We can plot the alignment of first milestone of reference against first milestone of target
+```@repl hij
+using CairoMakie
+f1, a1, xy1 = plot(res[1,1], :insertions)
+f1
+```
+Finally, to plot all the milestones in one figure, we first filter the scores to those with lower score or distance, to find those milestones more similar with
+```@repl hij
+idx = findmin(scr, dims=2)[2][findmin(scr, dims=2)[1] .< 1150]
+f2, a2, xy2 = plot(res, idx; midstyles=(color=(:red, 0.7), linewidth=0.1))
+f2
+```
+The `idx` contains the indices of the pairwise alignment with score lower than 1150.
