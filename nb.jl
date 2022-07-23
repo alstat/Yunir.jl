@@ -280,18 +280,24 @@ reference = normalize(reference, mapping)
 
 etgt = encode.(normalize.(dediac.(target)));
 etgt = string.(strip.(replace.(etgt, r"\s+" => " ")));
+etgt = string.(strip.(replace.(etgt, "\ufeff" => "")));
 etgt
 eref = encode.(normalize.(dediac.(reference)));
 eref = string.(strip.(replace.(eref, r"\s+" => " ")));
+eref = string.(strip.(replace.(eref, "\ufeff" => "")));
 
 using CairoMakie
-@time res, scr = align(eref[1:20], etgt[1:30]); # 1.23 hours
+@time res, scr = align(eref[1:40], etgt[1:30]); # 1.23 hours
 ff, aa, xyss = plot(res[1,1], :insertions)
 ff
+scr
+idx = findmin(scr, dims=2)[2][findmin(scr, dims=2)[1] .< 1100]
 
+f, ax, xys = plot(res, idx, :matches, 300)
+f
 
-idx = findmin(scr, dims=2)[2][findmin(scr, dims=2)[1] .< 1000]
-f, ax, xys = plot(res, idx)
+idx[1][1]
+Makie.save("plot.png", f)
 res
 scr
 fig, ax, hm = heatmap(1:size(scr, 1), 1:size(scr, 2), scr);
@@ -631,3 +637,57 @@ eref_nrm = normalize(eref, mapping)
 costmodel = CostModel(match=0, mismatch=1, insertion=1, deletion=1)
 res = align(encode(eref_nrm), encode(etgt_nrm), costmodel=costmodel)
 res
+
+
+
+### Nujum 
+
+using BioAlignments
+using Kitab
+using Yunir
+# mentioned in https://kitab-project.org/methods/text-reuse
+alzahira_url = "https://raw.githubusercontent.com/OpenITI/0875AH/master/data/0874IbnTaghribirdi/0874IbnTaghribirdi.NujumZahira/0874IbnTaghribirdi.NujumZahira.JK001330-ara1.mARkdown";
+alkamil_url = "https://raw.githubusercontent.com/OpenITI/0650AH/master/data/0630IbnAthirCizzDin/0630IbnAthirCizzDin.Kamil/0630IbnAthirCizzDin.Kamil.JK000911-ara1.mARkdown";
+
+Kitab.get(OpenITIDB, [alzahira_url, alkamil_url])
+list(OpenITIDB)
+alkamil = load(OpenITIDB, 1)
+alzahira = load(OpenITIDB, 2)
+
+target = clean.(split(join(alkamil, " "), "ms"))
+reference = clean.(split(join(alzahira, " "), "ms"))
+
+target = map(x -> x != ' ' ? x : " ", target)
+reference = map(x -> x != ' ' ? x : " ", reference)
+
+mapping = Dict(
+    "الله" => "ﷲ",
+    "لا" => "ﻻ"
+)
+
+target = normalize(target, mapping)
+reference = normalize(reference, mapping)
+
+etgt = encode.(normalize.(dediac.(target)));
+etgt = string.(strip.(replace.(etgt, r"\s+" => " ")));
+etgt
+eref = encode.(normalize.(dediac.(reference)));
+eref = string.(strip.(replace.(eref, r"\s+" => " ")));
+
+using CairoMakie
+@time out = align(eref[1:end], etgt[2:end],); # 1.23 hours
+# etgt[1]
+# @time res, scr = align(eref[2], etgt[2]); # 1.23 hours
+res, scr = out
+
+idx = findmin(scr, dims=2)[2][findmin(scr, dims=2)[1] .< 1050]
+ff, aa, xyss = plot(res, idx, :matches, 300)
+ff
+
+ff, aa, xyss = plot(res, idx, :mismatches, 300)
+ff
+
+ff, aa, xyss = plot(res, idx, :insertions, 300)
+ff
+ff, aa, xyss = plot(res, idx, :deletions, 300)
+ff2
