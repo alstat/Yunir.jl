@@ -138,6 +138,7 @@ for i in 1:size(ares, 1)
     old_i = i; l = 1    
     
     tgts_xrs = []
+    tgts_xts = []
     tgts_yrs = []
     refs_xrs = []
     refs_yrs = []
@@ -174,14 +175,20 @@ for i in 1:size(ares, 1)
         else
             push!(tgts_xrs, xt .+ maximum(tgts_xrs[end]))
         end
-        # refs_ncs = nr[1]
-        # tgts_ncs = nr[1]
-
+        
         if CartesianIndex(i,j) ∈ score_indcs
-            if sum(all_tgts_yrs[end][j]) isa Missing
-                all_tgts_yrs[end][j] = yt
+            if length(all_tgts_yrs) > 0
+                if sum(all_tgts_yrs[end][j]) isa Missing
+                    all_tgts_yrs[end][j] = yt
+                    all_tgts_xts[end][j] = xt
+                end
+                push!(tgts_yrs, all_tgts_yrs[end][j])
+                push!(tgts_xts, all_tgts_xts[end][j])
+            else
+                push!(tgts_yrs, yt)
+                push!(tgts_xts, xt)
             end
-            push!(tgts_yrs, all_tgts_yrs[end][j])
+            
             push!(refs_yrs, yr)
             if i == 1
                 push!(refs_xrs, xr)
@@ -192,39 +199,24 @@ for i in 1:size(ares, 1)
                 push!(rmid_xrs, xr .+ maximum(refs_xrs[end]))
                 push!(tmid_xrs, tgts_xrs[end])
             end
-            # if j == 1
-            #     push!(refs_xrs, xr)
-            # else
-            #     try
-            #         push!(refs_xrs, xr .+ maximum(refs_xrs[end]))
-            #     catch
-            #         push!(refs_xrs, xr .+ maximum(xr))
-            #     end
-            # end
-            # if j == 1
-            #     push!(rmid_xrs, xr)
-            #     push!(tmid_xrs, xt)
-            # else
-            #     push!(rmid_xrs, refs_xrs[end])
-            #     push!(tmid_xrs, tgts_xrs[end])
-            # end
         else
-            push!(tgts_yrs, repeat([missing], outer=length(yt)))
+            if length(all_tgts_yrs) > 0
+                push!(tgts_yrs, all_tgts_yrs[end][j])
+                push!(tgts_xts, all_tgts_xrs[end][j])
+            else
+                push!(tgts_yrs, repeat([missing], outer=length(yt)))
+                push!(tgts_xts, xt)
+            end
+
             if l == 1
                 push!(refs_yrs, repeat([missing], outer=length(yr)))
             end
-            # if old_i == l
-            #     push!(refs_xrs, xr)
-            #     push!(refs_yrs, repeat([missing], outer=length(yr)))
-            # elseif old_i != i
-            #     push!(refs_xrs, xr)
-            #     push!(refs_yrs, repeat([missing], outer=length(yr)))
-            # end
         end
         l += 1
     end
     push!(all_refs_xrs, refs_xrs)
     push!(all_tgts_xrs, tgts_xrs)
+    push!(all_tgts_xts, tgts_xts)
     push!(all_refs_yrs, refs_yrs)
     push!(all_tgts_yrs, tgts_yrs)
     push!(all_rmid_xrs, rmid_xrs)
@@ -264,20 +256,24 @@ function generate_xys1(ares::Matrix{Yunir.Alignment}, score_indcs::Vector{Cartes
     type::Symbol=:matches, nchars::Int64=60)
     all_refs_xrs = []
     all_tgts_xrs = []
+    all_tgts_xts = []
     all_refs_yrs = []
     all_tgts_yrs = []
     all_tmid_xrs = []
     all_rmid_xrs = []
     for i in 1:size(ares, 1)
-        l = 1    
+        old_i = i; l = 1    
+        
         tgts_xrs = []
+        tgts_xts = []
         tgts_yrs = []
         refs_xrs = []
         refs_yrs = []
-
+    
         tmid_xrs = []
         rmid_xrs = []
         for j in 1:size(ares, 2)
+            @info i,j,k
             if type === :matches
                 xr, yr, nr = generate_xys(ares[i,j], :reference, :matches, nchars)
                 xt, yt, nt = generate_xys(ares[i,j], :target, :matches, nchars)
@@ -306,12 +302,20 @@ function generate_xys1(ares::Matrix{Yunir.Alignment}, score_indcs::Vector{Cartes
             else
                 push!(tgts_xrs, xt .+ maximum(tgts_xrs[end]))
             end
-
+            
             if CartesianIndex(i,j) ∈ score_indcs
-                if sum(all_tgts_yrs[end][j]) isa Missing
-                    all_tgts_yrs[end][j] = yt
+                if length(all_tgts_yrs) > 0
+                    if sum(all_tgts_yrs[end][j]) isa Missing
+                        all_tgts_yrs[end][j] = yt
+                        all_tgts_xts[end][j] = xt
+                    end
+                    push!(tgts_yrs, all_tgts_yrs[end][j])
+                    push!(tgts_xts, all_tgts_xts[end][j])
+                else
+                    push!(tgts_yrs, yt)
+                    push!(tgts_xts, xt)
                 end
-                push!(tgts_yrs, all_tgts_yrs[end][j])
+                
                 push!(refs_yrs, yr)
                 if i == 1
                     push!(refs_xrs, xr)
@@ -323,7 +327,14 @@ function generate_xys1(ares::Matrix{Yunir.Alignment}, score_indcs::Vector{Cartes
                     push!(tmid_xrs, tgts_xrs[end])
                 end
             else
-                push!(tgts_yrs, repeat([missing], outer=length(yt)))
+                if length(all_tgts_yrs) > 0
+                    push!(tgts_yrs, all_tgts_yrs[end][j])
+                    push!(tgts_xts, all_tgts_xrs[end][j])
+                else
+                    push!(tgts_yrs, repeat([missing], outer=length(yt)))
+                    push!(tgts_xts, xt)
+                end
+    
                 if l == 1
                     push!(refs_yrs, repeat([missing], outer=length(yr)))
                 end
@@ -332,12 +343,13 @@ function generate_xys1(ares::Matrix{Yunir.Alignment}, score_indcs::Vector{Cartes
         end
         push!(all_refs_xrs, refs_xrs)
         push!(all_tgts_xrs, tgts_xrs)
+        push!(all_tgts_xts, tgts_xts)
         push!(all_refs_yrs, refs_yrs)
         push!(all_tgts_yrs, tgts_yrs)
         push!(all_rmid_xrs, rmid_xrs)
         push!(all_tmid_xrs, tmid_xrs)
-    end
-    return (all_refs_xrs, all_refs_yrs, all_rmid_xrs), (all_tgts_xrs, all_tgts_yrs, all_tmid_xrs)
+    end 
+    return (all_refs_xrs, all_refs_yrs, all_rmid_xrs), (all_tgts_xts, all_tgts_yrs, all_tmid_xrs)
 end
 
 xys = generate_xys1(res, score_indcs);
@@ -353,7 +365,7 @@ referencestyles=(
 f = Figure()
 a = f[1,1] = GridLayout()
 xr = vcat(vcat(xys[1][1]...)...)
-xt = vcat(xys[2][1]...)
+xt = vcat(xys[2][1][end]...)
 mr = vcat(vcat(xys[1][3]...)...)
 mt = vcat(vcat(xys[2][3]...)...)
 axt = Axis(a[1:2,1], xaxisposition=:top)
@@ -373,6 +385,7 @@ axr.ylabel = "Reference"
 # else
 #     vlines!(axt, maximum(xt)+maximum(xt)*0.01; endlinestyle...)
 # end
+xr
 yr = vcat(vcat(xys[1][2]...)...)
 Makie.plot!(axr, xr, yr; referencestyles...)
 # lines!(mid, xr[1], xt[1], 50), tan.(LinRange(-pi/2.3, pi/2.3, 50))
@@ -389,7 +402,11 @@ for i in con_idx
 end
 f
 vcat(xys[2][2][end]...)
-yt = vcat(vcat(xys[2][2]...)...)
+vcat(xys[2][2][end])
+vcat(xys[2][1][end]...)
+vcat(xys[2][2][end]...)
+xt
+yt = vcat(xys[2][2][end]...)
 plot!(axt, xt, yt; targetstyles...)
 if (nchars == 300)
     ylims!(axt, low=-10, high=nchars+10)
@@ -401,6 +418,7 @@ end
 ylims!(mid, low=-4.5, high=4.5)
 linkxaxes!(axt, mid, axr)
 linkyaxes!(axt, axr)
+f
 xlen = maximum(xt) > maximum(xr) ? maximum(xt) : maximum(xr)
 xlims!(axr, low=ceil(-xlen*0.01), high=ceil(xlen+xlen*0.01))
 xlims!(axt, low=ceil(-xlen*0.01), high=ceil(xlen+xlen*0.01))
