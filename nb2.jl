@@ -127,14 +127,15 @@ type=:matches
 nchars=300
 score_indcs = findmin(scr, dims=2)[2][findmin(scr, dims=2)[1] .< 1100]
 k = 1
-i = 2; j = 1
+i = 3; j = 1
 all_refs_xrs = []
 all_tgts_xrs = []
+all_tgts_xts = []
 all_refs_yrs = []
 all_tgts_yrs = []
 all_tmid_xrs = []
 all_rmid_xrs = []
-for i in 1:size(ares, 1)
+for i in 1:2#size(ares, 1)
     old_i = i; l = 1    
     
     tgts_xrs = []
@@ -202,7 +203,7 @@ for i in 1:size(ares, 1)
         else
             if length(all_tgts_yrs) > 0
                 push!(tgts_yrs, all_tgts_yrs[end][j])
-                push!(tgts_xts, all_tgts_xrs[end][j])
+                push!(tgts_xts, all_tgts_xts[end][j])
             else
                 push!(tgts_yrs, repeat([missing], outer=length(yt)))
                 push!(tgts_xts, xt)
@@ -222,7 +223,10 @@ for i in 1:size(ares, 1)
     push!(all_rmid_xrs, rmid_xrs)
     push!(all_tmid_xrs, tmid_xrs)
 end 
-
+vcat(tgts_xts...)
+vcat(vcat(all_tgts_xrs...)...)
+vcat(vcat(all_tgts_xts...)...)
+vcat(vcat(all_tgts_yrs...)...)
 all_refs_xrs[end]
 all_refs_yrs[end]
 all_rmid_xrs[end]
@@ -261,7 +265,7 @@ function generate_xys1(ares::Matrix{Yunir.Alignment}, score_indcs::Vector{Cartes
     all_tgts_yrs = []
     all_tmid_xrs = []
     all_rmid_xrs = []
-    for i in 1:size(ares, 1)
+    for i in 1:5#size(ares, 1)
         old_i = i; l = 1    
         
         tgts_xrs = []
@@ -269,11 +273,11 @@ function generate_xys1(ares::Matrix{Yunir.Alignment}, score_indcs::Vector{Cartes
         tgts_yrs = []
         refs_xrs = []
         refs_yrs = []
-    
+
         tmid_xrs = []
         rmid_xrs = []
         for j in 1:size(ares, 2)
-            @info i,j,k
+            @info i,j,l
             if type === :matches
                 xr, yr, nr = generate_xys(ares[i,j], :reference, :matches, nchars)
                 xt, yt, nt = generate_xys(ares[i,j], :target, :matches, nchars)
@@ -304,6 +308,7 @@ function generate_xys1(ares::Matrix{Yunir.Alignment}, score_indcs::Vector{Cartes
             end
             
             if CartesianIndex(i,j) ∈ score_indcs
+                @info "inside the score"
                 if length(all_tgts_yrs) > 0
                     if sum(all_tgts_yrs[end][j]) isa Missing
                         all_tgts_yrs[end][j] = yt
@@ -327,6 +332,7 @@ function generate_xys1(ares::Matrix{Yunir.Alignment}, score_indcs::Vector{Cartes
                     push!(tmid_xrs, tgts_xrs[end])
                 end
             else
+                @info "outside the score"
                 if length(all_tgts_yrs) > 0
                     push!(tgts_yrs, all_tgts_yrs[end][j])
                     push!(tgts_xts, all_tgts_xrs[end][j])
@@ -334,12 +340,14 @@ function generate_xys1(ares::Matrix{Yunir.Alignment}, score_indcs::Vector{Cartes
                     push!(tgts_yrs, repeat([missing], outer=length(yt)))
                     push!(tgts_xts, xt)
                 end
-    
+
                 if l == 1
                     push!(refs_yrs, repeat([missing], outer=length(yr)))
                 end
             end
             l += 1
+            @info "length of xt=$(length(xt)), and yt=$(length(yt))"
+            @info "length of tgts_xts=$(length(vcat(tgts_xts...))); tgts_yrs=$(length(vcat(tgts_yrs...)))"
         end
         push!(all_refs_xrs, refs_xrs)
         push!(all_tgts_xrs, tgts_xrs)
@@ -351,7 +359,8 @@ function generate_xys1(ares::Matrix{Yunir.Alignment}, score_indcs::Vector{Cartes
     end 
     return (all_refs_xrs, all_refs_yrs, all_rmid_xrs), (all_tgts_xts, all_tgts_yrs, all_tmid_xrs)
 end
-
+score_indcs = findmin(scr, dims=2)[2][findmin(scr, dims=2)[1] .< 1040]
+using CairoMakie
 xys = generate_xys1(res, score_indcs);
 referencestyles=(
         color=:blue, markersize=2
@@ -408,6 +417,7 @@ vcat(xys[2][2][end]...)
 xt
 yt = vcat(xys[2][2][end]...)
 plot!(axt, xt, yt; targetstyles...)
+f
 if (nchars == 300)
     ylims!(axt, low=-10, high=nchars+10)
     ylims!(axr, low=-10, high=nchars+10)
