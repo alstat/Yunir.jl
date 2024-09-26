@@ -34,10 +34,10 @@ struct Syllables
     char_idx2::Int64
 end
 
-struct Rhyme
-    texts::Vector{String}
-    syllables_indices::Syllables
-end
+# struct Rhyme
+#     texts::Vector{String}
+#     syllables_indices::Syllables
+# end
 
 function last_syllables(r::Rhyme)
     syllables = Vector{String}()
@@ -116,7 +116,7 @@ lead_nchar = 1
 trail_nchar = 1
 
 
-vowels = Harakaat[]
+
 
 
 struct Segment
@@ -136,6 +136,7 @@ struct Rhyme
 end
 
 function (r::Rhyme)(texts::String)
+    vowels = Segment[]
     for text in texts
         vowel = ""; i = 0
         while vowel == ""
@@ -149,7 +150,9 @@ function (r::Rhyme)(texts::String)
                 else
                     if sum(cond) > 0
                         vowel = BW_VOWELS[cond][1]
-                        push!(vowels, vowel)
+                        lead_chars = join([text[end-i-j] for j in r.last_syllable.lead_nchars])
+                        trail_chars = join([text[end-i+j] for j in r.last_syllable.trail_nchars])
+                        push!(vowels, Segment(lead_chars * vowel.char * trail_chars, vowel))
                     else
                         i += 1
                         continue
