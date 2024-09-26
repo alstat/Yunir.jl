@@ -110,55 +110,63 @@ texts
 char_length = 4
 text = texts[2]
 
+
+
+lead_nchar = 1
+trail_nchar = 1
+
+
 vowels = Harakaat[]
-for text in texts
-    vowel = ""; i = 0
-    while vowel == ""
-        try
-            cond = string(text[end-i]) .∈ BW_VOWELS
-            if i == 0
-                if sum(cond) > 0
-                    i += 1
-                    continue
-                end
-            else
-                if sum(cond) > 0
-                    vowel = BW_VOWELS[cond][1]
-                    push!(vowels, vowel)
+
+
+struct Segment
+    text::String
+    harakat::Harakaat[]
+end
+
+struct Syllable
+    lead_nchars::Int64
+    trail_nchars::Int64
+    nvowels::Int64
+end
+
+struct Rhyme
+    is_quran::Bool
+    last_syllable::Syllable
+end
+
+function (r::Rhyme)(texts::String)
+    for text in texts
+        vowel = ""; i = 0
+        while vowel == ""
+            try
+                cond = string(text[end-i]) .∈ BW_VOWELS
+                if i == 0
+                    if sum(cond) > 0
+                        i += 1
+                        continue
+                    end
                 else
-                    i += 1
-                    continue
+                    if sum(cond) > 0
+                        vowel = BW_VOWELS[cond][1]
+                        push!(vowels, vowel)
+                    else
+                        i += 1
+                        continue
+                    end
                 end
+                i += 1
+            catch
+                string(text)
+                continue
             end
-            i += 1
-        catch
-            string(text)
-            continue
         end
     end
+
+    return text
 end
+
+
 
 vowels
 
-
-length(texts[1])
-
-sum(cond)
-Set(BW_VOWELS)
-BW_VOWELS[cond]
-
-struct MyStruct
-    value::String
-end
-
-# Define the in function for MyStruct and String
-Base.in(s::String, ms::MyStruct) = s in ms.value
-
-# Define the custom broadcasting signature
-function Base.broadcasted(::typeof(in), s::AbstractString, mss::AbstractArray{MyStruct})
-    return [s in ms for ms in mss]
-end
-
-# Example usage
-mystruct_array = [MyStruct("hello"), MyStruct("world"), MyStruct("julia")]
-result = in.("l", mystruct_array)
