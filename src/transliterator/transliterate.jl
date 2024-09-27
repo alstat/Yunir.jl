@@ -8,7 +8,7 @@ function genproperties(encoder::Dict{Symbol,Symbol})
     return decoder, decoder_diac
 end
 
-function Transliterator(x::Bool) end
+function Transliterator() end
 
 abstract type AbstractEncoder end
 
