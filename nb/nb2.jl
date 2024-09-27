@@ -29,15 +29,6 @@ end
 
 const BW_VOWELS = encode.(string.(AR_VOWELS))
 
-struct Syllables
-    char_idx1::Int64
-    char_idx2::Int64
-end
-
-# struct Rhyme
-#     texts::Vector{String}
-#     syllables_indices::Syllables
-# end
 
 function last_syllables(r::Rhyme)
     syllables = Vector{String}()
