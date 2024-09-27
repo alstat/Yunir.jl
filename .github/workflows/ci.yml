@@ -44,7 +44,6 @@ jobs:
         run: |
           julia --project -e '
             using Pkg
-            Pkg.rm("Yunir")  # Replace "Yunir" with your package name
             Pkg.gc()'
       - uses: julia-actions/julia-buildpkg@v1
       - name: Build package (verbose)
