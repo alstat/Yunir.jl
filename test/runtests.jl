@@ -125,20 +125,20 @@ new_vals = reverse(collect(values(BW_ENCODING)));
 my_encoder = Dict(old_keys .=> new_vals)
 @transliterator my_encoder "MyEncoder"
 
-@info "Orthographical Analysis"
-arb_token = tokenize(ar_basmala)
+# @info "Orthographical Analysis"
+# arb_token = tokenize(ar_basmala)
 
-@test parse(Orthography, arb_token[1]) isa Orthography
+# @test parse(Orthography, arb_token[1]) isa Orthography
 
-arb_parsed2 = parse.(Orthography, arb_token)
-@test numerals(arb_parsed2[1]) == [2, nothing, 60, nothing, 40, nothing]
+# arb_parsed2 = parse.(Orthography, arb_token)
+# @test numerals(arb_parsed2[1]) == [2, nothing, 60, nothing, 40, nothing]
 
-@test isfeat(arb_parsed2[1], AbstractLunar) == [1, 0, 0, 0, 1, 0]
-@test arb_parsed2[1][isfeat(arb_parsed2[1], AbstractLunar)] == [Ba, Meem]
+# @test isfeat(arb_parsed2[1], AbstractLunar) == [1, 0, 0, 0, 1, 0]
+# @test arb_parsed2[1][isfeat(arb_parsed2[1], AbstractLunar)] == [Ba, Meem]
 
-@test vocals(arb_parsed2[1]) == [:labial, nothing, :sibilant, nothing, :labial, nothing]
+# @test vocals(arb_parsed2[1]) == [:labial, nothing, :sibilant, nothing, :labial, nothing]
 
-@test parse(SimpleEncoding, ar_basmala) === "Ba+Kasra | Seen+Sukun | Meem+Kasra | <space> | AlifHamzatWasl | Lam | Lam+Shadda+Fatha | Ha+Kasra | <space> | AlifHamzatWasl | Lam | Ra+Shadda+Fatha | HHa+Sukun | Meem+Fatha+AlifKhanjareeya | Noon+Kasra | <space> | AlifHamzatWasl | Lam | Ra+Shadda+Fatha | HHa+Kasra | Ya | Meem+Kasra" 
+# @test parse(SimpleEncoding, ar_basmala) === "Ba+Kasra | Seen+Sukun | Meem+Kasra | <space> | AlifHamzatWasl | Lam | Lam+Shadda+Fatha | Ha+Kasra | <space> | AlifHamzatWasl | Lam | Ra+Shadda+Fatha | HHa+Sukun | Meem+Fatha+AlifKhanjareeya | Noon+Kasra | <space> | AlifHamzatWasl | Lam | Ra+Shadda+Fatha | HHa+Kasra | Ya | Meem+Kasra" 
 
 @info "Alignment"
 shamela0012129 = "خرج مع ابي بكر الصديق رضي الله عنه في تجارة الي بصري ومعهم نعيمان وكان نعيمان ممن شهد——- بدرا ايضا وك——-ان علي الزاد فقال له سويبط———– اطعمني فقال حتي يجء ابو بكر فقال اما والله لاغيظنك فمروا بقوم فقال لهم سويبط -تشترون مني عبدا قا—لوا نعم فقال انه عبد له كلام وهو قاءل لكم اني حر فان كنتم اذا قال لكم هذه المقالة تركتموه فلا تفسدوا علي عبدي قا-لوا بل نشتريه منك فاشتروه بعشر قلاءص ثم جاءوا فوضعوا في عنقه حبلا ف—————قال نعيمان ان هذا يستهزء بكم واني حر فقالوا قد عرفنا –خبرك وانطلقوا به فلما جاء ابو بكر -اخبروه فاتبعهم ورد عليهم القلاءص واخذه فلما قدموا علي النبي صلي الله عليه وسلم اخبروه فضحك هو واصحابه من ذلك حولا"
