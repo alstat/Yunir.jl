@@ -1,3 +1,5 @@
+function Transliterator(x::Bool) end
+
 function genproperties(encoder::Dict{Symbol,Symbol})
     decoder = Dict(collect(values(encoder)) .=> collect(keys(encoder)))
     decoder_diac = [encoder[Symbol(s[1])] for s in split(AR_DIACS_REGEX.pattern, "|")]
@@ -97,7 +99,7 @@ macro transliterator(dict, name)
                 rx_diacs::Regex
                 rx_ardiacs::Regex
             end
-            Transliterator() = $T($dict, prop[1], prop[2], $AR_DIACS_REGEX)
+            Yunir.Transliterator() = $T($dict, prop[1], prop[2], $AR_DIACS_REGEX)
             function Base.show(io::IO, t::$T)
                 println(io, $T, ":")
                 println(io, " ├ encode: ", Transliterator().encode)
@@ -108,8 +110,6 @@ macro transliterator(dict, name)
         end
     )
 end
-
-function Transliterator() end
 
 """
     @transliterator(symbl)
