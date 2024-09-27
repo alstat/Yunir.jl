@@ -8,8 +8,6 @@ function genproperties(encoder::Dict{Symbol,Symbol})
     return decoder, decoder_diac
 end
 
-function Transliterator() end
-
 abstract type AbstractEncoder end
 
 """
@@ -99,7 +97,7 @@ macro transliterator(dict, name)
                 rx_diacs::Regex
                 rx_ardiacs::Regex
             end
-            Yunir.Transliterator() = $T($dict, prop[1], prop[2], $AR_DIACS_REGEX)
+            Transliterator() = $T($dict, prop[1], prop[2], $AR_DIACS_REGEX)
             function Base.show(io::IO, t::$T)
                 println(io, $T, ":")
                 println(io, " ├ encode: ", Transliterator().encode)
@@ -110,6 +108,8 @@ macro transliterator(dict, name)
         end
     )
 end
+
+function Transliterator() end
 
 """
     @transliterator(symbl)

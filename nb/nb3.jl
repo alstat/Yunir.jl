@@ -145,7 +145,20 @@ r = Rhyme(true, Syllable(1, 1, 3))
 output = r.(ar_raheem_alamiyn, true)
 
 
-ar_raheem = "ٱلرَّحِيمِ"
-r = Rhyme(true, Syllable(1, 2, 1))
-output = r(ar_raheem, true)
-encode(output)
+ar_raheem_alamiyn = ["ٱلرَّحِيمِ", "ٱلْعَٰلَمِينَ"]
+r = Rhyme(true, Syllable(1, 1, 2))
+segments = encode.(r.(ar_raheem_alamiyn, true))
+transition(segments, Segment)
+transition(segments, Harakaat)
+syllables, y_vec, y_dict = transition(segments, Harakaat)
+using Makie
+using CairoMakie
+f = Figure(resolution=(500, 500));
+a1 = Axis(f[1,1], 
+    xlabel="Ayah Number",
+    ylabel="Last Pronounced Syllable\n\n\n",
+    title="Surah Al-Fatihah Rhythmic Patterns\n\n",
+    yticks=(unique(y_vec), unique(syllables)), 
+)
+lines!(a1, collect(eachindex(syllables)), y_vec)
+f

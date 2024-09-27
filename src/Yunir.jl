@@ -18,6 +18,7 @@ include("utils/parse.jl")
 include("tokenizers/tokenize.jl")
 include("alignment/vis.jl")
 include("analysis/rhythmic/utils.jl")
+include("analysis/rhythmic/vis.jl")
 
 # data
 export CAMeLData, MorphologyDB, locate, load
@@ -29,7 +30,7 @@ export Alignment, AbstractCAMeLDB, AbstractEncoder, SimpleEncoding
 export @transliterator, genproperties
 
 # Rhyme
-export Harakaat, Rhyme, Syllable, Segment
+export Harakaat, Rhyme, Syllable, Segment, transition
 
 # Orthography
 export AbstractCharacter, AbstractCharacter, AbstractConsonant, AbstractSolar, AbstractLunar,
