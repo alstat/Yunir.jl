@@ -206,3 +206,24 @@ res = align(shamela0012129_enc, shamela0023790_enc);
 
 # out = capture_io(res);
 # @test out == "PairwiseAlignment\n١-reference\n٢-target\n\n٢    اخبروه فضحك هو واصحابه منٓهما حو\n      اااااااااااااااااااااااا    ااا\n١    ٓخبروه فضحك هو واصحابه من ذلك حو\n\n\n"
+
+@info "Rhythmic Analysis"
+
+text = "bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi"
+r1 = Rhyme(true, Syllable(1, 2, 2))
+@test r1(text).segment == "~aHi?Hiym"
+@test r1(text).harakaat == Harakaat[Harakaat("a", false), Harakaat("i", false)]
+
+r2 = Rhyme(true, Syllable(0, 2, 2))
+@test r2(text).segment == "aHi?iym"
+@test r2(text).harakaat == Harakaat[Harakaat("a", false), Harakaat("i", false)]
+
+out = r1.(string.(split(text, " ")))
+res = sequence(out, Segment)
+@test res.sequence == ["biso", "~ahi", "~aHo?ma`n", "~aHi?Hiym"]
+@test res.yaxis == [1, 2, 3, 4]
+
+out = r2.(string.(split(text, " ")))
+res = sequence(out, Harakaat)
+@test res.sequence == ["i", "a", "a?a", "a?i"]
+@test res.yaxis == [1, 2, 3, 4]

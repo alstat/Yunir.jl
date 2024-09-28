@@ -45,12 +45,12 @@ Segment("~aH?Hiy", Harakaat[Harakaat("a", false), Harakaat("i", false)])
 ```
 """
 struct Segment
-	text::String
+	segment::String
 	harakaat::Array{Harakaat}
 end
 
-Yunir.encode(x::Segment) = Segment(encode(x.text), encode.(x.harakaat))
-Yunir.arabic(x::Segment) = Segment(arabic(x.text), encode.(x.harakaat))
+Yunir.encode(x::Segment) = Segment(encode(x.segment), encode.(x.harakaat))
+Yunir.arabic(x::Segment) = Segment(arabic(x.segment), encode.(x.harakaat))
 
 Base.occursin(x::String, y::Harakaat) = occursin(x, y.char)
 

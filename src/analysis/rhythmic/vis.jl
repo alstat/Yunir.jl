@@ -19,10 +19,21 @@ julia> join(encode(output).harakaat)
 """
 Base.join(harakaat::Array{Harakaat}, delim::String="?") = join([h.char for h in harakaat], delim)
 
-"""
-	transition(segments::Array{Segment}, type::Union{Type{Harakaat},Type{Segment}})
 
-Extracts the transitions of the `segments` by indexing it into `x`` and `y`, where `x` is the index of the segment, and `y` is the index of its vowels or harakaat.
+"""
+    Sequence(sequence::Vector{String}, y_axis::Vector{Int64})
+
+Create a `Sequence` object for the rhythmic `sequence` data, with  `y_axis` as its y-axis ticks for plotting.
+"""
+struct Sequence
+    sequence::Vector{String}    
+    yaxis::Vector{Int64}
+end
+
+"""
+	sequence(segments::Array{Segment}, type::Union{Type{Harakaat},Type{Segment}})
+
+Extracts the sequence of the `segments` by indexing it into `x`` and `y`, where `x` is the index of the segment, and `y` is the index of its vowels or harakaat.
 It returns a tuple containing the following `y`, `y_dict` (the mapping dictionary with key represented by `x` and value represented by `y`), `syllables` represented by `x`.
 
 ```julia-repl
@@ -39,10 +50,10 @@ julia> segments = encode.(r.(ar_raheem_alamiyn, true))
  Segment("~aH?Hiy", Harakaat[Harakaat("a", false), Harakaat("i", false)])
  Segment("lam?miy", Harakaat[Harakaat("a", false), Harakaat("i", false)])
 
-julia> transition(segments, Segment)
+julia> sequence(segments, Segment)
 (["~aH?Hiy", "lam?miy"], [1, 2], Dict("~aH?Hiy" => 1, "lam?miy" => 2))
 
-julia> transition(segments, Harakaat)
+julia> sequence(segments, Harakaat)
 (["a?i", "a?i"], [1, 1], Dict("a?i" => 1))
 
 julia> syllables, y_vec, y_dict = transition(segments, Harakaat)
@@ -70,11 +81,11 @@ Lines{Tuple{Vector{Point{2, Float32}}}}
 julia> f
 ```
 """
-function transition(segments::Array{Segment}, type::Union{Type{Harakaat},Type{Segment}})
+function sequence(segments::Array{Segment}, type::Union{Type{Harakaat},Type{Segment}})
     if type == Harakaat
         syllables = [join(s.harakaat) for s in segments]
     else
-        syllables = [join(s.text) for s in segments]
+        syllables = [join(s.segment) for s in segments]
     end
 
     y = unique(syllables)
@@ -95,5 +106,5 @@ function transition(segments::Array{Segment}, type::Union{Type{Harakaat},Type{Se
     for i in syllables
         push!(y_vec, y_dict[i])
     end
-    return syllables, y_vec, y_dict 
+    return Sequence(syllables, y_vec)
 end
