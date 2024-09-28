@@ -29,7 +29,6 @@ end
 
 const BW_VOWELS = encode.(string.(AR_VOWELS))
 
-
 function last_syllables(r::Rhyme)
     syllables = Vector{String}()
     for texts in r.texts

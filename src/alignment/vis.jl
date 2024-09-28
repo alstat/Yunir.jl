@@ -1,6 +1,6 @@
 using Colors
 using Makie
-function generate_xys(res::Alignment, text::Symbol=:reference, type::Symbol=:matches, nchars::Int64=60)
+function generate_xys(res::Alignment, text::Symbol=:reference, type::Symbol=:matches, nchars::Int64=10)
     xs, ys, zs = Int[], [1], Float32[]
     j = 1; k = 1;
     if text === :reference

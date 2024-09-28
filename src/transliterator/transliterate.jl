@@ -1,3 +1,5 @@
+function Transliterator(x::Bool) end
+
 function genproperties(encoder::Dict{Symbol,Symbol})
     decoder = Dict(collect(values(encoder)) .=> collect(keys(encoder)))
     decoder_diac = [encoder[Symbol(s[1])] for s in split(AR_DIACS_REGEX.pattern, "|")]
@@ -7,8 +9,6 @@ function genproperties(encoder::Dict{Symbol,Symbol})
 
     return decoder, decoder_diac
 end
-
-function Transliterator() end
 
 abstract type AbstractEncoder end
 
