@@ -17,7 +17,7 @@ julia> join(encode(output).harakaat)
 "a?i"
 ```
 """
-Base.join(harakaat::Array{Harakaat}) = join([h.char for h in harakaat], "?")
+Base.join(harakaat::Array{Harakaat}, delim::String="?") = join([h.char for h in harakaat], delim)
 
 """
 	transition(segments::Array{Segment}, type::Union{Type{Harakaat},Type{Segment}})
