@@ -113,7 +113,7 @@ julia> encode.(output)
 ```
 """
 struct Rhyme
-	is_quran::Bool
+	silent_vowel::Bool
 	last_syllable::Syllable
 end
 
@@ -149,22 +149,22 @@ julia> encode(output)
 Segment("Hiym", Harakaat[Harakaat("i", false)])
 ```
 """
-function (r::Rhyme)(text::String, isarabic::Bool=false)
+function (r::Rhyme)(text::String, isarabic::Bool=false, first_word::Bool=false, silent_vowel::Bool=false)
     text = isarabic ? encode(text) : text
 
 	vowel_idcs = vowel_indices(text, isarabic)
 	harakaat = Harakaat[]
 	segment_text = ""
 
-	if r.is_quran
+	if silent_vowel
 		cond = string(text[end]) .∈ BW_VOWELS
-		silent_vowel = sum(cond)
+		is_silent = sum(cond)
 		penalty = sum(cond) < 1 ? 1 : 0
 	end
 
-	uplimit = r.last_syllable.nvowels > (count_vowels(text, isarabic) - silent_vowel) ? (count_vowels(text, isarabic) - silent_vowel) : r.last_syllable.nvowels
-	for i in 0:uplimit-silent_vowel-penalty
-		vowel_idx = vowel_idcs[end-i-silent_vowel]
+	uplimit = r.last_syllable.nvowels > (count_vowels(text, isarabic) - is_silent) ? (count_vowels(text, isarabic) - is_silent) : r.last_syllable.nvowels
+	for i in 0:uplimit-is_silent-penalty
+		vowel_idx = vowel_idcs[end-i-is_silent]
 		cond = string(text[vowel_idx]) .∈ BW_VOWELS
 		if sum(cond) > 0
 			push!(harakaat, isarabic ? arabic(BW_VOWELS[cond][1]) : BW_VOWELS[cond][1])

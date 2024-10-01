@@ -6,13 +6,13 @@ using Yunir
 crps, tnzl = load(QuranData());
 crpstbl = table(crps)
 tnzltbl = table(tnzl)
-bw_texts1 = verses(tnzltbl[5])
+bw_texts1 = verses(tnzltbl[1])
 bw_texts2 = verses(tnzltbl[6])
 
-function extract_endword(s::Array{String})
+function extract_endword(s::Array{String}, idx::Int64=1)
     texts = String[]
     for text in s
-        push!(texts, split(text, " ")[end])
+        push!(texts, split(text, " ")[idx])
     end
     return texts
 end
