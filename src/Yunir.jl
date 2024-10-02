@@ -30,7 +30,7 @@ export Alignment, AbstractCAMeLDB, AbstractEncoder, SimpleEncoding
 export @transliterator, genproperties
 
 # Rhyme
-export Harakaat, Rhyme, Syllable, Segment, sequence
+export Harakaat, Syllabification, Syllable, Segment, Sequence, sequence
 
 # Orthography
 export AbstractCharacter, AbstractCharacter, AbstractConsonant, AbstractSolar, AbstractLunar,

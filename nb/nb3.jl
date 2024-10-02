@@ -16,9 +16,9 @@ end
 
 const BW_VOWELS = encode.(AR_VOWELS)
 
-struct Rhyme2
+struct Syllabification
 	is_quran::Bool
-	last_syllable::Syllable
+	syllable::Syllable
 end
 
 function count_vowels(text::String, isarabic::Bool=false)
@@ -33,11 +33,11 @@ function vowel_indices(text::String, isarabic::Bool=false)
 	return findall(c -> c in jvowels, text)
 end
 
-i = 0
+i =1
 isarabic = true
 silent_vowel = true
 text = texts[end]
-function (r::Rhyme2)(text::String; isarabic::Bool=false, first_word::Bool=false, silent_last_vowel::Bool=false)
+function (r::Syllabification)(text::String; isarabic::Bool=false, first_word::Bool=false, silent_last_vowel::Bool=false)
     jvowels = join([c.char for c in BW_VOWELS])
 	text = isarabic ? encode(text) : text
 	
@@ -45,13 +45,14 @@ function (r::Rhyme2)(text::String; isarabic::Bool=false, first_word::Bool=false,
 
 	harakaat = Harakaat[]
 	segment_text = ""
-
+	
 	if length(vowel_idcs) == 0
 		orthogs = parse(Orthography, arabic(text)).data
+		i = 1;
 		for orthog in orthogs
-			@info orthog
 			orthog = string(orthog)
 			if orthog == "Maddah"
+				i += 1
 				continue
 			else
 				if occursin('e', orthog)
@@ -67,9 +68,24 @@ function (r::Rhyme2)(text::String; isarabic::Bool=false, first_word::Bool=false,
 						end
 					end
 				end
+				if i+1 < length(text)
+					if text[i+1] != '^'
+						consonant = text[i] * "?"
+					else
+						consonant = text[i:i+1] * "?"
+					end
+				else
+					if text[i+1] != '^'
+						consonant = text[i] * "?"
+					else
+						consonant = text[i:i+1]
+					end
+				end
+				segment_text *= consonant
+				i += 1
 			end
 		end
-		return Segment(text, harakaat)
+		return Segment(segment_text, harakaat)
 	end
 	
 	if silent_last_vowel
@@ -81,7 +97,7 @@ function (r::Rhyme2)(text::String; isarabic::Bool=false, first_word::Bool=false,
 		penalty = 1
 	end
 
-	uplimit = r.last_syllable.nvowels > (count_vowels(text, isarabic) - is_silent) ? (count_vowels(text, isarabic) - is_silent) : r.last_syllable.nvowels
+	uplimit = r.syllable.nvowels > (count_vowels(text, isarabic) - is_silent) ? (count_vowels(text, isarabic) - is_silent) : r.syllable.nvowels
 	for i in 0:(uplimit-is_silent-penalty)
 		vowel_idx = vowel_idcs[end-i-is_silent]
 		cond = string(text[vowel_idx]) .∈ BW_VOWELS
@@ -91,8 +107,8 @@ function (r::Rhyme2)(text::String; isarabic::Bool=false, first_word::Bool=false,
 			lead_length = length(text[1:(vowel_idx-1)])
 			trail_length = length(text[(vowel_idx+1):end])
 
-			lead_nchars_lwlimit = lead_length > r.last_syllable.lead_nchars ? r.last_syllable.lead_nchars : lead_length
-			trail_nchars_uplimit = trail_length > r.last_syllable.trail_nchars ? r.last_syllable.trail_nchars : trail_length
+			lead_nchars_lwlimit = lead_length > r.syllable.lead_nchars ? r.syllable.lead_nchars : lead_length
+			trail_nchars_uplimit = trail_length > r.syllable.trail_nchars ? r.syllable.trail_nchars : trail_length
 			vowel = text[vowel_idx]
 
 			lead_text = text[(vowel_idx-lead_nchars_lwlimit):(vowel_idx-1)]
@@ -158,7 +174,7 @@ end
 crps, tnzl = load(QuranData());
 crpstbl = table(crps)
 tnzltbl = table(tnzl)
-bw_texts = (verses(tnzltbl[13]))
+bw_texts = (verses(tnzltbl[2]))
 
 # texts = String[]
 # for text in bw_texts[1]
@@ -166,12 +182,8 @@ bw_texts = (verses(tnzltbl[13]))
 # end
 
 texts = string.(split(bw_texts[1]))
-arabic.(texts)
-arabic.(texts)
-text = texts[5]
-r = Rhyme2(true, Syllable(1, 0, 5))
-parse(Orthography, texts[5])
-segments = r(encode(texts[5]), isarabic=false, first_word=false, silent_last_vowel=true)
+r = Syllabification(true, Syllable(1, 0, 5))
+segments = r(encode(texts[3]), isarabic=false, first_word=false, silent_last_vowel=true)
 segments = Segment[]
 j = 1
 for i in texts
