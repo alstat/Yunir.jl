@@ -36,14 +36,42 @@ end
 i = 0
 isarabic = true
 silent_vowel = true
-
+text = texts[end]
 function (r::Rhyme2)(text::String; isarabic::Bool=false, first_word::Bool=false, silent_last_vowel::Bool=false)
-    text = isarabic ? encode(text) : text
+    jvowels = join([c.char for c in BW_VOWELS])
+	text = isarabic ? encode(text) : text
 	
 	vowel_idcs = vowel_indices(text, isarabic)
+
 	harakaat = Harakaat[]
 	segment_text = ""
 
+	if length(vowel_idcs) == 0
+		orthogs = parse(Orthography, arabic(text)).data
+		for orthog in orthogs
+			@info orthog
+			orthog = string(orthog)
+			if orthog == "Maddah"
+				continue
+			else
+				if occursin('e', orthog)
+					push!(harakaat, BW_VOWELS[findfirst(x -> x.char == "i", BW_VOWELS)])
+				else
+					name_vowel_idcs = findall(x -> x in jvowels, lowercase(orthog))
+					for vowel in lowercase(orthog[name_vowel_idcs])
+						cond = string(vowel) .∈ BW_VOWELS
+						if sum(cond) > 0
+							push!(harakaat, BW_VOWELS[cond][1])
+						else
+							continue
+						end
+					end
+				end
+			end
+		end
+		return Segment(text, harakaat)
+	end
+	
 	if silent_last_vowel
 		cond = string(text[end]) .∈ BW_VOWELS
 		is_silent = sum(cond)
@@ -71,8 +99,8 @@ function (r::Rhyme2)(text::String; isarabic::Bool=false, first_word::Bool=false,
 			trail_text = text[(vowel_idx+1):(vowel_idx+trail_nchars_uplimit)]
 
 			if first_word && vowel_idx == vowel_idcs[1]
-				if text[1:2] == "{l"
-					first_word_text = "{l?" 
+				if text[1] == '{'
+					first_word_text = "{" * text[2] * "?" 
 					first_word_harakaat = filter(x -> x.char == "a", BW_VOWELS)[1]
 					push!(harakaat, isarabic ? arabic(first_word_harakaat) : first_word_harakaat)
 				else 
@@ -82,6 +110,7 @@ function (r::Rhyme2)(text::String; isarabic::Bool=false, first_word::Bool=false,
 				first_word_text = ""
 			end
 
+			# add alif-maddah for first word as it is not silent
 			if (text[vowel_idx-lead_nchars_lwlimit] == '~')
 				lead_candidate1 = text[vowel_idx-lead_nchars_lwlimit-1]
 				lead_text = lead_candidate1 * lead_text
@@ -99,7 +128,7 @@ function (r::Rhyme2)(text::String; isarabic::Bool=false, first_word::Bool=false,
 						else
 							trail_text *= trail_candidate1
 						end
-					# trail candidate is a long vowel but with sukuun, so just a silent consonant
+					# trail candidate is a long vowel but with sukuun, so it is a consonant with no vowel
 					elseif sum(lvowel_cond) > 0 && trail_candidate2 == 'o'
 						trail_text *= trail_candidate1
 					# trail candidate is a consonant with sukuun
@@ -129,20 +158,20 @@ end
 crps, tnzl = load(QuranData());
 crpstbl = table(crps)
 tnzltbl = table(tnzl)
-bw_texts = (verses(tnzltbl))
+bw_texts = (verses(tnzltbl[13]))
 
 # texts = String[]
 # for text in bw_texts[1]
 # 	push!(texts, split(text, " "))
 # end
 
-
-texts = string.(split(bw_texts[5]))
+texts = string.(split(bw_texts[1]))
 arabic.(texts)
 arabic.(texts)
-text = texts[2]
+text = texts[5]
 r = Rhyme2(true, Syllable(1, 0, 5))
-segments = r(encode(texts[2]), isarabic=false, first_word=false, silent_last_vowel=true)
+parse(Orthography, texts[5])
+segments = r(encode(texts[5]), isarabic=false, first_word=false, silent_last_vowel=true)
 segments = Segment[]
 j = 1
 for i in texts
@@ -157,7 +186,21 @@ for i in texts
 end
 
 segments
-encode.(texts)
+
+
+o = parse.(Orthography, texts[end])
+a = []
+
+vowel_indices(string(o.data[1]))
+jvowels = join([c.char for c in BW_VOWELS])
+string(o.data[1])[findfirst(x -> x .∈ jvowels, string(o.data[1]))]
+for i in o.data
+	
+	push!(a, string(i))	
+end
+
+a
+arabic.(encode.(texts))
 segments
 Syllable(1, 1, 3)
 segments = r.(texts, true)
