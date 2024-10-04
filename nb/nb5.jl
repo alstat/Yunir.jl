@@ -35,7 +35,6 @@ aout.alignment
 plot(aout)[1]
 score(aout)
 
-
 function transition(seq::Sequence)
     sequence = seq.sequence
     transition_counts = Dict{Tuple{String,String}, Int}()
@@ -55,37 +54,6 @@ function transition(seq::Sequence)
     return transition_probs
 end
 
-transition(out1)
-
-
-####
-function compute_transition_probabilities2(sequence::Vector{T}) where T
-    transition_counts = Dict{Tuple{T,T}, Int}()
-    state_counts = Dict{T, Int}()
-    
-    for (current, next) in zip(sequence, @view sequence[2:end])
-        transition_counts[(current, next)] = get(transition_counts, (current, next), 0) + 1
-        state_counts[current] = get(state_counts, current, 0) + 1
-    end
-    state_counts[sequence[end]] = get(state_counts, sequence[end], 0) + 1  # Count the last state
-    
-    transition_probs = Dict{Tuple{T,T}, Float64}()
-    for ((from, to), count) in transition_counts
-        transition_probs[(from, to)] = count / state_counts[from]
-    end
-    
-    return transition_probs
-end
-# Example usage
-seq = out1.sequence
-probs = compute_transition_probabilities2(seq)
-probs
-# Print results
-for ((from, to), prob) in sort(collect(probs))
-    println("$from -> $to: $prob")
-end
-
-#----------------
 using Graphs
 using GraphMakie
 using Colors
@@ -142,6 +110,38 @@ function GraphMakie.graphplot(probs::Dict{Tuple{String,String}, Float64}, resolu
     
     return f
 end
+
+probs = transition(out2)
+graphplot(probs)
+
+####
+function compute_transition_probabilities2(sequence::Vector{T}) where T
+    transition_counts = Dict{Tuple{T,T}, Int}()
+    state_counts = Dict{T, Int}()
+    
+    for (current, next) in zip(sequence, @view sequence[2:end])
+        transition_counts[(current, next)] = get(transition_counts, (current, next), 0) + 1
+        state_counts[current] = get(state_counts, current, 0) + 1
+    end
+    state_counts[sequence[end]] = get(state_counts, sequence[end], 0) + 1  # Count the last state
+    
+    transition_probs = Dict{Tuple{T,T}, Float64}()
+    for ((from, to), count) in transition_counts
+        transition_probs[(from, to)] = count / state_counts[from]
+    end
+    
+    return transition_probs
+end
+# Example usage
+seq = out1.sequence
+probs = compute_transition_probabilities2(seq)
+probs
+# Print results
+for ((from, to), prob) in sort(collect(probs))
+    println("$from -> $to: $prob")
+end
+
+#----------------
 
 function visualize_transition_probabilities(probs::Dict{Tuple{T,T}, Float64}, resolution=(500, 500)) where T
     # Extract unique states

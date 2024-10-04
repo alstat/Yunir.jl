@@ -1,14 +1,76 @@
+using Yunir
 using Distributions
 using CairoMakie
 using QuranTree
-using Yunir
 
 crps, tnzl = load(QuranData());
 crpstbl = table(crps)
 tnzltbl = table(tnzl)
 bw_texts = verses(tnzltbl[1])
 
+texts = string.(split(bw_texts[6]))
+r = Syllabification(true, Syllable(1, 0, 5))
 
+segments = Segment[]
+j = 1
+for i in texts
+	if j == 1
+		push!(segments, r(encode(i), isarabic=false, first_word=true, silent_last_vowel=false))
+	elseif j == length(texts)
+		push!(segments, r(encode(i), isarabic=false, first_word=false, silent_last_vowel=true))
+	else
+		push!(segments, r(encode(i), isarabic=false, first_word=false, silent_last_vowel=false))
+	end
+	j += 1
+end
+
+segments
+
+tajweed_timings = Dict{String,Int64}(
+    "i" => 1,
+    "a" => 1,
+    "u" => 1,
+    "F" => 1,
+    "N" => 1,
+    "K" => 1,
+    "iy" => 2,
+    "aA" => 2,
+    "uw" => 2,
+    "^" => 4
+)
+
+function syllabic_consistency(segments)
+    segment_scores = []
+    for segment in segments
+        syllables = split(segment.segment, "?")
+
+        syllable_scores = []
+        for syllable in syllables
+            if occursin('{', syllable)
+                push!(syllable_scores, tajweed_timings["a"])
+            else
+                push!(syllable_scores, tajweed_timings[syllable[vowel_indices(string(syllable))]])
+            end
+        end
+        push!(segment_scores, syllable_scores...)
+    end
+    return segment_scores
+end
+
+
+syllabic_consistency(segments)
+f1 = segment_scores
+f2 = segment_scores
+
+
+
+sum([f1...,f2...])
+1/(1+std([9,11,6,6,13,9,24]))
+
+
+
+vowel_idsyllables
+tajweed_timings[o[1][vowel_indices(string(o[1]))]]
 
 verse_orthogs = Vector{Orthography}[]
 for verse in bw_texts

@@ -140,15 +140,15 @@ end
 """
 	(r::Syllabification)(text::String, isarabic::Bool=false)
 
-Call function for the `Rhyme` object. It extracts the rhyme features of `text` using the options
-from the `Rhyme` object specified by `r`. It can handle both Arabic and Buckwalter input by toggling `isarabic`.
+Call function for the `Syllabification` object. It extracts the rhyme features of `text` using the options
+from the `Syllabification` object specified by `r`. It can handle both Arabic and Buckwalter input by toggling `isarabic`.
 
 ```julia-repl
 julia> ar_raheem = "ٱلرَّحِيمِ"
 "ٱلرَّحِيمِ"
 
-julia> r = Rhyme(true, Syllable(1, 2, 1))
-Rhyme(true, Syllable{Int64}(1, 2, 1))
+julia> r = Syllabification(true, Syllable(1, 2, 1))
+Syllabification(true, Syllable{Int64}(1, 2, 1))
 
 julia> output = r(ar_raheem, true)
 Segment("حِيم", Harakaat[Harakaat("ِ", false)])

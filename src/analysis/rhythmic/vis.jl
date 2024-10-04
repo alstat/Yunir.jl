@@ -116,15 +116,15 @@ function sequence(segments::Array{Segment}, type::Union{Type{Harakaat},Type{Segm
 end
 
 function transition(seq::Sequence)
-    sequence = seq.sequence
+    seq = seq.sequence
     transition_counts = Dict{Tuple{String,String}, Int}()
     state_counts = Dict{String, Int}()
     
-    for (current, next) in zip(sequence, @view sequence[2:end])
+    for (current, next) in zip(seq, @view seq[2:end])
         transition_counts[(current, next)] = get(transition_counts, (current, next), 0) + 1
         state_counts[current] = get(state_counts, current, 0) + 1
     end
-    state_counts[sequence[end]] = get(state_counts, sequence[end], 0) + 1  # Count the last state
+    state_counts[seq[end]] = get(state_counts, seq[end], 0) + 1  # Count the last state
     
     transition_probs = Dict{Tuple{String,String}, Float64}()
     for ((from, to), count) in transition_counts
