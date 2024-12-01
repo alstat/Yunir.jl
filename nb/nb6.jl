@@ -6,9 +6,9 @@ using QuranTree
 crps, tnzl = load(QuranData());
 crpstbl = table(crps)
 tnzltbl = table(tnzl)
-bw_texts = verses(tnzltbl[1])
+bw_texts = verses(tnzltbl[2])
 
-texts = string.(split(bw_texts[6]))
+texts = string.(split(bw_texts[1]))
 r = Syllabification(true, Syllable(1, 0, 5))
 
 segments = Segment[]
@@ -27,29 +27,57 @@ end
 segments
 
 tajweed_timings = Dict{String,Int64}(
-    "i" => 1,
-    "a" => 1,
-    "u" => 1,
-    "F" => 1,
-    "N" => 1,
-    "K" => 1,
+    "i"  => 1,
+    "a"  => 1,
+    "u"  => 1,
+    "F"  => 1,
+    "N"  => 1,
+    "K"  => 1,
     "iy" => 2,
     "aA" => 2,
     "uw" => 2,
-    "^" => 4
+    "^"  => 4
 )
 
-function syllabic_consistency(segments)
-    segment_scores = []
+function syllabic_consistency(segments::Vector{Segment}, syllable_timing::Dict{String,Int64})
+    segment_scores = Int64[]
     for segment in segments
         syllables = split(segment.segment, "?")
 
-        syllable_scores = []
+        syllable_scores = Int64[]
         for syllable in syllables
             if occursin('{', syllable)
-                push!(syllable_scores, tajweed_timings["a"])
+                push!(syllable_scores, syllable_timing["a"])
             else
-                push!(syllable_scores, tajweed_timings[syllable[vowel_indices(string(syllable))]])
+                vowel_idcs = vowel_indices(string(syllable))
+                vowel = syllable[vowel_idcs]
+
+                if length(vowel_idcs) < 1
+                    if occursin('^', syllable)
+                        syllable_score = syllable_timing["^"]
+                    else
+                        syllable_score = 1
+                    end
+                else
+                    if vowel_idcs[1] < length(syllable)
+                        next_letter = syllable[vowel_idcs .+ 1]
+                        cond = (vowel == "a" && next_letter == "A") || 
+                               (vowel == "i" && next_letter == "y") ||
+                               (vowel == "u" && next_letter == "w")
+                        if cond
+                            if occursin('^', syllable)
+                                syllable_score = syllable_timing["^"]
+                            else
+                                syllable_score = syllable_timing[vowel * next_letter]
+                            end
+                        else
+                            syllable_score = syllable_timing[vowel]
+                        end
+                    else
+                        syllable_score = syllable_timing[vowel]
+                    end
+                end
+                push!(syllable_scores, syllable_score)
             end
         end
         push!(segment_scores, syllable_scores...)
@@ -57,8 +85,16 @@ function syllabic_consistency(segments)
     return segment_scores
 end
 
-
+segments
 syllabic_consistency(segments)
+
+
+vowel_indices(string(syllable))
+dump(segments[3])
+vowel_indices(string.(split(segments[3].segment, "?"))[3])
+tajweed_timings[string.(split(segments[3].segment, "?"))[3][vowel_indices(string.(split(segments[3].segment, "?"))[3])]]
+
+
 f1 = segment_scores
 f2 = segment_scores
 

@@ -289,3 +289,90 @@ function (r::Syllabification)(text::String; isarabic::Bool=false, first_word::Bo
         return Segment(segment_text, reverse(harakaat))
     end
 end
+
+
+"""
+	syllabic_consistency(segments::Vector{Segment}, syllable_timings::Dict{String,Int64})
+
+Compute syllabic_consistency from a given `segments` and `syllable_timings`
+```julia-repl
+
+julia> using Yunir
+julia> using QuranTree
+julia> crps, tnzl = load(QuranData());
+julia> crpstbl = table(crps)
+julia> tnzltbl = table(tnzl)
+julia> bw_texts = verses(tnzltbl[2])
+julia> texts = string.(split(bw_texts[1]))
+julia> r = Syllabification(true, Syllable(1, 0, 5))
+julia> segments = Segment[]
+julia> j = 1
+julia> for i in texts
+			if j == 1
+				push!(segments, r(encode(i), isarabic=false, first_word=true, silent_last_vowel=false))
+			elseif j == length(texts)
+				push!(segments, r(encode(i), isarabic=false, first_word=false, silent_last_vowel=true))
+			else
+				push!(segments, r(encode(i), isarabic=false, first_word=false, silent_last_vowel=false))
+			end
+			j += 1
+		end
+julia> tajweed_timings = Dict{String,Int64}(
+			"i"  => 1,
+			"a"  => 1,
+			"u"  => 1,
+			"F"  => 1,
+			"N"  => 1,
+			"K"  => 1,
+			"iy" => 2,
+			"aA" => 2,
+			"uw" => 2,
+			"^"  => 4
+		)
+julia> syllabic_consistency(segments)
+"""
+function syllabic_consistency(segments::Vector{Segment}, syllable_timings::Dict{String,Int64})
+    segment_scores = Int64[]
+    for segment in segments
+        syllables = split(segment.segment, "?")
+
+        syllable_scores = Int64[]
+        for syllable in syllables
+            if occursin('{', syllable)
+                push!(syllable_scores, syllable_timings["a"])
+            else
+                vowel_idcs = vowel_indices(string(syllable))
+                vowel = syllable[vowel_idcs]
+
+                if length(vowel_idcs) < 1
+                    if occursin('^', syllable)
+                        syllable_score = syllable_timings["^"]
+                    else
+                        syllable_score = 1
+                    end
+                else
+                    if vowel_idcs[1] < length(syllable)
+                        next_letter = syllable[vowel_idcs .+ 1]
+                        cond = (vowel == "a" && next_letter == "A") || 
+                               (vowel == "i" && next_letter == "y") ||
+                               (vowel == "u" && next_letter == "w")
+                        if cond
+                            if occursin('^', syllable)
+                                syllable_score = syllable_timings["^"]
+                            else
+                                syllable_score = syllable_timings[vowel * next_letter]
+                            end
+                        else
+                            syllable_score = syllable_timings[vowel]
+                        end
+                    else
+                        syllable_score = syllable_timings[vowel]
+                    end
+                end
+                push!(syllable_scores, syllable_score)
+            end
+        end
+        push!(segment_scores, syllable_scores...)
+    end
+    return segment_scores
+end
