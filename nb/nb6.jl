@@ -6,39 +6,74 @@ using QuranTree
 crps, tnzl = load(QuranData());
 crpstbl = table(crps)
 tnzltbl = table(tnzl)
-bw_texts = verses(tnzltbl[2])
+bw_texts = verses(tnzltbl)
 
-texts = string.(split(bw_texts[1]))
+texts = map(x -> string.(x), split.(bw_texts))
 r = Syllabification(true, Syllable(1, 0, 5))
 
-segments = Segment[]
-j = 1
-for i in texts
-	if j == 1
-		push!(segments, r(encode(i), isarabic=false, first_word=true, silent_last_vowel=false))
-	elseif j == length(texts)
-		push!(segments, r(encode(i), isarabic=false, first_word=false, silent_last_vowel=true))
-	else
-		push!(segments, r(encode(i), isarabic=false, first_word=false, silent_last_vowel=false))
-	end
-	j += 1
-end
-
-segments
-
 tajweed_timings = Dict{String,Int64}(
-    "i"  => 1,
-    "a"  => 1,
-    "u"  => 1,
-    "F"  => 1,
-    "N"  => 1,
-    "K"  => 1,
-    "iy" => 2,
-    "aA" => 2,
-    "uw" => 2,
-    "^"  => 4
+    "i"  => 1, # kasra
+    "a"  => 1, # fatha
+    "u"  => 1, # damma
+    "F"  => 1, # fatha tanween
+    "N"  => 1, # damma tanween
+    "K"  => 1, # kasra tanween
+    "iy" => 2, # kasra + yaa
+    "aA" => 2, # fatha + alif
+    "uw" => 2, # damma + waw
+    "^"  => 4 # maddah
 )
 
+# texts
+ar_raheem = "ٱلرَّحِيمِ"
+encode(ar_raheem)
+encode(texts[7][end])
+encode(texts[8][end])
+all_segments = []
+k = 1
+for text in texts
+    segments = Segment[]
+    j = 1
+    for i in text
+        if j == 1
+            push!(segments, r(encode(i), isarabic=false, first_word=true, silent_last_vowel=false))
+        elseif j == length(texts)
+            push!(segments, r(encode(i), isarabic=false, first_word=false, silent_last_vowel=true))
+        else
+            push!(segments, r(encode(i), isarabic=false, first_word=false, silent_last_vowel=false))
+        end
+        j += 1
+        println(k, "-", j)
+    end
+    k += 1
+    push!(all_segments, segments)
+end
+all_segments[8][end]
+
+syllabic_consistency([all_segments[2][2]], tajweed_timings)
+
+texts[7][end]
+r(encode(texts[7][end]), isarabic=false, first_word=false, silent_last_vowel=false)
+
+r(encode(texts[2][1]), isarabic=false, first_word=false, silent_last_vowel=false)
+encode(texts[8][5])
+r(encode(texts[8][5]), isarabic=false, first_word=false, silent_last_vowel=false)
+syllabic_consistency([r(encode(texts[8][5]), isarabic=false, first_word=false, silent_last_vowel=false)], tajweed_timings)
+
+
+encode(texts[8][5])
+encode.(texts[7])
+all_segments
+
+
+out = map(segments -> syllabic_consistency(segments, tajweed_timings), all_segments)
+out[1:7]
+out[8]
+encode(texts[7][2])
+
+all_segments[7]
+
+####
 function syllabic_consistency(segments::Vector{Segment}, syllable_timing::Dict{String,Int64})
     segment_scores = Int64[]
     for segment in segments
