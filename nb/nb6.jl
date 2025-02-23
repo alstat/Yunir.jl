@@ -48,6 +48,7 @@ for text in texts
     k += 1
     push!(all_segments, segments)
 end
+all_segments[2]
 all_segments[8][end]
 
 syllabic_consistency([all_segments[2][2]], tajweed_timings)

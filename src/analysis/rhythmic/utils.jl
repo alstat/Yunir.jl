@@ -302,8 +302,7 @@ Segment("Hiym", Harakaat[Harakaat("i", false)])
 #         return Segment(segment_text, reverse(harakaat))
 #     end
 # end
-
-function (r::Syllabification)(text::String; isarabic::Bool=false, first_word::Bool=false, silent_last_vowel::Bool=false)
+function (r::Syllabification)(text::String; isarabic::Bool=false, first_word::Bool=false, silent_last_vowel::Bool=false)::Segment
     jvowels = join([c.char for c in BW_VOWELS])
     text = isarabic ? encode(text) : text
     
@@ -313,7 +312,7 @@ function (r::Syllabification)(text::String; isarabic::Bool=false, first_word::Bo
     segment_text = ""
     
     if length(vowel_idcs) == 0
-        return handle_no_vowels(text, BW_VOWELS, jvowels)
+        return handle_no_vowels(text)
     end
     
     if silent_last_vowel
@@ -346,13 +345,34 @@ function (r::Syllabification)(text::String; isarabic::Bool=false, first_word::Bo
             trail_text = text[(vowel_idx+1):(vowel_idx+trail_nchars_uplimit)]
 
             # Handle first word special case
-            first_word_text = handle_first_word(text, first_word, vowel_idx, vowel_idcs, BW_VOWELS, harakaat, isarabic)
+            first_word_text = handle_first_word(
+                text::String,
+                first_word::Bool,
+                vowel_idx::Int,
+                vowel_idcs::Vector{Int},
+                BW_VOWELS::Vector{Harakaat},
+                harakaat::Vector{Harakaat},
+                isarabic::Bool
+            )
 
             # Handle maddah and leading characters
-            lead_text = handle_leading_text(text, vowel_idx, lead_nchars_lwlimit, lead_text)
+            lead_text = handle_leading_text(
+                text::String,
+                vowel_idx::Int,
+                lead_nchars_lwlimit::Int,
+                lead_text::String
+            )
 
             # Handle trailing characters with maddah preservation
-            trail_text = handle_trailing_text(text, vowel_idx, trail_nchars_uplimit, trail_text, BW_LONG_VOWELS, BW_VOWELS, silent_last_vowel)
+            trail_text = handle_trailing_text(
+                text::String,
+                vowel_idx::Int,
+                trail_nchars_uplimit::Int,
+                trail_text::String,
+                BW_LONG_VOWELS::Vector{String},
+                BW_VOWELS::Vector{Harakaat},
+                silent_last_vowel::Bool
+            )
 
             if i == 0
                 segment_text = first_word_text * lead_text * vowel * trail_text
@@ -369,7 +389,22 @@ function (r::Syllabification)(text::String; isarabic::Bool=false, first_word::Bo
     end
 end
 
-function handle_first_word(text, first_word, vowel_idx, vowel_idcs, BW_VOWELS, harakaat, isarabic)
+"""
+    handle_first_word(text::String, first_word::Bool, vowel_idx::Int, vowel_idcs::Vector{Int}, 
+                     BW_VOWELS::Vector{Harakaat}, harakaat::Vector{Harakaat}, isarabic::Bool)::String
+
+Process the first word of the text, handling special cases for Arabic text beginnings.
+Returns the processed first word text segment.
+"""
+function handle_first_word(
+    text::String,
+    first_word::Bool,
+    vowel_idx::Int,
+    vowel_idcs::Vector{Int},
+    BW_VOWELS::Vector{Harakaat},
+    harakaat::Vector{Harakaat},
+    isarabic::Bool
+)::String
     if first_word && vowel_idx == vowel_idcs[1]
         if text[1] == '{'
             first_word_harakaat = filter(x -> x.char == "a", BW_VOWELS)[1]
@@ -380,7 +415,18 @@ function handle_first_word(text, first_word, vowel_idx, vowel_idcs, BW_VOWELS, h
     return ""
 end
 
-function handle_leading_text(text, vowel_idx, lead_nchars_lwlimit, lead_text)
+"""
+    handle_leading_text(text::String, vowel_idx::Int, lead_nchars_lwlimit::Int, lead_text::String)::String
+
+Process the leading text segment, handling special cases for characters before vowels.
+Returns the processed leading text segment.
+"""
+function handle_leading_text(
+    text::String,
+    vowel_idx::Int,
+    lead_nchars_lwlimit::Int,
+    lead_text::String
+)::String
     if vowel_idx > lead_nchars_lwlimit && text[vowel_idx-lead_nchars_lwlimit] == '~'
         lead_candidate = text[vowel_idx-lead_nchars_lwlimit-1]
         lead_text = lead_candidate * lead_text
@@ -388,7 +434,24 @@ function handle_leading_text(text, vowel_idx, lead_nchars_lwlimit, lead_text)
     return lead_text
 end
 
-function handle_trailing_text(text, vowel_idx, trail_nchars_uplimit, trail_text, BW_LONG_VOWELS, BW_VOWELS, silent_last_vowel)
+"""
+    handle_trailing_text(text::String, vowel_idx::Int, trail_nchars_uplimit::Int, trail_text::String,
+                        BW_LONG_VOWELS::Vector{String}, BW_VOWELS::Vector{Harakaat}, 
+                        silent_last_vowel::Bool)::String
+
+Process the trailing text segment, handling special cases for characters after vowels,
+including maddah and long vowels.
+Returns the processed trailing text segment.
+"""
+function handle_trailing_text(
+    text::String,
+    vowel_idx::Int,
+    trail_nchars_uplimit::Int,
+    trail_text::String,
+    BW_LONG_VOWELS::Vector{String},
+    BW_VOWELS::Vector{Harakaat},
+    silent_last_vowel::Bool
+)::String
     if (vowel_idx + trail_nchars_uplimit + 1) <= length(text)
         trail_candidate1 = text[vowel_idx + trail_nchars_uplimit + 1]
         
@@ -423,15 +486,25 @@ function handle_trailing_text(text, vowel_idx, trail_nchars_uplimit, trail_text,
     return trail_text
 end
 
-function handle_no_vowels(text, BW_VOWELS, jvowels)
-    orthogs = parse(Orthography, arabic(text)).data
+"""
+    handle_no_vowels(text::String)::Segment
+
+Process text segments that contain no vowels, handling special cases like maddah.
+Returns a Segment object containing the processed text and its harakaat.
+"""
+function handle_no_vowels(text::String)::Segment
     harakaat = Harakaat[]
     segment_text = ""
     i = 1
     
     while i <= length(text)
         if i < length(text) && text[i+1] == '^'
-            segment_text *= text[i] * "^?"
+            # If this is the last character pair (letter + ^), don't add ?
+            if i + 2 > length(text)
+                segment_text *= text[i] * "^"
+            else
+                segment_text *= text[i] * "^?"
+            end
             i += 2
         else
             if i < length(text)
