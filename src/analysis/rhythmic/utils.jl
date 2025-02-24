@@ -261,32 +261,27 @@ function handle_trailing_text(text::String, vowel_idx::Int, r::Syllabification, 
     trail_nchars_uplimit = min(trail_length, r.syllable.trail_nchars)
     
     if r.syllable.trail_nchars > 0 && trail_nchars_uplimit > 0
+        # Get the allowed trailing characters based on the limit
         trail_text = text[(vowel_idx+1):(vowel_idx+trail_nchars_uplimit)]
         
-        if (vowel_idx + trail_nchars_uplimit + 1) <= length(text)
-            trail_candidate1 = text[vowel_idx + trail_nchars_uplimit + 1]
-            lvowel_cond = trail_candidate1 .∈ BW_LONG_VOWELS
+        # Only check for additional characters if we need to handle special cases
+        # and we've already included the maximum allowed trailing characters
+        if trail_nchars_uplimit >= r.syllable.trail_nchars
+            # Check if the vowel is followed by a long vowel marker that should be handled specially
+            vowel = text[vowel_idx]
             
-            if (vowel_idx + trail_nchars_uplimit + 2) <= length(text)
-                trail_candidate2 = text[vowel_idx + trail_nchars_uplimit + 2]
+            # Process special cases for the first character after our trail limit
+            if (vowel_idx + trail_nchars_uplimit + 1) <= length(text)
+                next_char = text[vowel_idx + trail_nchars_uplimit + 1]
                 
-                if trail_candidate2 == '^'
-                    trail_text *= trail_candidate1 * "^"
-                elseif sum(lvowel_cond) > 0
-                    if trail_candidate2 != 'o'
-                        if silent_last_vowel
-                            trail_text *= trail_candidate1 * trail_candidate2
-                        else
-                            trail_text *= trail_candidate1
-                        end
-                    else
-                        trail_text *= trail_candidate1
-                    end
-                elseif sum(lvowel_cond) == 0 && 
-                       sum(string(trail_candidate1) .∈ BW_VOWELS) == 0 && 
-                       trail_candidate2 == 'o'
-                    trail_text *= trail_candidate1
+                # Check if this is a special case for shadda (^)
+                if next_char == '^' && trail_nchars_uplimit > 0
+                    # In this case, we want to include the shadda marker
+                    trail_text *= "^"
                 end
+                
+                # Don't append any long vowel markers, as they should only be included
+                # if they fall within the trail_nchars limit
             end
         end
     end

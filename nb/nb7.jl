@@ -140,3 +140,7 @@ r = Syllabification(true, Syllable(2, 2, 2)) # 1 vowel only, and it will start t
 @test r(alhamd, isarabic=false, first_word=true, silent_last_vowel=true).harakaat == [Harakaat("a", false), Harakaat("a", false)]
 @test r(alhamd, isarabic=false, first_word=true, silent_last_vowel=true).harakaat[1].char == "a"
 @test r(alhamd, isarabic=false, first_word=true, silent_last_vowel=true).harakaat[2].char == "a"
+
+
+
+
