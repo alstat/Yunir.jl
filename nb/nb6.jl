@@ -9,7 +9,11 @@ tnzltbl = table(tnzl)
 bw_texts = verses(tnzltbl)
 
 texts = map(x -> string.(x), split.(bw_texts))
-r = Syllabification(true, Syllable(1, 0, 5))
+r = Syllabification(true, Syllable(0, 0, 2))
+
+texts[1][end]
+encode(texts[1][end])
+r(encode(texts[1][end]), isarabic=false, first_word=false, silent_last_vowel=false)
 
 tajweed_timings = Dict{String,Int64}(
     "i"  => 1, # kasra
@@ -25,7 +29,14 @@ tajweed_timings = Dict{String,Int64}(
 )
 
 # texts
-ar_raheem = "ٱلرَّحِيمِ"
+ar_raheem = encode("ٱلرَّحِيمِ")
+r = Syllabification(true, Syllable(1, 0, 1))
+r(ar_raheem, isarabic=false, silent_last_vowel=true)
+
+ar_raheem = encode("ٱلرَّحِيمِ")
+r = Syllabification(true, Syllable(1, 2, 2))
+r(ar_raheem, isarabic=false, silent_last_vowel=false)
+
 encode(ar_raheem)
 encode(texts[7][end])
 encode(texts[8][end])
