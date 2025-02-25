@@ -219,6 +219,176 @@ function (r::Syllabification)(text::String; isarabic::Bool=false, first_word::Bo
 end
 
 """
+    handle_no_vowels(text::String)::Segment
+
+Handle text that contains no explicit vowels by adding implicit vowels
+for letter pronunciation. Handles all Arabic letters in the Buckwalter encoding
+with proper placement of diacritical marks like maddah (^).
+"""
+function handle_no_vowels(text::String)::Segment
+    segment_text = ""
+    harakaat = Harakaat[]
+    
+    # Process each character with its modifiers
+    chars_processed = 0
+    
+    i = 1
+    while i <= length(text)
+        current_segment = ""
+        current_char = text[i]
+        current_segment *= current_char
+        i += 1
+        
+        # Look ahead for modifier symbols and include them in the current segment
+        while i <= length(text) && (text[i] == '^' || text[i] == 'o' || text[i] == '~')
+            current_segment *= text[i]
+            i += 1
+        end
+        
+        # Define implicit vowels for Arabic letter names based on the base character
+        base_char = current_segment[1]  # The first character is the base letter
+        
+        # Consonants
+        if base_char == 'A'
+            # Alif is pronounced like "alif" (a-i)
+            push!(harakaat, Harakaat("a", false))
+            push!(harakaat, Harakaat("i", false))
+        elseif base_char == 'b'
+            # Ba is pronounced like "bā'" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == 'p'
+            # Ta marbuta is pronounced like "tā' marbūṭa" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == 't'
+            # Ta is pronounced like "tā'" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == 'v'
+            # Tha is pronounced like "thā'" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == 'j'
+            # Jim is pronounced like "jīm" (i)
+            push!(harakaat, Harakaat("i", false))
+        elseif base_char == 'H'
+            # Ḥa is pronounced like "ḥā'" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == 'x'
+            # Kha is pronounced like "khā'" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == 'd'
+            # Dal is pronounced like "dāl" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == '*'
+            # Dhal is pronounced like "dhāl" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == 'r'
+            # Ra is pronounced like "rā'" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == 'z'
+            # Zay is pronounced like "zāy" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == 's'
+            # Sin is pronounced like "sīn" (i)
+            push!(harakaat, Harakaat("i", false))
+        elseif base_char == '$'
+            # Shin is pronounced like "shīn" (i)
+            push!(harakaat, Harakaat("i", false))
+        elseif base_char == 'S'
+            # Sad is pronounced like "ṣād" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == 'D'
+            # Dad is pronounced like "ḍād" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == 'T'
+            # Ta is pronounced like "ṭā'" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == 'Z'
+            # Zha is pronounced like "ẓā'" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == 'E'
+            # 'Ayn is pronounced like "'ayn" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == 'g'
+            # Ghayn is pronounced like "ghayn" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == 'f'
+            # Fa is pronounced like "fā'" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == 'q'
+            # Qaf is pronounced like "qāf" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == 'k'
+            # Kaf is pronounced like "kāf" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == 'l'
+            # Lam is pronounced like "lām" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == 'm'
+            # Mim is pronounced like "mīm" (i)
+            push!(harakaat, Harakaat("i", false))
+        elseif base_char == 'n'
+            # Nun is pronounced like "nūn" (u)
+            push!(harakaat, Harakaat("u", false))
+        elseif base_char == 'h'
+            # Ha is pronounced like "hā'" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == 'w'
+            # Waw is pronounced like "wāw" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == 'Y'
+            # Alif maqsura is pronounced like "alif maqṣūra" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == 'y'
+            # Ya is pronounced like "yā'" (a)
+            push!(harakaat, Harakaat("a", false))
+        
+        # Hamza forms
+        elseif base_char == '\''
+            # Hamza is pronounced like "hamza" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == '>'
+            # Hamza on alif is pronounced similarly to "hamza" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == '&'
+            # Hamza on waw is pronounced similarly to "hamza" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == '<'
+            # Hamza under alif is pronounced similarly to "hamza" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == '}'
+            # Hamza on ya is pronounced similarly to "hamza" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == '('
+            # Alif madda is pronounced like "alif madda" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == '{'
+            # Alif wasla is pronounced like "alif waṣla" (a)
+            push!(harakaat, Harakaat("a", false))
+        
+        # Special ligatures
+        elseif base_char == 'L'
+            # Lam-Alif ligature pronounced like "lām-alif" (a)
+            push!(harakaat, Harakaat("a", false))
+        elseif base_char == 'G'
+            # Allah ligature
+            push!(harakaat, Harakaat("a", false))
+        
+        # Punctuation and other symbols don't have vowel pronunciation
+        end
+        
+        # Add the current segment to the text
+        if chars_processed > 0
+            segment_text = segment_text * "?" * current_segment
+        else
+            segment_text = current_segment
+        end
+        
+        chars_processed += 1
+    end
+    
+    return Segment(segment_text, harakaat)
+end
+
+"""
     handle_leading_text(text::String, vowel_idx::Int, r::Syllabification, lead_length::Int)::String
 
 Process the leading text segment, calculating boundaries and handling special cases.
