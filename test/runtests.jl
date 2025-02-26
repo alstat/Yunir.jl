@@ -245,7 +245,9 @@ using Yunir
 
         # more than 1 vowel
         r = Syllabification(true, Syllable(0, 0, 2)) # 2 vowels, and it will start from the last vowel
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).segment === Segment("i?i", Harakaat[Harakaat("i", false)]).segment
+
+        # capture the long vowel
+        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).segment === Segment("iy?i", Harakaat[Harakaat("i", false)]).segment
         @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat == Harakaat[Harakaat("i", false), Harakaat("i", false)]
         @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].char == "i"
         @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[2].char == "i"
@@ -278,7 +280,7 @@ using Yunir
 
         # more than 2 vowels
         r = Syllabification(true, Syllable(0, 0, 3)) # 3 vowels, and it will start from the last vowel
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).segment === Segment("a?i?i", Harakaat[Harakaat("a", false), Harakaat("i", false), Harakaat("i", false)]).segment
+        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).segment === Segment("a?iy?i", Harakaat[Harakaat("a", false), Harakaat("i", false), Harakaat("i", false)]).segment
         @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat == Harakaat[Harakaat("a", false), Harakaat("i", false), Harakaat("i", false)]
         @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].char == "a"
         @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[2].char == "i"
@@ -289,7 +291,9 @@ using Yunir
 
         # more than 2 vowels
         r = Syllabification(true, Syllable(1, 1, 3)) # 3 vowels, and it will start from the last vowel
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).segment === Segment("~aH?Hiy?mi", Harakaat[Harakaat("a", false), Harakaat("i", false), Harakaat("i", false)]).segment
+
+        # remember ~ is a sadda, and therefore needs to have consonant preceding it to know what letter to double
+        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).segment === Segment("r~aH?Hiy?mi", Harakaat[Harakaat("a", false), Harakaat("i", false), Harakaat("i", false)]).segment
         @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat == Harakaat[Harakaat("a", false), Harakaat("i", false), Harakaat("i", false)]
         @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].char == "a"
         @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[2].char == "i"
@@ -299,7 +303,7 @@ using Yunir
         @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[3].is_tanween == false
 
         r = Syllabification(true, Syllable(2, 2, 3)) # 3 vowels, and it will start from the last vowel
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).segment === Segment("r~aHi?aHiym?ymi", Harakaat[Harakaat("a", false), Harakaat("i", false), Harakaat("i", false)]).segment
+        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).segment === Segment("r~aHiy?aHiym?ymi", Harakaat[Harakaat("a", false), Harakaat("i", false), Harakaat("i", false)]).segment
         @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat == Harakaat[Harakaat("a", false), Harakaat("i", false), Harakaat("i", false)]
         @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].char == "a"
         @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[2].char == "i"
@@ -381,12 +385,13 @@ using Yunir
         khyas = encode("كهيعص")
         result = r(khyas, isarabic=false, first_word=false, silent_last_vowel=false)
         @test result.segment == "k?h?y?E?S"
-        @test length(result.harakaat) == 5
+        @test length(result.harakaat) == 6
         @test result.harakaat[1].char == "a"  # Vowel for kaf
         @test result.harakaat[2].char == "a"  # Vowel for ha
         @test result.harakaat[3].char == "a"  # Vowel for ya
-        @test result.harakaat[4].char == "a"  # Vowel for ayn
-        @test result.harakaat[5].char == "a"  # Vowel for sad
+        @test result.harakaat[4].char == "a"  # Vowel for ayn since it has sound of a first
+        @test result.harakaat[5].char == "i"  # Vowel for ayn since it has sound of i second
+        @test result.harakaat[6].char == "a"  # Vowel for sad
 
         # Test 4: Ṭā Hā (طه)
         th = encode("طه")
@@ -446,10 +451,11 @@ using Yunir
         esq = encode("عسق")
         result = r(esq, isarabic=false, first_word=false, silent_last_vowel=false)
         @test result.segment == "E?s?q"
-        @test length(result.harakaat) == 3
-        @test result.harakaat[1].char == "a"  # Vowel for ayn
-        @test result.harakaat[2].char == "i"  # Vowel for sin
-        @test result.harakaat[3].char == "a"  # Vowel for qaf
+        @test length(result.harakaat) == 4
+        @test result.harakaat[1].char == "a"  # Vowel for ayn for a sound
+        @test result.harakaat[2].char == "i"  # Vowel for ayn for i sound
+        @test result.harakaat[3].char == "i"  # Vowel for sin
+        @test result.harakaat[4].char == "a"  # Vowel for qaf
 
         # Test 12: Complex case with multiple diacritics - Alif Lām Rā (الر)
         alr = encode("الٓرٓ")

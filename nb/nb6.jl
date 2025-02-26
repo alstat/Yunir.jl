@@ -6,34 +6,50 @@ using QuranTree
 crps, tnzl = load(QuranData());
 crpstbl = table(crps)
 tnzltbl = table(tnzl)
-<<<<<<< HEAD
 bw_texts = verses(tnzltbl)
 
 texts = map(x -> string.(x), split.(bw_texts))
-r = Syllabification(true, Syllable(0, 0, 2))
-=======
-bw_texts = verses(tnzltbl[1])
+r = Syllabification(true, Syllable(1, 2, 4))
 
-texts = string.(split(bw_texts[6]))
-r = Syllabification(true, Syllable(1, 0, 5))
->>>>>>> parent of b5b987d (add syllabic_consistency)
-
-texts[1][end]
+encode(texts[2][2])
 encode(texts[1][end])
-r(encode(texts[1][end]), isarabic=false, first_word=false, silent_last_vowel=false)
+function code2()
+    r(encode(texts[2][1]), isarabic=false, first_word=true, silent_last_vowel=false)
+end
+code2()
+
+function code3()
+    alhamd = encode("ٱلْحَمْدُ")
+    r = Syllabification(true, Syllable(0, 1, 2))
+    r(alhamd, isarabic=false, first_word=true, silent_last_vowel=true)
+end
+
+function code4()
+    alhamd = encode("ٱلْحَمْدُ") # output: "{loHamodu"
+    r = Syllabification(true, Syllable(0, 0, 2)) # 1 vowel only, and it will start the finding of vowel from right to left of the letters
+    r(alhamd, isarabic=false, first_word=true, silent_last_vowel=true)
+end
+
+function code5()
+    # Test 10: Nūn (ن)
+    n = encode("ن")
+    result = r(n, isarabic=false, first_word=false, silent_last_vowel=false)
+    @test result.segment == "n"
+    @test length(result.harakaat) == 1
+    @test result.harakaat[1].char == "u"  # Vowel for nun
+end
 
 tajweed_timings = Dict{String,Int64}(
-<<<<<<< HEAD
-    "i"  => 1, # kasra
-    "a"  => 1, # fatha
-    "u"  => 1, # damma
-    "F"  => 1, # fatha tanween
-    "N"  => 1, # damma tanween
-    "K"  => 1, # kasra tanween
+    "i" => 1, # kasra
+    "a" => 1, # fatha
+    "u" => 1, # damma
+    "F" => 1, # fatha tanween
+    "N" => 1, # damma tanween
+    "K" => 1, # kasra tanween
     "iy" => 2, # kasra + yaa
     "aA" => 2, # fatha + alif
     "uw" => 2, # damma + waw
-    "^"  => 4 # maddah
+    "^" => 4 # maddah
 )
 
 # texts
@@ -45,6 +61,12 @@ ar_raheem = encode("ٱلرَّحِيمِ")
 r = Syllabification(true, Syllable(1, 2, 2))
 r(ar_raheem, isarabic=false, silent_last_vowel=false)
 
+
+i = texts[1365][5]
+function code1()
+    r(encode(i), isarabic=false, first_word=false, silent_last_vowel=false)
+end
+code1()
 encode(ar_raheem)
 encode(texts[7][end])
 encode(texts[8][end])
@@ -67,6 +89,10 @@ for text in texts
     k += 1
     push!(all_segments, segments)
 end
+
+i = texts[1365][5]
+r(encode(i), isarabic=false, first_word=false, silent_last_vowel=false)
+
 all_segments[2]
 all_segments[8][end]
 
@@ -96,22 +122,6 @@ all_segments[7]
 ####
 function syllabic_consistency(segments::Vector{Segment}, syllable_timing::Dict{String,Int64})
     segment_scores = Int64[]
-=======
-    "i" => 1,
-    "a" => 1,
-    "u" => 1,
-    "F" => 1,
-    "N" => 1,
-    "K" => 1,
-    "iy" => 2,
-    "aA" => 2,
-    "uw" => 2,
-    "^" => 4
-)
-
-function syllabic_consistency(segments)
-    segment_scores = []
->>>>>>> parent of b5b987d (add syllabic_consistency)
     for segment in segments
         syllables = split(segment.segment, "?")
 
@@ -135,8 +145,8 @@ f2 = segment_scores
 
 
 
-sum([f1...,f2...])
-1/(1+std([9,11,6,6,13,9,24]))
+sum([f1..., f2...])
+1 / (1 + std([9, 11, 6, 6, 13, 9, 24]))
 
 
 
@@ -213,7 +223,7 @@ end
 # Calculate rhyme strength
 function rhyme_strength(verses)
     n = length(verses)
-    matches = sum(verses[i][end] == verses[j][end] 
+    matches = sum(verses[i][end] == verses[j][end]
                   for i in 1:n for j in (i+1):n)
     return 2 * matches / (n * (n - 1))
 end
@@ -221,7 +231,7 @@ end
 # Calculate edit distance for rhythmic pattern regularity
 function edit_distance(a, b)
     m, n = length(a), length(b)
-    dp = zeros(Int, m+1, n+1)
+    dp = zeros(Int, m + 1, n + 1)
     for i in 1:m+1
         dp[i, 1] = i - 1
     end
@@ -254,12 +264,12 @@ tajweed_adherence(verses) = 1.0
 # Main analysis function
 function analyze_quranic_rhythm(verses::Vector{String}, weights::Vector{Float64})
     syllabic_verses = [to_syllabic_structure(v) for v in verses]
-    
+
     sc = syllabic_consistency(syllabic_verses)
     rs = rhyme_strength(syllabic_verses)
     rpr = rhythmic_pattern_regularity(syllabic_verses)
     ta = tajweed_adherence(syllabic_verses)
-    
+
     scores = [sc, rs, rpr, ta]
     return (scores'weights) / sum(weights)
 end
