@@ -39,6 +39,12 @@ function code5()
     @test result.harakaat[1].char == "u"  # Vowel for nun
 end
 
+function code6()
+    r = Syllabification(true, Syllable(0, 0, 2)) # 1 vowel only, and it will start the finding of vowel from right to left of the letters
+    r(encode("صّ"), isarabic=false, first_word=false, silent_last_vowel=false)
+end
+code6()
+
 tajweed_timings = Dict{String,Int64}(
     "i" => 1, # kasra
     "a" => 1, # fatha

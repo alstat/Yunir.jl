@@ -170,10 +170,14 @@ function (r::Syllabification)(text::String; isarabic::Bool=false, first_word::Bo
 						consonant = text[i:i+1] * "?"
 					end 
 				elseif i+1 == length(text)
-					if text[i+1] != '^'
-						consonant = text[i] * "?"
-					else
+					if text[i+1] == '^'
 						consonant = text[i:i+1]
+					elseif text[i+1] == '~'
+						consonant = text[i:i+1]
+						segment_text *= consonant
+						break # break already since the length of the text is equal to i+1
+					else
+						consonant = text[i] * "?"
 					end 
 				else
 					consonant = text[i]
