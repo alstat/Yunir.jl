@@ -303,7 +303,7 @@ using Yunir
         @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[3].is_tanween == false
 
         r = Syllabification(true, Syllable(2, 2, 3)) # 3 vowels, and it will start from the last vowel
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).segment === Segment("r~aHiy?aHiym?ymi", Harakaat[Harakaat("a", false), Harakaat("i", false), Harakaat("i", false)]).segment
+        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).segment === Segment("r~aHi?aHiym?ymi", Harakaat[Harakaat("a", false), Harakaat("i", false), Harakaat("i", false)]).segment
         @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat == Harakaat[Harakaat("a", false), Harakaat("i", false), Harakaat("i", false)]
         @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].char == "a"
         @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[2].char == "i"

@@ -9,7 +9,7 @@ tnzltbl = table(tnzl)
 bw_texts = verses(tnzltbl)
 
 texts = map(x -> string.(x), split.(bw_texts))
-r = Syllabification(true, Syllable(1, 2, 4))
+r = Syllabification(true, Syllable(1, 1, 4))
 
 encode(texts[2][2])
 encode(texts[1][end])
@@ -58,14 +58,14 @@ tajweed_timings = Dict{String,Int64}(
     "^" => 4 # maddah
 )
 
-# texts
-ar_raheem = encode("ٱلرَّحِيمِ")
-r = Syllabification(true, Syllable(1, 0, 1))
-r(ar_raheem, isarabic=false, silent_last_vowel=true)
+# # texts
+# ar_raheem = encode("ٱلرَّحِيمِ")
+# r = Syllabification(true, Syllable(1, 0, 1))
+# r(ar_raheem, isarabic=false, silent_last_vowel=true)
 
-ar_raheem = encode("ٱلرَّحِيمِ")
-r = Syllabification(true, Syllable(1, 2, 2))
-r(ar_raheem, isarabic=false, silent_last_vowel=false)
+# ar_raheem = encode("ٱلرَّحِيمِ")
+# r = Syllabification(true, Syllable(1, 1, 5))
+# r(ar_raheem, isarabic=false, silent_last_vowel=false)
 
 
 i = texts[1365][5]
@@ -84,7 +84,7 @@ for text in texts
     for i in text
         if j == 1
             push!(segments, r(encode(i), isarabic=false, first_word=true, silent_last_vowel=false))
-        elseif j == length(texts)
+        elseif j == length(text)
             push!(segments, r(encode(i), isarabic=false, first_word=false, silent_last_vowel=true))
         else
             push!(segments, r(encode(i), isarabic=false, first_word=false, silent_last_vowel=false))
@@ -96,10 +96,13 @@ for text in texts
     push!(all_segments, segments)
 end
 
+out = map(segments -> syllabic_consistency(segments, tajweed_timings), all_segments)
+
+
 i = texts[1365][5]
 r(encode(i), isarabic=false, first_word=false, silent_last_vowel=false)
 
-all_segments[2]
+r(encode(texts[1][end]), isarabic=false, first_word=false, silent_last_vowel=true)
 all_segments[8][end]
 
 syllabic_consistency([all_segments[2][2]], tajweed_timings)
@@ -117,7 +120,39 @@ encode(texts[8][5])
 encode.(texts[7])
 all_segments
 
+function code7()
+    map(segments -> syllabic_consistency(segments, tajweed_timings), all_segments)
+end
 
+yy = []; i = 0
+for segments in all_segments
+    @info "$i"
+    push!(yy, syllabic_consistency(segments, tajweed_timings))
+    i += 1
+end
+
+arabic("gaAwi?wiy")
+
+
+function code9()
+    r(encode(texts[1129][end]), isarabic=false, first_word=false, silent_last_vowel=true)
+end
+
+
+code9()
+all_segments[1129][end]
+all_segments[1129]
+function code8()
+    syllabic_consistency(all_segments[1129], tajweed_timings)
+end
+code8()
+
+function code10()
+    ar_raheem = encode("ٱلرَّحِيمِ")
+    r = Syllabification(true, Syllable(1, 1, 3))
+    r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false)
+end
+code10()
 out = map(segments -> syllabic_consistency(segments, tajweed_timings), all_segments)
 out[1:7]
 out[8]
@@ -126,7 +161,7 @@ encode(texts[7][2])
 all_segments[7]
 
 ####
-function syllabic_consistency(segments::Vector{Segment}, syllable_timing::Dict{String,Int64})
+function syllabic_consistency(segments::Vector{Segment}, syllable_timing::Dict{String,Int64}) 
     segment_scores = Int64[]
     for segment in segments
         syllables = split(segment.segment, "?")

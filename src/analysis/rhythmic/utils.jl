@@ -112,7 +112,9 @@ end
 """
 	(r::Syllabification)(text::String, isarabic::Bool=false)
 Call function for the `Syllabification` object. It extracts the rhyme features of `text` using the options
-from the `Syllabification` object specified by `r`. It can handle both Arabic and Buckwalter input by toggling `isarabic`.
+from the `Syllabification` object specified by `r`. It can handle both Arabic and Buckwalter input by toggling `isarabic`. 
+
+Note: This will only work with @transliterator :default
 ```julia-repl
 julia> ar_raheem = "ٱلرَّحِيمِ"
 "ٱلرَّحِيمِ"
@@ -241,25 +243,34 @@ function (r::Syllabification)(text::String; isarabic::Bool=false, first_word::Bo
 				lead_candidate1 = text[vowel_idx-lead_nchars_lwlimit-1]
 				lead_text = lead_candidate1 * lead_text
 			end
-			if (vowel_idx+trail_nchars_uplimit+1 <= length(text))
-				trail_candidate1 = text[vowel_idx+trail_nchars_uplimit+1]
-				lvowel_cond = trail_candidate1 .∈ BW_LONG_VOWELS
-				if (vowel_idx+trail_nchars_uplimit+2 <= length(text))
-					trail_candidate2 = text[vowel_idx+trail_nchars_uplimit+2]
-					# trail candidate is a long vowel
-					if sum(lvowel_cond) > 0 && trail_candidate2 != 'o'
-						if silent_last_vowel
-							trail_text *= trail_candidate1 * trail_candidate2
-						else
+			if r.syllable.trail_nchars == 0
+				if (vowel_idx+trail_nchars_uplimit+1 <= length(text))
+					trail_candidate1 = text[vowel_idx+trail_nchars_uplimit+1] # v + [tr1] (if trail = 0) 
+					lvowel_cond = trail_candidate1 .∈ BW_LONG_VOWELS
+					if (vowel_idx+trail_nchars_uplimit+2 <= length(text))
+						trail_candidate2 = text[vowel_idx+trail_nchars_uplimit+2]
+						# trail candidate is a long vowel
+						if sum(lvowel_cond) > 0 && trail_candidate2 != 'o'
+							if silent_last_vowel && k == (uplimit-is_silent-penalty) # k suggest that this applies to last syllable of last word only
+								trail_text *= trail_candidate1 * trail_candidate2
+							else
+								trail_text *= trail_candidate1
+							end
+						# trail candidate is a long vowel but with sukuun, so it is a consonant with no vowel
+						elseif sum(lvowel_cond) > 0 && trail_candidate2 == 'o'
 							trail_text *= trail_candidate1
-						end
-					# trail candidate is a long vowel but with sukuun, so it is a consonant with no vowel
-					elseif sum(lvowel_cond) > 0 && trail_candidate2 == 'o'
-						trail_text *= trail_candidate1
-					# trail candidate is a consonant with sukuun
-					elseif sum(lvowel_cond) == 0 && sum(string(trail_candidate1) .∈ BW_VOWELS) == 0 && trail_candidate2 == 'o' && r.syllable.trail_nchars > 0
-						trail_text *= trail_candidate1
-					end		
+						# trail candidate is a consonant with sukuun
+						elseif sum(lvowel_cond) == 0 && sum(string(trail_candidate1) .∈ BW_VOWELS) == 0 && trail_candidate2 == 'o' && r.syllable.trail_nchars > 0
+							trail_text *= trail_candidate1
+						# trail candidate is a consonant but is silent
+						elseif sum(lvowel_cond) == 0 && sum(string(trail_candidate1) .∈ BW_VOWELS) == 0 && trail_candidate2 != 'o' && r.syllable.trail_nchars > 0 && silent_last_vowel && k == (uplimit-is_silent-penalty)
+							trail_text *= trail_candidate1
+						# trail candidate is a consonant not silent 
+						elseif sum(lvowel_cond) == 0 && sum(string(trail_candidate1) .∈ BW_VOWELS) != 0 && trail_candidate2 != 'o' && r.syllable.trail_nchars > 0 && !silent_last_vowel
+							trail_text *= trail_candidate1
+						# think of other possibilities for else
+						end		
+					end
 				end
 			end
 			if i == 0
@@ -281,7 +292,7 @@ end
 
 """
 	syllabic_consistency(segments::Vector{Segment}, syllable_timings::Dict{String,Int64})
-Compute syllabic_consistency from a given `segments` and `syllable_timings`
+Compute syllabic_consistency from a given `segments` and `syllable_timings`. THIS WILL ONLY WORK IF THE VOWEL HAS ONLY 1 TRAIL
 ```julia-repl
 julia> using Yunir
 julia> using QuranTree
@@ -332,10 +343,10 @@ function syllabic_consistency(segments::Vector{Segment}, syllable_timings::Dict{
                     if occursin('^', syllable)
                         syllable_score = syllable_timings["^"]
                     else
-                        syllable_score = 1
+                        syllable_score = minimum(values(syllable_timings)) # ?
                     end
                 else
-                    if vowel_idcs[1] < length(syllable)
+                    if vowel_idcs[end] < length(syllable)
                         next_letter = syllable[vowel_idcs .+ 1]
                         cond = (vowel == "a" && next_letter == "A") || 
                                (vowel == "i" && next_letter == "y") ||
