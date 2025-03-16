@@ -243,11 +243,16 @@ function (r::Syllabification)(text::String; isarabic::Bool=false, first_word::Bo
 				lead_candidate1 = text[vowel_idx-lead_nchars_lwlimit-1]
 				lead_text = lead_candidate1 * lead_text
 			end
-			if r.syllable.trail_nchars == 0
+
+			if r.syllable.trail_nchars <= 1
 				if (vowel_idx+trail_nchars_uplimit+1 <= length(text))
 					trail_candidate1 = text[vowel_idx+trail_nchars_uplimit+1] # v + [tr1] (if trail = 0) 
 					lvowel_cond = trail_candidate1 .∈ BW_LONG_VOWELS
-					if (vowel_idx+trail_nchars_uplimit+2 <= length(text))
+					# next trail character is a maddah, e.g.  "ٱلضَّآلِّينَ" -> "{lD~aA^l~iyna"
+					if (trail_candidate1 == '^')
+						trail_text *= trail_candidate1
+					end
+					if (r.syllable.trail_nchars == 0) && (vowel_idx+trail_nchars_uplimit+2 <= length(text))
 						trail_candidate2 = text[vowel_idx+trail_nchars_uplimit+2]
 						# trail candidate is a long vowel
 						if sum(lvowel_cond) > 0 && trail_candidate2 != 'o'

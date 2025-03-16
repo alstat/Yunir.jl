@@ -55,7 +55,7 @@ tajweed_timings = Dict{String,Int64}(
     "iy" => 2, # kasra + yaa
     "aA" => 2, # fatha + alif
     "uw" => 2, # damma + waw
-    "^" => 4 # maddah
+    "^" => 6 # maddah
 )
 
 # # texts
@@ -97,6 +97,14 @@ for text in texts
 end
 
 out = map(segments -> syllabic_consistency(segments, tajweed_timings), all_segments)
+
+lines(vcat(out...)[1:100])
+
+vcat(out...)[1:100]
+out[8]
+all_segments[7]
+
+
 
 
 i = texts[1365][5]
