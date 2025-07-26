@@ -12,11 +12,17 @@ struct Harakaat
 	char::Union{String, Char}
 	is_tanween::Bool
 end
+
 function Base.string(x::Harakaat)
 	Harakaat(string(x.char), x.is_tanween)
 end
 Yunir.encode(x::Harakaat) = Harakaat(encode(string(x.char)), x.is_tanween)
 Yunir.arabic(x::Harakaat) = Harakaat(arabic(string(x.char)), x.is_tanween)
+
+Base.occursin(x::String, y::Harakaat) = occursin(x, y.char)
+function Base.broadcasted(::typeof(in), s::AbstractString, mss::Vector{Harakaat})
+	return [occursin(s, ms) for ms ∈ mss]
+end
 const AR_VOWELS = [
 	Harakaat(Char(0x064B) |> string, true),
 	Harakaat(Char(0x064C) |> string, true),
@@ -27,12 +33,14 @@ const AR_VOWELS = [
 ]
 const BW_VOWELS = encode.(AR_VOWELS)
 const AR_LONG_VOWELS = [
-	Char(0x064A) |> string,
-	Char(0x0648) |> string,
-	Char(0x0627) |> string,
-	Char(0x0670) |> string
+	Char(0x064A) |> string, # yah
+	Char(0x0648) |> string, # waw
+    Char(0x0649) |> string, # alif maksura
+	Char(0x0627) |> string, # alif
+	Char(0x0670) |> string  # superscript alif
 ]
 const BW_LONG_VOWELS = encode.(AR_LONG_VOWELS)
+
 """
 	Segment(text::String, harakaat::Array{Harakaat})
 Create a `Segment` object from `text`, which is the form of the segments of syllables, 
@@ -49,10 +57,6 @@ struct Segment
 end
 Yunir.encode(x::Segment) = Segment(encode(x.segment), encode.(x.harakaat))
 Yunir.arabic(x::Segment) = Segment(arabic(x.segment), encode.(x.harakaat))
-Base.occursin(x::String, y::Harakaat) = occursin(x, y.char)
-function Base.broadcasted(::typeof(in), s::AbstractString, mss::Vector{Harakaat})
-	return [occursin(s, ms) for ms ∈ mss]
-end
 """
 	Syllable{T <: Number}(
 	    lead_nchars::T,
@@ -220,6 +224,10 @@ function (r::Syllabification)(text::String; isarabic::Bool=false, first_word::Bo
 			vowel = text[vowel_idx]
 			lead_text = text[(vowel_idx-lead_nchars_lwlimit):(vowel_idx-1)]
 			trail_text = text[(vowel_idx+1):(vowel_idx+trail_nchars_uplimit)]
+
+            # if r.syllable.trail_nchars == 0 && sum(occursin.(string(trail_text), BW_VOWELS)) > 0
+            #     trail_text = ""
+            # end
 			
 			# if given word is a first word 
 			if first_word && r.syllable.nvowels > (length(vowel_idcs) - is_silent) && (k+1) > (length(vowel_idcs) - is_silent)
@@ -249,13 +257,21 @@ function (r::Syllabification)(text::String; isarabic::Bool=false, first_word::Bo
 					trail_candidate1 = text[vowel_idx+trail_nchars_uplimit+1] # v + [tr1] (if trail = 0) 
 					lvowel_cond = trail_candidate1 .∈ BW_LONG_VOWELS
 					# next trail character is a maddah, e.g.  "ٱلضَّآلِّينَ" -> "{lD~aA^l~iyna"
-					if (trail_candidate1 == '^')
+					if trail_candidate1 == '^'
 						trail_text *= trail_candidate1
+                    elseif trail_candidate1 == 'Y'
+                        trail_text *= trail_candidate1
+                    elseif trail_candidate1 == '`'
+                        trail_text *= trail_candidate1
+                    elseif trail_candidate1 == 'A'
+                        trail_text *= trail_candidate1 
 					end
 					if (r.syllable.trail_nchars == 0) && (vowel_idx+trail_nchars_uplimit+2 <= length(text))
 						trail_candidate2 = text[vowel_idx+trail_nchars_uplimit+2]
-						# trail candidate is a long vowel
-						if sum(lvowel_cond) > 0 && trail_candidate2 != 'o'
+						# trail candidate is a long vowel and trail_candidate2 is not sukun nor a vowel
+                        if sum(lvowel_cond) > 0  && (trail_candidate2 == '^')
+                            trail_text *= trail_candidate1 * trail_candidate2
+                        elseif sum(lvowel_cond) > 0 && trail_candidate2 != 'o' && sum(occursin.(string(trail_candidate2), BW_VOWELS)) == 0
 							if silent_last_vowel && k == (uplimit-is_silent-penalty) # k suggest that this applies to last syllable of last word only
 								trail_text *= trail_candidate1 * trail_candidate2
 							else
@@ -297,6 +313,7 @@ end
 
 """
 	syllabic_consistency(segments::Vector{Segment}, syllable_timings::Dict{String,Int64})
+
 Compute syllabic_consistency from a given `segments` and `syllable_timings`. THIS WILL ONLY WORK IF THE VOWEL HAS ONLY 1 TRAIL
 ```julia-repl
 julia> using Yunir
@@ -354,7 +371,9 @@ function syllabic_consistency(segments::Vector{Segment}, syllable_timings::Dict{
                     if vowel_idcs[end] < length(syllable)
                         next_letter = syllable[vowel_idcs .+ 1]
                         cond = (vowel == "a" && next_letter == "A") || 
+                               (vowel == "a" && next_letter == "`") || 
                                (vowel == "i" && next_letter == "y") ||
+                               (vowel == "i" && next_letter == "Y") ||
                                (vowel == "u" && next_letter == "w")
                         if cond
                             if occursin('^', syllable)
