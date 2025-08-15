@@ -181,7 +181,7 @@ count_aligned(res2[2,1])
 ```
 ## Visualization
 In this section, we are going to display the alignment by plotting the results.
-```@example abc
+```@repl abc
 using CairoMakie
 f, a, xys = plot(res1, :matches)
 a[1].xlabel = "Shamela0023790"
@@ -197,7 +197,7 @@ The figure above is divided into three subplots arranged in rows. You can think 
 We added further customization to the plot, readers are encouraged to explore the API.
 
 As for the plot of insertions of characters, we have:
-```@example abc
+```@repl abc
 f, a, xys = plot(res1, :insertions)
 a[1].xlabel = "Shamela0023790"
 a[1].xlabelsize = 20
@@ -208,7 +208,7 @@ a[3].xticks = 0:2:unique(xys[2][1])[end]
 f
 ```
 For deletions, we have:
-```@example abc
+```@repl abc
 f, a, xys = plot(res1, :deletions)
 a[1].xlabel = "Shamela0023790"
 a[1].xlabelsize = 20
@@ -219,7 +219,7 @@ a[3].xticks = 0:2:unique(xys[2][1])[end]
 f
 ```
 And for mismatches, we have
-```@example abc
+```@repl abc
 f, a, xys = plot(res1, :mismatches)
 a[1].xlabel = "Shamela0023790"
 a[1].xlabelsize = 20
@@ -254,7 +254,7 @@ costmodel = CostModel(match=0, mismatch=10, insertion=3, deletion=1)
 Then if a mismatch happened, the algorithm will instead consider it a deletion as much as possible to avoid a distance score of 10 (for mismatch) and go for a distance of 1 (for deletion) instead.
 
 Consider the following example,
-```@example def
+```@repl def
 using Yunir
 etgt = "رضي الله عنه"
 eref = "صلي الله عليه وسلم"
@@ -266,7 +266,7 @@ res_c1 = align(encode(eref_nrm), encode(etgt_nrm), costmodel=costmodel)
 res_c1
 ```
 Now, compare the result if we increased the mismatch and insertion in the cost model.
-```@example def
+```@repl def
 costmodel = CostModel(match=0, mismatch=10, insertion=5, deletion=1)
 res_c2 = align(encode(eref_nrm), encode(etgt_nrm), costmodel=costmodel)
 res_c2
@@ -282,73 +282,3 @@ count_mismatches(res_c2)
 count_deletions(res_c2)
 count_insertions(res_c2)
 ```
-## Visualizing Aggregated Alignment
-What we've seen so far is at the level of pairwise alignment of individual milestone. This maybe useful for some use cases, but for studies where we look at the macro level alignment, that is, at the level of the book itself or full text, it would require an aggregated visualization of the results.
-
-The following is a simple demo, but we recommend you to checkout [Kitab.jl](https://github.com/alstat/Kitab.jl) for a comprehensive example.
-
-In this example, we are going to use portion of two books, the المعارف and عيون الأخبار both by Ibn Qutayba Dinawari. To download this, we run the following using the Kitab.jl library.
-```@setup hij
-using Pkg
-Pkg.add("Kitab")
-Pkg.add("CairoMakie")
-```
-```@repl hij
-using Kitab
-using Yunir
-macarif_url = "https://raw.githubusercontent.com/OpenITI/RELEASE/f70348b43c92e97582e63b6c4b4a8596e6d4ac84/data/0276IbnQutaybaDinawari/0276IbnQutaybaDinawari.Macarif/0276IbnQutaybaDinawari.Macarif.Shamela0012129-ara1.mARkdown";
-cuyunakhbar_url = "https://raw.githubusercontent.com/OpenITI/RELEASE/f70348b43c92e97582e63b6c4b4a8596e6d4ac84/data/0276IbnQutaybaDinawari/0276IbnQutaybaDinawari.CuyunAkhbar/0276IbnQutaybaDinawari.CuyunAkhbar.Shamela0023790-ara1.completed";
-Kitab.get(OpenITIDB, [macarif_url, cuyunakhbar_url])
-list(OpenITIDB)
-cuyunakhbar = load(OpenITIDB, 1)
-macarif = load(OpenITIDB, 2)
-```
-We then split this data into milestone, which is indicated by a prefix `ms` in the text (OpenITI annotates the book by adding milestone indicator for partitioning the book). 
-```@repl hij
-target = clean.(split(join(cuyunakhbar, " "), "ms"))
-reference = clean.(split(join(macarif, " "), "ms"))
-```
-We then replace empty lines with spaces, users can also delete these lines.
-```@repl hij
-target = map(x -> x != "" ? x : "   ", target)
-reference = map(x -> x != "" ? x : "   ", reference)
-```
-Like other examples above, we encode the following words to their unicode character.
-```@repl hij
-mapping = Dict(
-    "الله" => "ﷲ",
-    "لا" => "ﻻ"
-)
-target = normalize(target, mapping)
-reference = normalize(reference, mapping)
-```
-We further clean the data by normalization and dediacritization:
-```@repl hij
-etgt = encode.(normalize.(dediac.(target)));
-etgt = string.(strip.(replace.(etgt, r"\s+" => " ")));
-eref = encode.(normalize.(dediac.(reference)));
-eref = string.(strip.(replace.(eref, r"\s+" => " ")));
-```
-Finally, we can run the alignment for the first 20 milestones of macarif, and first 30 milestones of cuyunakhbar:
-```@repl hij
-res, scr = align(eref[1:20], etgt[1:30]);
-```
-We can then plot the heatmap of the scores:
-```@example hij
-using CairoMakie
-fig, ax, hm = heatmap(1:size(scr, 1), 1:size(scr, 2), scr);
-Colorbar(fig[:, end+1], hm)
-fig
-```
-The x-axis contains the index of the reference milestones, and the y-axis contains the target milestone indices. We can plot the alignment of first milestone of reference against first milestone of target
-```@example hij
-f1, a1, xy1 = plot(res[1,1], :insertions)
-f1
-```
-Finally, to plot all the milestones in one figure, we first filter the scores to those with lower scores or distances, so that we'll have milestones that are indeed similar.
-```@example hij
-idx = findmin(scr, dims=2)[2][findmin(scr, dims=2)[1] .< 1150]
-f2, a2, xy2 = plot(res, idx; midstyles=(color=(:red, 0.7), linewidth=0.1))
-f2
-```
-The `idx` contains the indices of the pairwise alignment with score lower than 1150. The orange line in the reference plot indicates the end of line of the reference text.
