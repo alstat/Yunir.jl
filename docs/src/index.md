@@ -3,7 +3,7 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/alstat/Yunir.jl/blob/master/LICENSE)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6629868.svg)](https://doi.org/10.5281/zenodo.6629868)
 
-Yunir.jl is a lightweight toolkit for Arabic Natural Language Processing (ANLP). It offers APIs for the building blocks of ANLP specifically _dediacritization_, _normalization_, _transliteration_ (including _custom transliteration_), _simple encoding_, and _orthographical analysis_.
+Yunir.jl is a lightweight toolkit for Arabic Natural Language Processing (ANLP). It offers APIs for the building blocks of ANLP specifically _dediacritization_, _normalization_, _transliteration_ (including _custom transliteration_), _simple encoding_, and _orthographical analysis_. It also has advanced capability of parsing syllables for rhythmic analysis.
 
 Yunir (ينير) /yunīr/ is the Arabic word for "illuminate." The logo is a Kufic calligraphy of the Arabic word نور /nūr/ or "light," specifically, a heatless light such as that of the light of the moon.
 ## Installation

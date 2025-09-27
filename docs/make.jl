@@ -27,5 +27,6 @@ makedocs(
 # See "Hosting Documentation" and deploydocs() in the Documenter manual
 # for more information.
 deploydocs(
-    repo = "github.com/alstat/Yunir.jl.git"
+    repo = "github.com/alstat/Yunir.jl.git",
+    devbranch = "main"
 )

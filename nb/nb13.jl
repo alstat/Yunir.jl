@@ -32,3 +32,7 @@ selected = Yunir.AyahMidpoints(hcat([selection(ayahs_emb, midpoints, 3, slicer).
 crossover!(selected, 0.8)
 mutate!(selected, 0.8)
 refine!(selected)
+
+function extract_data(data::DataFrame) 
+    return data
+end
