@@ -31,6 +31,10 @@ Pkg.add("Colors")
 using CairoMakie
 CairoMakie.activate!(type = "svg")
 ```
+```@setup abc
+using Yunir
+@transliterator :default
+```
 ```@repl abc
 using Yunir
 

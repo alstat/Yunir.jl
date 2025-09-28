@@ -3,6 +3,10 @@ Basic Utilities
 In this section, we are going to discuss how to use the APIs for dediacritization, normalization and transliteration.
 ## Dediacritization
 The function to use is `dediac`, which works on Arabic, Buckwalter and custom transliterated characters.
+```@setup abc
+using Yunir
+@transliterator :default
+```
 ```@repl abc
 using Yunir
 

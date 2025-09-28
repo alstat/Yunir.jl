@@ -1,5 +1,5 @@
 """
-    dediac(s::String)
+    dediac(s::String; isarabic::Bool=true)
 
 Dediacritize the input `String` object.
 

@@ -1,4 +1,7 @@
 [deps]
+BioAlignments = "00701ae9-d1dc-5365-b64a-a3a3ebf5695e"
+CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
+Colors = "5ae59095-9a9b-59fe-a467-6f913c188581"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 QuranTree = "f647ab69-6f05-4d64-883f-59d0fbe08d2b"
 
