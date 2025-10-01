@@ -1,8 +1,8 @@
 Basic Utilities
 =====
-In this section, we are going to discuss how to use the APIs for dediacritization, normalization and transliteration.
+In this section, we are going to discuss how to use the APIs for dediacritization, normalization, and transliteration.
 ## Dediacritization
-The function to use is `dediac`, which works on Arabic, Buckwalter and custom transliterated characters.
+The function to use is `dediac` which works on either Arabic, Buckwalter or custom transliterated characters.
 ```@setup abc
 using Yunir
 @transliterator :default
@@ -26,7 +26,7 @@ sentence0 = ["بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّح�
 dediac.(sentence0)
 ```
 ## Normalization
-The function to use is `normalize`, which works on Arabic, Buckwalter and custom transliterated characters. For example, using the `ar_basmala` and `bw_basmala` defined above, the normalized version would be
+The function to use is `normalize`, which works on either Arabic, Buckwalter or custom transliterated characters. For example, using the `ar_basmala` and `bw_basmala` defined above, the normalized version would be
 ```@repl abc
 normalize(ar_basmala)
 normalize(bw_basmala; isarabic=false)
@@ -89,7 +89,7 @@ Next is to declare this new transliteration so functions for dediacritization an
 ```@repl abc
 @transliterator my_encoder "MyEncoder"
 ```
-Using this new transliteration, we now have an updated mapping for the basmala above:
+Using this new transliteration, we now have an updated mapping for the _basmala_ above:
 ```@repl abc
 encode(ar_basmala)
 ```

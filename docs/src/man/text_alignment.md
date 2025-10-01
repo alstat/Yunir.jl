@@ -26,6 +26,7 @@ We will consider a simple example based on "text reuse" case study of [KITAB pro
 To have a quality output, we will need to process the texts to remove unnecessary noise. First, we need to remove all non-Arabic characters. To start with, the following will input the two candidate texts:
 ```@setup abc
 using Pkg
+Pkg.add("Makie")
 Pkg.add("CairoMakie")
 Pkg.add("Colors")
 using CairoMakie
@@ -185,9 +186,9 @@ count_aligned(res2[2,1])
 ```
 ## Visualization
 In this section, we are going to display the alignment by plotting the results.
-```@repl abc
+```@example abc
 using CairoMakie
-f, a, xys = plot(res1, :matches)
+f, a, xys = plot(res1, :matches, nchars=60)
 a[1].xlabel = "Shamela0023790"
 a[1].xlabelsize = 20
 a[1].xticks = 0:2:unique(xys[1][1])[end]
@@ -201,8 +202,8 @@ The figure above is divided into three subplots arranged in rows. You can think 
 We added further customization to the plot, readers are encouraged to explore the API.
 
 As for the plot of insertions of characters, we have:
-```@repl abc
-f, a, xys = plot(res1, :insertions)
+```@example abc
+f, a, xys = plot(res1, :insertions, nchars=60)
 a[1].xlabel = "Shamela0023790"
 a[1].xlabelsize = 20
 a[1].xticks = 0:2:unique(xys[1][1])[end]
@@ -212,8 +213,8 @@ a[3].xticks = 0:2:unique(xys[2][1])[end]
 f
 ```
 For deletions, we have:
-```@repl abc
-f, a, xys = plot(res1, :deletions)
+```@example abc
+f, a, xys = plot(res1, :deletions, nchars=60)
 a[1].xlabel = "Shamela0023790"
 a[1].xlabelsize = 20
 a[1].xticks = 0:2:unique(xys[1][1])[end]
@@ -223,8 +224,8 @@ a[3].xticks = 0:2:unique(xys[2][1])[end]
 f
 ```
 And for mismatches, we have
-```@repl abc
-f, a, xys = plot(res1, :mismatches)
+```@example abc
+f, a, xys = plot(res1, :mismatches, nchars=60)
 a[1].xlabel = "Shamela0023790"
 a[1].xlabelsize = 20
 a[1].xticks = 0:2:unique(xys[1][1])[end]
