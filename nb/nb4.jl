@@ -16,9 +16,10 @@ function extract_endword(s::Array{String})
 end
 
 r = Rhyme(true, Syllable(1, 1, 1))
-r.(texts, true)
+r.(encode.(bw_texts), true)
 segments = r.(encode.(extract_endword(bw_texts)), false)
-segments2 = r.(encode.(extract_endword(bw_texts2)), false)
+
+# segments2 = r.(encode.(extract_endword(bw_texts2)), false)
 
 join(map(x -> x.harakaat, segments), "")
 

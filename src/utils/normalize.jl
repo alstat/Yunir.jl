@@ -36,7 +36,7 @@ end
 # "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ" === "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ"
 
 """
-    normalize(s::String, chars::Array{Symbol,1})
+    normalize(s::String, chars::Array{Symbol,1}; isarabic::Bool=true)
 
 Normalize a specific Arabic or Buckwalter `String` character/s (`chars`).
 
@@ -55,7 +55,7 @@ function normalize(s::String, chars::Array{Symbol,1}; isarabic::Bool=true)
 end
 
 """
-    normalize(s::String, char::Symbol)
+    normalize(s::String, char::Symbol; isarabic::Bool=true)
 
 Normalize a specific Arabic or Buckwalter `String` character (`chars`).
 

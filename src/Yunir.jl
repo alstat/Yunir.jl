@@ -19,6 +19,7 @@ include("tokenizers/tokenize.jl")
 include("alignment/vis.jl")
 include("analysis/rhythmic/utils.jl")
 include("analysis/rhythmic/vis.jl")
+include("analysis/symmetric/utils.jl")
 
 # data
 export CAMeLData, MorphologyDB, locate, load
@@ -28,9 +29,6 @@ export expand_archars, isfeat, vocals, numerals, parse, arabic, clean, dediac, e
 export align, score, count_matches, count_aligned, count_mismatches, count_insertions, count_deletions, collect
 export Alignment, AbstractCAMeLDB, AbstractEncoder, SimpleEncoding
 export @transliterator, genproperties
-
-# Rhyme
-export Harakaat, Rhyme, Syllable, Segment, sequence
 
 # Orthography
 export AbstractCharacter, AbstractCharacter, AbstractConsonant, AbstractSolar, AbstractLunar,
@@ -45,5 +43,11 @@ export Tatweel, Orthography, Fatha, Fathatan, Damma, Dammatan, Kasra, Kasratan, 
 export Alif, AlifMaksurah, Ba, Ta, TaMarbuta, Tha, Jeem, HHa, Kha, Dal, Thal, Ra, Zain, Seen, Sheen, Sad,
        DDad, TTa, DTha, Ain, Ghain, Fa, Qaf, Kaf, Lam, Meem, Noon, Waw, Ha, Hamza, Ya,
        AlifMaddah, AlifHamzaAbove, AlifHamzaBelow, AlifHamzatWasl, WawHamzaAbove, YaHamzaAbove
+
+# Rhyme
+export Harakaat, Syllabification, Syllable, Segment, Sequence, sequence, vowel_indices, syllabic_consistency
+
+# Symmetric Analysis
+export Slicer, AyahEmbeddings, AyahMidpoints, gen_midpoints, gen_slices, fitness, selection, slicer, five_summary, refine!, mutate!, crossover!
 
 end # module

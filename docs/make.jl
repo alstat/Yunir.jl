@@ -1,25 +1,24 @@
 using Documenter
 using Yunir
 
-makedocs(
+makedocs(;
     sitename = "Yunir.jl",
     format = Documenter.HTML(
-        assets = ["assets/favicon.ico"]
+        assets = ["assets/favicon.ico"],
+        repolink = "https://github.com/alstat/Yunir.jl"
     ),
     authors = "Al-Ahmadgaid B. Asaad",
+    repo = Remotes.GitHub("alstat", "Yunir.jl"),
+    remotes = nothing,
     modules = [Yunir],
     pages = [
         "Home" => "index.md",
         "Basic Utilities" => "man/basic_utilities.md",
         "Orthographical Analysis" => "man/orthography.md",
         "Text Alignment" => "man/text_alignment.md",
-        "Working with QuranTree.jl" => "man/qurantree.md",
+        "Rhytmic Analysis" => "man/rhythmic_analysis.md",
+        "Symmetry Analysis" => "man/symmetry_analysis.md",
         "API" => "man/api.md",
-        # "Arabic Grammar" => [
-        #     "Introduction" => "book/introduction.md",
-        #     "Ch1. Structure" => "book/structure.md",
-        #     "Ch2. Verb" => "book/verb.md"
-        # ]
     ]
 )
 
@@ -27,5 +26,7 @@ makedocs(
 # See "Hosting Documentation" and deploydocs() in the Documenter manual
 # for more information.
 deploydocs(
-    repo = "github.com/alstat/Yunir.jl.git"
+    repo = "github.com/alstat/Yunir.jl.git",
+    devbranch = "main",
+    target = "build"
 )

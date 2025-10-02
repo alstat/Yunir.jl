@@ -1,6 +1,6 @@
 using Colors
 using Makie
-function generate_xys(res::Alignment, text::Symbol=:reference, type::Symbol=:matches, nchars::Int64=10)
+function generate_xys(res::Alignment; text::Symbol=:reference, type::Symbol=:matches, nchars::Int64=10)
     xs, ys, zs = Int[], [1], Float32[]
     j = 1; k = 1;
     if text === :reference
@@ -88,16 +88,16 @@ function generate_xys(ares::Matrix{Yunir.Alignment}, scr_indcs::Vector{Cartesian
     for idx in scr_indcs
         if type === :matches
             xr, yr, nr = generate_xys(ares[idx])
-            xt, yt, nt = generate_xys(ares[idx], :target)
+            xt, yt, nt = generate_xys(ares[idx], text=:target)
         elseif type === :insertions
-            xr, yr, nr = generate_xys(ares[idx], :reference, :insertions)
-            xt, yt, nt = generate_xys(ares[idx], :target, :insertions)
+            xr, yr, nr = generate_xys(ares[idx], text=:reference, type=:insertions)
+            xt, yt, nt = generate_xys(ares[idx], text=:target, type=:insertions)
         elseif type === :deletions
-            xr, yr, nr = generate_xys(ares[idx], :reference, :deletions)
-            xt, yt, nt = generate_xys(ares[idx], :target, :deletions)
+            xr, yr, nr = generate_xys(ares[idx], text=:reference, type=:deletions)
+            xt, yt, nt = generate_xys(ares[idx], text=:target, type=:deletions)
         elseif type === :mismatches
-            xr, yr, nr = generate_xys(ares[idx], :reference, :mismatches)
-            xt, yt, nt = generate_xys(ares[idx], :target, :mismatches)
+            xr, yr, nr = generate_xys(ares[idx], text=:reference, type=:mismatches)
+            xt, yt, nt = generate_xys(ares[idx], text=:target, type=:mismatches)
         else
             throw("type takes :matches, :insertions, :deletions and :mismatches only.")
         end
@@ -130,20 +130,21 @@ function Makie.plot(res::Alignment,
     ),
     midstyles::NamedTuple=(
         color=colorant"#F87474",
-    )
+    ),
+    nchars::Int64=30
     )
     if type === :matches
         xr, yr, nc = generate_xys(res)
-        xt, yt, nc = generate_xys(res, :target)
+        xt, yt, nc = generate_xys(res, text=:target, nchars=nchars)
     elseif type === :insertions
-        xr, yr, nc = generate_xys(res, :reference, :insertions)
-        xt, yt, nc = generate_xys(res, :target, :insertions)
+        xr, yr, nc = generate_xys(res, text=:reference, type=:insertions, nchars=nchars)
+        xt, yt, nc = generate_xys(res, text=:target, type=:insertions, nchars=nchars)
     elseif type === :deletions
-        xr, yr, nc = generate_xys(res, :reference, :deletions)
-        xt, yt, nc = generate_xys(res, :target, :deletions)
+        xr, yr, nc = generate_xys(res, text=:reference, type=:deletions, nchars=nchars)
+        xt, yt, nc = generate_xys(res, text=:target, type=:deletions, nchars=nchars)
     elseif type === :mismatches
-        xr, yr, nc = generate_xys(res, :reference, :mismatches)
-        xt, yt, nc = generate_xys(res, :target, :mismatches)
+        xr, yr, nc = generate_xys(res, text=:reference, type=:mismatches, nchars=nchars)
+        xt, yt, nc = generate_xys(res, text=:target, type=:mismatches, nchars=nchars)
     else
         throw("type takes :matches, :insertions, :deletions and :mismatches only.")
     end

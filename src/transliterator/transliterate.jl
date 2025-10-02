@@ -92,14 +92,27 @@ julia> encode(ar_basmala)
 macro transliterator(dict, name)
     T = Symbol(uppercasefirst(name))
     esc(quote
-            prop = genproperties(eval($dict))
-            struct $T <: AbstractEncoder
-                encode::Dict{Symbol,Symbol}
-                decode::Dict{Symbol,Symbol}
-                rx_diacs::Regex
-                rx_ardiacs::Regex
+            # Handle the case where the dictionary might not be available
+            if @isdefined($dict) && $dict !== nothing
+                prop = genproperties($dict)
+                struct $T <: AbstractEncoder
+                    encode::Dict{Symbol,Symbol}
+                    decode::Dict{Symbol,Symbol}
+                    rx_diacs::Regex
+                    rx_ardiacs::Regex
+                end
+                Yunir.Transliterator() = $T($dict, prop[1], prop[2], $AR_DIACS_REGEX)
+            else
+                # Fallback if the dictionary is not available
+                struct $T <: AbstractEncoder
+                    encode::Dict{Symbol,Symbol}
+                    decode::Dict{Symbol,Symbol}
+                    rx_diacs::Regex
+                    rx_ardiacs::Regex
+                end
+                # Create empty/default transliterator
+                Yunir.Transliterator() = $T(Dict{Symbol,Symbol}(), Dict{Symbol,Symbol}(), Regex(""), Regex(""))
             end
-            Yunir.Transliterator() = $T($dict, prop[1], prop[2], $AR_DIACS_REGEX)
             function Base.show(io::IO, t::$T)
                 println(io, $T, ":")
                 println(io, " ├ encode: ", Transliterator().encode)
@@ -132,4 +145,17 @@ macro transliterator(symbl)
     end)
 end
 
-@transliterator BW_ENCODING "Buckwalter"
+# Try to initialize with BW_ENCODING, but handle if it's not available
+if @isdefined(BW_ENCODING) && BW_ENCODING !== nothing
+    @transliterator BW_ENCODING "Buckwalter"
+else
+    @warn "BW_ENCODING not available, using fallback"
+    # Define a minimal fallback struct
+    struct Buckwalter <: AbstractEncoder
+        encode::Dict{Symbol,Symbol}
+        decode::Dict{Symbol,Symbol}
+        rx_diacs::Regex
+        rx_ardiacs::Regex
+    end
+    Yunir.Transliterator() = Buckwalter(Dict{Symbol,Symbol}(), Dict{Symbol,Symbol}(), Regex(""), Regex(""))
+end
