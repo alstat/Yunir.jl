@@ -16,7 +16,6 @@ makedocs(;
         "Basic Utilities" => "man/basic_utilities.md",
         "Orthographical Analysis" => "man/orthography.md",
         "Text Alignment" => "man/text_alignment.md",
-        "Working with QuranTree.jl" => "man/qurantree.md",
         "Rhytmic Analysis" => "man/rhythmic_analysis.md",
         "Symmetry Analysis" => "man/symmetry_analysis.md",
         "API" => "man/api.md",
