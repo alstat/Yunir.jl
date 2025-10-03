@@ -23,7 +23,7 @@ makedocs(;
         "Home" => "index.md",
         "Basic Utilities" => "man/basic_utilities.md",
         "Orthographical Analysis" => "man/orthography.md",
-        # "Text Alignment" => "man/text_alignment.md",
+        "Text Alignment" => "man/text_alignment.md",
         "Rhytmic Analysis" => "man/rhythmic_analysis.md",
         "Symmetry Analysis" => "man/symmetry_analysis.md",
         "References" => "man/references.md",
