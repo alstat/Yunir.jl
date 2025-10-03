@@ -186,7 +186,7 @@ count_aligned(res2[2,1])
 ```
 ## Visualization
 In this section, we are going to display the alignment by plotting the results.
-```@example abc
+```@repl abc
 using CairoMakie
 f, a, xys = plot(res1, :matches, nchars=60)
 a[1].xlabel = "Shamela0023790"
@@ -202,7 +202,7 @@ The figure above is divided into three subplots arranged in rows. You can think 
 We added further customization to the plot, readers are encouraged to explore the API.
 
 As for the plot of insertions of characters, we have:
-```@example abc
+```@repl abc
 f, a, xys = plot(res1, :insertions, nchars=60)
 a[1].xlabel = "Shamela0023790"
 a[1].xlabelsize = 20
@@ -213,7 +213,7 @@ a[3].xticks = 0:2:unique(xys[2][1])[end]
 f
 ```
 For deletions, we have:
-```@example abc
+```@repl abc
 f, a, xys = plot(res1, :deletions, nchars=60)
 a[1].xlabel = "Shamela0023790"
 a[1].xlabelsize = 20
@@ -224,7 +224,7 @@ a[3].xticks = 0:2:unique(xys[2][1])[end]
 f
 ```
 And for mismatches, we have
-```@example abc
+```@repl abc
 f, a, xys = plot(res1, :mismatches, nchars=60)
 a[1].xlabel = "Shamela0023790"
 a[1].xlabelsize = 20
