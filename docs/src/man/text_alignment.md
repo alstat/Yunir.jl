@@ -32,12 +32,9 @@ Pkg.add("Colors")
 using CairoMakie
 CairoMakie.activate!(type = "svg")
 ```
-```@setup abc
-using Yunir
-@transliterator :default
-```
 ```@repl abc
 using Yunir
+@transliterator :default
 
 shamela0012129 = "خرج مع ابي بكر الصديق رضي الله عنه في تجارة الي بصري ومعهم نعيمان وكان نعيمان ممن شهد——- بدرا ايضا وك——-ان علي الزاد فقال له سويبط———– اطعمني فقال حتي يجء ابو بكر فقال اما والله لاغيظنك فمروا بقوم فقال لهم سويبط -تشترون مني عبدا قا—لوا نعم فقال انه عبد له كلام وهو قاءل لكم اني حر فان كنتم اذا قال لكم هذه المقالة تركتموه فلا تفسدوا علي عبدي قا-لوا بل نشتريه منك فاشتروه بعشر قلاءص ثم جاءوا فوضعوا في عنقه حبلا ف—————قال نعيمان ان هذا يستهزء بكم واني حر فقالوا قد عرفنا –خبرك وانطلقوا به فلما جاء ابو بكر -اخبروه فاتبعهم ورد عليهم القلاءص واخذه فلما قدموا علي النبي صلي الله عليه وسلم اخبروه فضحك هو واصحابه من ذلك حولا";
 shamela0023790 = "خرج— ابو بكر——————– في تجارة——— ومعه- نعيمان وسويبط بن حرملة وكانا شهدا بدر—–ا وكان نعيمان علي الزاد فقال له سويبط وكان مزاحا اطعمني فقال حتي يجء ابو بكر فقال اما والله لاغيظنك فمروا بقوم فقال لهم سويبط اتشترون مني عبدا لي قالوا نعم ق-ال انه عبد له كلام وهو قاءل لكم اني حر فان كنتم اذا قال لكم هذه المقالة تركتموه فلا تفسدوا علي عبدي فقالوا بل نشتريه منك——– بعشر قلاءص ثم جاءوا فوضعوا في عنقه حبلا وعمامة واشتروه فقال نعيمان ان هذا يستهزء بكم واني حر قا-لوا قد اخبرنا بخبرك وانطلقوا به و—-جاء ابو بكر فاخبروه فاتبعهم فرد عليهم القلاءص واخذه فلما قدموا علي النبي صلي الله عليه وسلم اخبروه فضحك هو واصحابه منهما- حول";
@@ -186,7 +183,7 @@ count_aligned(res2[2,1])
 ```
 ## Visualization
 In this section, we are going to display the alignment by plotting the results.
-```@repl abc
+```@example abc
 using CairoMakie
 f, a, xys = plot(res1, :matches, nchars=60)
 a[1].xlabel = "Shamela0023790"
@@ -202,7 +199,7 @@ The figure above is divided into three subplots arranged in rows. You can think 
 We added further customization to the plot, readers are encouraged to explore the API.
 
 As for the plot of insertions of characters, we have:
-```@repl abc
+```@example abc
 f, a, xys = plot(res1, :insertions, nchars=60)
 a[1].xlabel = "Shamela0023790"
 a[1].xlabelsize = 20
@@ -213,7 +210,7 @@ a[3].xticks = 0:2:unique(xys[2][1])[end]
 f
 ```
 For deletions, we have:
-```@repl abc
+```@example abc
 f, a, xys = plot(res1, :deletions, nchars=60)
 a[1].xlabel = "Shamela0023790"
 a[1].xlabelsize = 20
@@ -224,7 +221,7 @@ a[3].xticks = 0:2:unique(xys[2][1])[end]
 f
 ```
 And for mismatches, we have
-```@repl abc
+```@example abc
 f, a, xys = plot(res1, :mismatches, nchars=60)
 a[1].xlabel = "Shamela0023790"
 a[1].xlabelsize = 20
@@ -261,6 +258,7 @@ Then if a mismatch happened, the algorithm will instead consider it a deletion a
 Consider the following example,
 ```@repl def
 using Yunir
+@transliterator :default
 etgt = "رضي الله عنه"
 eref = "صلي الله عليه وسلم"
 mapping = Dict("الله" => "ﷲ",)

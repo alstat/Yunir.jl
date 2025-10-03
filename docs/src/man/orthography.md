@@ -6,6 +6,7 @@ All Arabic characters and diacritics and other characters used in Arabic texts, 
 The numerals we refer here is the [Abjad numeral](https://en.wikipedia.org/wiki/Abjad_numerals).
 ```@repl abc2
 using Yunir
+@transliterator :default
 
 ar_basmala = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ";
 ```

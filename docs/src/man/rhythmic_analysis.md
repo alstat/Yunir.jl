@@ -8,6 +8,7 @@ The first data is from a well known author, [Al-Mutanabbi المتنبّي](http
 The following codes assigns the said poem of Al-Mutanabbi to a variable poem.
 ```@example abc
 using Yunir
+@transliterator :default
 
 poem = """
     ألا كُلُّ مَاشِيَةِ الخَيْزَلَى ;

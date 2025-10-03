@@ -11,7 +11,7 @@ bib = CitationBibliography(joinpath(@__DIR__, "src", "refs.bib"))
 makedocs(;
     sitename = "Yunir.jl",
     format = Documenter.HTML(
-        assets = ["assets/favicon.ico","assets/citations.css"],
+        assets = ["assets/favicon.ico", "assets/citations.css", "assets/custom.css"],
         repolink = "https://github.com/alstat/Yunir.jl"
     ),
     plugins=[bib],

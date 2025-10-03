@@ -5,6 +5,7 @@ In this section, we are going to discuss how to use the APIs for dediacritizatio
 The function to use is `dediac` which works on either Arabic, Buckwalter or custom transliterated characters.
 ```@repl abc
 using Yunir
+@transliterator :default
 
 ar_basmala = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ";
 dediac(ar_basmala)
