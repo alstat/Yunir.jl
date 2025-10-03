@@ -34,6 +34,7 @@ Pages = [
     "man/text_alignment.md",
     "man/qurantree.md",
     "man/api.md",
+    "man/references.md",
 ]
 Depth = 2
 ```

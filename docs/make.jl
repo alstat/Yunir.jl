@@ -1,12 +1,16 @@
 using Documenter
+using DocumenterCitations
 using Yunir
+
+bib = CitationBibliography(joinpath(@__DIR__, "src", "refs.bib"))
 
 makedocs(;
     sitename = "Yunir.jl",
     format = Documenter.HTML(
-        assets = ["assets/favicon.ico"],
+        assets = ["assets/favicon.ico","assets/citations.css"],
         repolink = "https://github.com/alstat/Yunir.jl"
     ),
+    plugins=[bib],
     authors = "Al-Ahmadgaid B. Asaad",
     repo = Remotes.GitHub("alstat", "Yunir.jl"),
     remotes = nothing,
@@ -18,6 +22,7 @@ makedocs(;
         "Text Alignment" => "man/text_alignment.md",
         "Rhytmic Analysis" => "man/rhythmic_analysis.md",
         "Symmetry Analysis" => "man/symmetry_analysis.md",
+        "References" => "man/references.md",
         "API" => "man/api.md",
     ]
 )

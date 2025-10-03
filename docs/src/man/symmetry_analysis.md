@@ -1,3 +1,9 @@
 Symmetric Analysis
 =============
-All Arabic characters and diacritics and other characters used in Arabic texts, such as the Qur'an are all encoded as 
+The work of [farrin2014structure](@citet)
+
+### References
+```@bibliography
+Pages = ["symmetry_analysis.md"]
+Canonical = false
+```
