@@ -76,14 +76,22 @@ Next is to initialize the syllabification for each stanza, suppose we want to ca
 ```@repl abc
 syllable = Syllable(1, 0, 10)
 ```
-Here the first argument represents the number of characters prior to the vowel is considered, the next argument which is 0 is the number of character after the vowel, and 10 the third argument simply mean how many vowels do we need to capture for each word. So that,
+Here the first argument represents the number of characters prior to the vowel is considered, the next argument which is 0 is the number of character after the vowel, and 10 in the third argument simply mean how many vowels do we need to capture for each word. So that,
 ```@repl abc
 r = Syllabification(false, syllable)
 ```
-Then,
+Then, the following will syllabicize the first word in the said poem.
 ```@repl abc
-r(string(split(texts[1], " ")[1]), isarabic=true, first_word=true, silent_last_vowel=false)
+r(
+    string(split(texts[1], " ")[1]), 
+    isarabic=true, 
+    first_word=true, 
+    silent_last_vowel=false
+)
 ```
+The parameter `isarabic` ask if the output segment should be in Arabic form. The segment is defined here as the joined slices of the syllables. The `first_word` parameter checks if the input text is a first word of a sentence or phrase. Finally the last parameter aims to capture the case of silencing the vowel of the last word.
+
+From the output above, there are two syllables, the first being `أَ` and the second is `لَا`, both are separated with `?`.
 !!! warning "Caution"
     It is important to note that syllabification works only on a fully diacritize text as in the input poem here, and that is because each syllable contain a vowel. If not fully diacritize, then the syllabification will consider a syllable with only consonant and no vowel.
 
