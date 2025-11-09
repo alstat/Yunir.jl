@@ -74,9 +74,9 @@ texts = map(x -> strip(string(x)), split.(poem, ";\n"))
 ```
 Next is to initialize the syllabification for each stanza, suppose we want to capture the consonant before and after each vowel to represent one syllable. For example, for the word `basmala`, the syllabification if only the consonant preceding the vowel is considered then we have `ba`, `ma`, and `la`. To specify this configuration for the syllable, we do it as follows:
 ```@repl abc
-syllable = Syllable(1, 0, 10)
+syllable = Syllable(1, 0, 3)
 ```
-Here the first argument represents the number of characters prior to the vowel is considered, the next argument which is 0 is the number of character after the vowel, and 10 in the third argument simply mean how many vowels do we need to capture for each word. So that,
+Here the first argument represents the number of characters prior to the vowel is considered, the next argument which is 0 is the number of character after the vowel, and 3 in the third argument simply mean how many vowels do we need to capture for each word. So that,
 ```@repl abc
 r = Syllabification(false, syllable)
 ```
