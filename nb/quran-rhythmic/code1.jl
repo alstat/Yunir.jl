@@ -57,9 +57,29 @@ poem = """
     رَأَى غَيْرُهُ مِنْهُ مَا لَا يَرَى.
 """
 
-texts = map(x -> strip(string(x)), split.(poem, ";\n"))
+texts = map(x -> strip(string(x)), split.(poem, "\n"))
 syllable = Syllable(1, 0, 10)
 r = Syllabification(false, syllable)
 out = r(string(split(texts[1], " ")[1]), isarabic=true, first_word=true, silent_last_vowel=false)
 dump(out)
 arabic(out.segment)
+
+line_syllables = Array[]
+for line in texts
+    words = string.(split(line, " "))
+
+    word_syllables = Segment[]
+    i = 1
+    for word in words
+        if i === 1
+            push!(word_syllables, r(word, isarabic=true, first_word=true))
+        elseif i === length(words)
+            push!(word_syllables, r(word, isarabic=true, first_word=false, silent_last_vowel=false))
+        else
+            push!(word_syllables, r(word, isarabic=true, first_word=false))
+        end
+        i += 1
+    end
+    push!(line_syllables, word_syllables)
+end
+line_syllables

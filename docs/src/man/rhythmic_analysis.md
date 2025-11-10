@@ -70,7 +70,7 @@ poem = """
 ## Extracting Syllables
 Now let's try extracting the syllables for the first line. To do this, let's convert the text into a vector of stanzas of the poem. We therefore split the text on the `";\n"` separator, where the `\n` is the code for line break. The function `strip` simply removes the whitespaces before and after each stanza.
 ```@example abc
-texts = map(x -> strip(string(x)), split.(poem, ";\n"))
+texts = map(x -> strip(string(x)), split.(poem, "\n"))
 ```
 Next is to initialize the syllabification for each stanza, suppose we want to capture the consonant before and after each vowel to represent one syllable. For example, for the word `basmala`, the syllabification if only the consonant preceding the vowel is considered then we have `ba`, `ma`, and `la`. To specify this configuration for the syllable, we do it as follows:
 ```@repl abc
@@ -95,6 +95,28 @@ From the output above, there are two syllables, the first being `أَ` and the s
 !!! warning "Caution"
     It is important to note that syllabification works only on a fully diacritize text as in the input poem here, and that is because each syllable contain a vowel. If not fully diacritize, then the syllabification will consider a syllable with only consonant and no vowel.
 
+So that, if we want to extract the syllables of all the lines:
+```@example abc
+line_syllables = Array[]
+for line in texts
+    words = string.(split(line, " "))
+
+    word_syllables = Segment[]
+    i = 1
+    for word in words
+        if i === 1
+            push!(word_syllables, r(word, isarabic=true, first_word=true))
+        elseif i === length(words)
+            push!(word_syllables, r(word, isarabic=true, first_word=false, silent_last_vowel=false))
+        else
+            push!(word_syllables, r(word, isarabic=true, first_word=false))
+        end
+        i += 1
+    end
+    push!(line_syllables, word_syllables)
+end
+line_syllables
+```
 ## References
 ```@bibliography
 Pages = ["rhythmic_analysis.md"]
