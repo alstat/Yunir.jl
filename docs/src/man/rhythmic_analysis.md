@@ -95,10 +95,11 @@ From the output above, there are two syllables, the first being `أَ` and the s
 !!! warning "Caution"
     It is important to note that syllabification works only on a fully diacritize text as in the input poem here, and that is because each syllable contain a vowel. If not fully diacritize, then the syllabification will consider a syllable with only consonant and no vowel.
 
-So that, if we want to extract the syllables of all the lines:
+So that, if we want to extract the syllables of the first three lines, then:
 ```@example abc
+# Process only the first 3 lines for demonstration
 line_syllables = Array[]
-for line in texts
+for line in texts[1:3]
     words = string.(split(line, " "))
 
     word_syllables = Segment[]
@@ -115,7 +116,10 @@ for line in texts
     end
     push!(line_syllables, word_syllables)
 end
-line_syllables
+```
+To extract the syllables of the words in first line of the poem, we run the following code:
+```@example abc
+line_syllables[1]
 ```
 ## References
 ```@bibliography
