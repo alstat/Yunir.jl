@@ -25,10 +25,6 @@ We will consider a simple example based on "text reuse" case study of [KITAB pro
 ### Data processing
 To have a quality output, we will need to process the texts to remove unnecessary noise. First, we need to remove all non-Arabic characters. To start with, the following will input the two candidate texts:
 ```@setup abc
-using Pkg
-Pkg.add("Makie")
-Pkg.add("CairoMakie")
-Pkg.add("Colors")
 using CairoMakie
 CairoMakie.activate!(type = "svg")
 ```
@@ -236,8 +232,7 @@ The pairwise alignment above works by minimizing a cost function, which is defin
 
 The default cost model is given by
 ```@setup def
-using Pkg
-Pkg.add("BioAlignments")
+# BioAlignments is already available from the docs Project.toml
 ```
 ```@repl def
 using BioAlignments

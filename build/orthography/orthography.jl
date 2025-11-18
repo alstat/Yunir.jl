@@ -60,9 +60,9 @@ macro arsymbol(name)
     end)
 end
 
-# Default fallback for types without vocals/numerals defined
-vocals(::Type{<:AbstractCharacter}) = nothing
-numerals(::Type{<:AbstractCharacter}) = nothing
+# for non-consonant with no vocal and numeral
+vocals(x) = try vocals(x) catch nothing end
+numerals(x) = try numerals(x) catch nothing end
 
 vocals(x::Orthography) = vocals.(x.data)
 numerals(x::Orthography) = numerals.(x.data)
