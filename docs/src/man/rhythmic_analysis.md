@@ -6,7 +6,7 @@ The prevalence of poetry in Arabic literature necessitates scientific tool to st
 The first data is from a well known author, [Al-Mutanabbi المتنبّي](https://en.wikipedia.org/wiki/Al-Mutanabbi), who authored several poetry including the titled [*'Indeed, every woman with a swaying walk'*](https://www.youtube.com/watch?v=9c1IrQwfYFM), which will be the basis for this section.
 ## Loading Data
 The following codes assigns the said poem of Al-Mutanabbi to a variable poem.
-```@example abc
+```julia
 using Yunir
 @transliterator :default
 
@@ -69,19 +69,19 @@ poem = """
 ```
 ## Extracting Syllables
 Now let's try extracting the syllables for the first line. To do this, let's convert the text into a vector of stanzas of the poem. We therefore split the text on the `";\n"` separator, where the `\n` is the code for line break. The function `strip` simply removes the whitespaces before and after each stanza.
-```@example abc
+```julia
 texts = map(x -> strip(string(x)), split.(poem, "\n"))
 ```
 Next is to initialize the syllabification for each stanza, suppose we want to capture the consonant before and after each vowel to represent one syllable. For example, for the word `basmala`, the syllabification if only the consonant preceding the vowel is considered then we have `ba`, `ma`, and `la`. To specify this configuration for the syllable, we do it as follows:
-```@repl abc
+```julia
 syllable = Syllable(1, 0, 3)
 ```
 Here the first argument represents the number of characters prior to the vowel is considered, the next argument which is 0 is the number of character after the vowel, and 3 in the third argument simply mean how many vowels do we need to capture for each word. So that,
-```@repl abc
+```julia
 r = Syllabification(false, syllable)
 ```
 Then, the following will syllabicize the first word in the said poem.
-```@repl abc
+```julia
 r(
     string(split(texts[1], " ")[1]), 
     isarabic=true, 
@@ -95,8 +95,8 @@ From the output above, there are two syllables, the first being `أَ` and the s
 !!! warning "Caution"
     It is important to note that syllabification works only on a fully diacritize text as in the input poem here, and that is because each syllable contain a vowel. If not fully diacritize, then the syllabification will consider a syllable with only consonant and no vowel.
 
-So that, if we want to extract the syllables of the first three lines, then:
-```@example abc
+So that, if we want to extract the syllables of\ the first three lines, then:
+```julia
 # Process only the first 3 lines for demonstration
 line_syllables = Array[]
 for line in texts[1:3]
@@ -118,7 +118,7 @@ for line in texts[1:3]
 end
 ```
 To extract the syllables of the words in first line of the poem, we run the following code:
-```@example abc
+```julia
 line_syllables[1]
 ```
 ## References

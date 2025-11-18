@@ -82,4 +82,6 @@ for line in texts
     end
     push!(line_syllables, word_syllables)
 end
+
+texts[1]
 line_syllables[1]
