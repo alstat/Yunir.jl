@@ -14,7 +14,7 @@ If we want to take the numerals, we need to tokenize it first.
 ```@repl abc2
 arb_token = tokenize(ar_basmala)
 ```
-Next we then parse each of these words as   `Orthography`.
+Next, we parse each of these words as `Orthography`.
 ```@repl abc2
 arb_parsed1 = parse(Orthography, arb_token[1])
 arb_parsed2 = parse.(Orthography, arb_token)
@@ -41,7 +41,7 @@ vocals(arb_parsed2[3])
 ```
 
 ## Simple Encoding
-Simple encoding is a worded or spelled out transliteration of the arabic text.
+Simple encoding is a worded or spelled out transliteration of an Arabic text.
 ```@repl abc2
 parse(SimpleEncoding, ar_basmala)
 ```

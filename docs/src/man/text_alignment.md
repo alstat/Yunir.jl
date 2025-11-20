@@ -41,7 +41,7 @@ shamela0012129_cln = clean(shamela0012129)
 shamela0023790_cln = clean(shamela0023790)
 ```
 !!! tips "Tips"
-    The `clean` function removes the non-Arabic characters through RegEx or [Regular Expression](https://en.wikipedia.org/wiki/Regular_expression), which is set at the third argument of the function. That is, `clean(shamela0012129)` is actually equivalent to:
+    The `clean` function removes the non-Arabic characters through RegEx or [Regular Expression](https://en.wikipedia.org/wiki/Regular_expression), which is set at the third parameter of the function. That is, `clean(shamela0012129)` is actually equivalent to:
     ```julia
     clean(shamela0012129; replace_non_ar="", target_regex=r"[A-Za-z0-9\(:×\|\–\[\«\»\]~\)_@./#&+\—-]*")
     ```
@@ -92,7 +92,7 @@ We can actually extract the encoded version, which is in extended Buckwalter tra
 ```@repl abc
 res1.alignment
 ```
-This is the same with the result above, but this one is the Buckwalter encoded Arabic input.
+This is the same with the previous result above, but this one is the Buckwalter encoded Arabic input.
 
 The number in the left side is the index of the first character in the row, whereas the number in the right side is the index of the last character in the row.
 ### Alignment statistics
@@ -192,7 +192,7 @@ f
 ```
 The figure above is divided into three subplots arranged in rows. You can think of the figure as two input text displayed in horizontal (i.e, sideways) orientation. In this orientation, the x-axis becomes the rows of the texts, that is, you can think of the x-axis as the rows of the texts in the book. In this case, we have two books, the reference and the target books. Each dot in reference and target corresponds to the characters that have matched. The lines and curves in the middle (colored in red) represent the connections of the rows of the texts where the matched happened. Further, the y-axis correspond to the length of the rows, in this case 60 characters per row. As you can see, the top tick label of the y-axis is 0 and the bottom tick label of the y-axis is 60, this is because the writing of Arabic is right-to-left, and so we can think of the 0th-tick at the top as the starting index of the first character in both texts, and the row ends at the 60th-tick at the bottom.
 
-We added further customization to the plot, readers are encouraged to explore the API.
+We added further customization to the plot, readers are encouraged to explore the [API](http://127.0.0.1:5501/docs/build/man/api/).
 
 As for the plot of insertions of characters, we have:
 ```@example abc
@@ -228,7 +228,7 @@ a[3].xticks = 0:2:unique(xys[2][1])[end]
 f
 ```
 ## Cost Model
-The pairwise alignment above works by minimizing a cost function, which is define by a cost model. It is important that we understand how the cost model is setup so that we can give proper scoring for the mismatches, matches, deletions and insertions. To define a cost model, we use [BioAligments.jl](https://github.com/BioJulia/BioAlignments.jl)'s `CostModel` struct.
+The pairwise alignment above works by minimizing a cost function, which is defined by a cost model. It is important that we understand how the cost model is setup so that we can give proper scoring for the mismatches, matches, deletions and insertions. To define a cost model, we use [BioAligments.jl](https://github.com/BioJulia/BioAlignments.jl)'s `CostModel` struct.
 
 The default cost model is given by
 ```@setup def

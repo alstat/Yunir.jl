@@ -2,7 +2,7 @@ Basic Utilities
 =====
 In this section, we are going to discuss how to use the APIs for dediacritization, normalization, and transliteration.
 ## Dediacritization
-The function to use is `dediac` which works on either Arabic, Buckwalter or custom transliterated characters.
+Dediacritization is the process of removing diacritics from an Arabic word. These diacritics are mostly vowels but also includes _sukuun_ سُكُون  and _saddah_ شَدّة. The function to use for dediacritization is `dediac` which works on either Arabic, Buckwalter or custom transliterated characters.
 ```@repl abc
 using Yunir
 @transliterator :default
@@ -15,6 +15,8 @@ Or using Buckwalter as follows:
 bw_basmala = "bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi";
 dediac(bw_basmala; isarabic=false)
 ```
+The `isarabic` parameter with `false` argument indicates that the `dediac` function or `dediac` API takes a Buckwalter encoded input, `bw_basmala`, and returns an output that is not encoded in Arabic (as in the previous example) but instead an output in Buckwalter form as well. 
+
 With Julia's broadcasting feature, the above dediacritization can be applied to arrays by simply adding `.` to the name of the function.
 ```@repl abc
 sentence0 = ["بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ",
@@ -22,13 +24,14 @@ sentence0 = ["بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّح�
 ]
 dediac.(sentence0)
 ```
+As seen above, broadcasting allows application of the `dediac` function to the elements of the vector `sentence0`. That is, because there are two entries in the `sentence0` vector, the broadcasting applies the `dediac` function to each of these and thus returning two outputs as well.
 ## Normalization
-The function to use is `normalize`, which works on either Arabic, Buckwalter or custom transliterated characters. For example, using the `ar_basmala` and `bw_basmala` defined above, the normalized version would be
+Arabic letters are calligraphic by design. It's free flowing design makes it very flexible to form unique ligatures that may require normalization for consistency's sake when doing natural language processing. To do normalization, the function to use is `normalize`, which works on either Arabic, Buckwalter or custom transliterated characters. For example, using the `ar_basmala` and `bw_basmala` defined above, the normalized version would be
 ```@repl abc
 normalize(ar_basmala)
 normalize(bw_basmala; isarabic=false)
 ```
-You can also normalize specific characters, for example:
+Again, the `isarabic=false` parameter simply disables an Arabic output and instead encode it as a Buckwalter output. You can also normalize specific characters, for example:
 ```@repl abc
 normalize(ar_basmala, :alif_khanjareeya)
 normalize(ar_basmala, :hamzat_wasl)

@@ -26,14 +26,3 @@ julia> Pkg.add("Yunir")
   url          = {https://doi.org/10.5281/zenodo.6629868}
 }
 ```
-## Outline
-```@contents
-Pages = [
-    "man/basic_utilities.md",
-    "man/orthography.md",
-    "man/qurantree.md",
-    "man/api.md",
-    "man/references.md",
-]
-Depth = 2
-```
