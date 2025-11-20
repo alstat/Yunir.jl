@@ -58,7 +58,7 @@ poem = """
 """
 
 texts = map(x -> strip(string(x)), split.(poem, "\n"))
-syllable = Syllable(1, 0, 10)
+syllable = Syllable(1, 0, 3)
 r = Syllabification(false, syllable)
 out = r(string(split(texts[1], " ")[1]), isarabic=true, first_word=true, silent_last_vowel=false)
 dump(out)
