@@ -1,28 +1,47 @@
 @enum VisType last_recited schimiller
+@enum LastRecitedVariants one two three
 
 abstract type AbstractRhythmicVisArgs end;
 abstract type AbstractSyllable end;
-struct RhythmicVis{T} where T <: AbstractRhythmicVisArgs
+struct RhythmicVis{T <: AbstractRhythmicVisArgs}
 	type::VisType
     args::T
 end
 
 struct LastRecitedVisArgs <: AbstractRhythmicVisArgs
-    fig_args::Figure
+    variant::LastRecitedVariants
+    fig_args::Makie.Figure
     title::String
 end
-LastRecitedVisArgs() = LastRecitedVisArgs(Figure(resolution=(800, 800)), "")
+LastRecitedVisArgs() = LastRecitedVisArgs(one, Figure(resolution=(800, 800)), "")
+LastRecitedVisArgs(variant::LastRecitedVariants) = LastRecitedVisArgs(variant, Figure(resolution=(800, 800)), "")
 
 struct LastRecitedSyllable <: AbstractSyllable
     syllable::Buckwalter
 end
 
-function (r::RhythmicVis)(texts::Array{Buckwalter})
+function (r::RhythmicVis)(texts::Array{Buckwalter})::Tuple{Makie.Figure,NTuple{3,Tuple{Array{Int64,1},Dict{LastRecitedSyllable,Int64}}}}
 	if r.type == last_recited
-        y1_chars, y2_chars, y3_chars = last_syllable.(texts)
-        y1, y1_dict = encode_to_number(y1_chars)
-        y2, y2_dict = encode_to_number(y2_chars)
-        y3, y3_dict = encode_to_number(y3_chars)
+        y1_chars = Array{LastRecitedSyllable,1}()
+        y2_chars = Array{LastRecitedSyllable,1}()
+        y3_chars = Array{LastRecitedSyllable,1}()
+        for text in texts
+            chars_tuple = last_syllable(text)
+            push!(y1_chars, chars_tuple[1])
+            push!(y2_chars, chars_tuple[2])
+            push!(y3_chars, chars_tuple[3])
+        end
+        y1, y1_dict = to_number(y1_chars)
+        y2, y2_dict = to_number(y2_chars)
+        y3, y3_dict = to_number(y3_chars)
+        fig = if r.args.variant === one
+            vis(y1_chars, y1, vis_args=r.args)
+        elseif r.args.variant === two
+            vis(y1_chars, y1, x2=y2_chars, y2=y2, vis_args=r.args)
+        else
+            vis(y1_chars, y1, x2=y2_chars, y2=y2, x3=y3_chars, y3=y3, vis_args=r.args)
+        end
+        return fig, ((y1, y1_dict), (y2, y2_dict), (y3, y3_dict))
 	end
 end
 
@@ -31,10 +50,10 @@ end
 
 Extracts the last recited syllable from one to two characters prior and after the said vowel.
 """
-function last_syllable(text::Buckwalter)::Tuple{Buckwalter,Buckwalter,Buckwalter}
-    out1 = Buckwalter(replace(text[end-3:end-2], "o" => ""))
-    out2 = Buckwalter(replace(text[end-3:end-1], "o" => ""))
-    out3 = Buckwalter(replace(text[end-4:end-1], "o" => ""))
+function last_syllable(text::Buckwalter)::NTuple{3,LastRecitedSyllable}
+    out1 = Buckwalter(replace(text.text[end-3:end-2], "o" => ""))
+    out2 = Buckwalter(replace(text.text[end-3:end-1], "o" => "")) 
+    out3 = Buckwalter(replace(text.text[end-4:end-1], "o" => ""))
     return LastRecitedSyllable(out1), LastRecitedSyllable(out2), LastRecitedSyllable(out3)
 end
 
@@ -43,39 +62,33 @@ end
 
 Converts 
 """
-function to_number(texts::Array{LastRecitedSyllable})
-    y = unique(map(x -> x.syllable.text, texts))
-    y_dict = Dict()
+function to_number(texts::Array{LastRecitedSyllable})::Tuple{Array{Int64,1},Dict{LastRecitedSyllable,Int64}}
+    y = unique(texts)
+    y_dict = Dict{LastRecitedSyllable,Int64}()
     for i in eachindex(y)
         if i == 1
             y_dict[y[i]] = i
         end
         
-        if y[i] .∈ Ref(Set(keys(y_dict)))
+        if y[i] ∈ keys(y_dict)
             continue
-        else
+        else 
             y_dict[y[i]] = i
         end
     end
     y_vec = Array{Int64,1}()
-    for i in ychars
-        push!(y_vec, y_dict[i])
+    for text in texts
+        push!(y_vec, y_dict[text])
     end
-    return y_vec, y_dict # scaling to 100 since algo will fail saying range step cannot 0
+    return y_vec, y_dict 
 end
 
-bw_texts = verses(crps_tbl[1])
-y1_chars, y2_chars, y3_chars = last_syllable(bw_texts)
-y1, y1_dict = encode_to_number(y1_chars)
-y2, y2_dict = encode_to_number(y2_chars)
-y3, y3_dict = encode_to_number(y3_chars)
-
-function vis(x1::Array{String,1}, y1::Array{Int64,1}; 
-    x2::Union{Nothing,Array{String,1}}=nothing, 
-    x3::Union{Nothing,Array{String,1}}=nothing, 
+function vis(x1::Array{LastRecitedSyllable,1}, y1::Array{Int64,1}; 
+    x2::Union{Nothing,Array{LastRecitedSyllable,1}}=nothing, 
     y2::Union{Nothing,Array{Int64,1}}=nothing, 
+    x3::Union{Nothing,Array{LastRecitedSyllable,1}}=nothing, 
     y3::Union{Nothing,Array{Int64,1}}=nothing, 
-    vis_args::LastRecitedVisArgs)
+    vis_args::LastRecitedVisArgs=LastRecitedVisArgs())::Makie.Figure
     f = vis_args.fig_args;
     a1 = Axis(f[1, 1], 
         ylabel="Last Pronounced Syllable\n\n\n",
@@ -118,6 +131,5 @@ function vis(x1::Array{String,1}, y1::Array{Int64,1};
         lines!(a3, collect(eachindex(x3)), y3)
     else
     end
-    
     f
 end
