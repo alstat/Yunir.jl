@@ -349,6 +349,7 @@ julia> tajweed_timings = Dict{String,Int64}(
 			"^"  => 4
 		)
 julia> syllabic_consistency(segments, tajweed_timings)
+```
 """
 function syllabic_consistency(segments::Vector{Segment}, syllable_timings::Dict{String,Int64})
     segment_scores = Int64[]

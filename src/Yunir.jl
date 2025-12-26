@@ -12,6 +12,7 @@ include("utils/decode.jl")
 include("utils/normalize.jl")
 include("utils/dediac.jl")
 include("utils/clean.jl")
+include("utils/texts_wrapper.jl")
 include("alignment/align.jl")
 include("utils/encode.jl")
 include("utils/parse.jl")
@@ -29,6 +30,9 @@ export expand_archars, isfeat, vocals, numerals, parse, arabic, clean, dediac, e
 export align, score, count_matches, count_aligned, count_mismatches, count_insertions, count_deletions, collect
 export Alignment, AbstractCAMeLDB, AbstractEncoder, SimpleEncoding
 export @transliterator, genproperties
+
+# text wrapper
+export Arabic, Buckwalter
 
 # Orthography
 export AbstractCharacter, AbstractCharacter, AbstractConsonant, AbstractSolar, AbstractLunar,

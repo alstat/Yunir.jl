@@ -1,6 +1,6 @@
 Rhythmic Analysis
 =============
-The prevalence of poetry in Arabic literature necessitates scientific tool to study the rhythmic signatures. Unfortunately, apart from the fact that there are no tools to do this yet, at least to the best knowledge of the author, there are no resources as well for the statistical methodologies of studying rhythm as well until recently. The recent work of [asaadthesis](@citet) provided initial statistical tools that are now available in Yunir.jl as well. This section will demonstrate the APIs for doing rhythmic analysis based on the methodologies proposed by [asaadthesis](@citet). To do this, there are two types of text that will be studied, one for Arabic poetry and the Holy Qur'an. For the Holy Qur'an, a comprehensive analysis was done by [asaadthesis](@citet), readers are encouraged to read it. As to how to do apply it though using Yunir.jl, this section will cover the details.
+The prevalence of poetry in Arabic literature necessitates scientific tool to study the rhythmic signatures. Unfortunately, there are no resources for such methodology until the recent work of [asaadthesis](@citet). This section will demonstrate the APIs for doing rhythmic analysis based on the methodologies proposed by [asaadthesis](@citet). To do this, there are two types of text that will be studied, and these are pre-Islamic poetry and the Holy Qur'an.
 
 ## Arabic Poetry
 The first data is from a well known author, [Al-Mutanabbi المتنبّي](https://en.wikipedia.org/wiki/Al-Mutanabbi), who authored several poetry including the titled [*'Indeed, every woman with a swaying walk'*](https://www.youtube.com/watch?v=9c1IrQwfYFM), which will be the basis for this section.
@@ -127,6 +127,7 @@ line_syllables[end-1]
 ```
 !!! info "Note"
     The indexing is set to `end-1` because the last line of the `texts` variable is a blank line space as seen in the results of the `texts` variable assigned to the mapping function above.
+
 ## References
 ```@bibliography
 Pages = ["rhythmic_analysis.md"]

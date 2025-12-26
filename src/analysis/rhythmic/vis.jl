@@ -1,101 +1,51 @@
-using Colors
-using CairoMakie
-using GraphMakie
-using Graphs
-using Makie
+@enum VisType last_recited schimiller
 
-"""
-	join(harakaat::Array{Harakaat})
+abstract type AbstractRhythmicVisArgs end;
+abstract type AbstractSyllable end;
+struct RhythmicVis{T} where T <: AbstractRhythmicVisArgs
+	type::VisType
+    args::T
+end
 
-Join function for handling `Harakaat` object. It joins the harakaat together with `?` separator.
+struct LastRecitedVisArgs <: AbstractRhythmicVisArgs
+    fig_args::Figure
+    title::String
+end
+LastRecitedVisArgs() = LastRecitedVisArgs(Figure(resolution=(800, 800)), "")
 
-```julia-repl
-julia> ar_raheem = "ٱلرَّحِيمِ"
-"ٱلرَّحِيمِ"
+struct LastRecitedSyllable <: AbstractSyllable
+    syllable::Buckwalter
+end
 
-julia> r = Rhyme(true, Syllable(1, 2, 2))
-Rhyme(true, Syllable{Int64}(1, 2, 2))
-
-julia> output = r(ar_raheem, true)
-Segment("َّحِ?حِيم", Harakaat[Harakaat("َ", false), Harakaat("ِ", false)])
-
-julia> join(encode(output).harakaat)
-"a?i"
-```
-"""
-Base.join(harakaat::Array{Harakaat}, delim::String="?") = join([h.char for h in harakaat], delim)
-
-
-"""
-    Sequence(sequence::Vector{String}, y_axis::Vector{Int64})
-
-Create a `Sequence` object for the rhythmic `sequence` data, with  `y_axis` as its y-axis ticks for plotting.
-"""
-struct Sequence
-    sequence::Vector{String}    
-    yaxis::Vector{Int64}
+function (r::RhythmicVis)(texts::Array{Buckwalter})
+	if r.type == last_recited
+        y1_chars, y2_chars, y3_chars = last_syllable.(texts)
+        y1, y1_dict = encode_to_number(y1_chars)
+        y2, y2_dict = encode_to_number(y2_chars)
+        y3, y3_dict = encode_to_number(y3_chars)
+	end
 end
 
 """
-	sequence(segments::Array{Segment}, type::Union{Type{Harakaat},Type{Segment}})
+    last_syllable(text::Buckwalter)
 
-Extracts the sequence of the `segments` by indexing it into `x`` and `y`, where `x` is the index of the segment, and `y` is the index of its vowels or harakaat.
-It returns a tuple containing the following `y`, `y_dict` (the mapping dictionary with key represented by `x` and value represented by `y`), `syllables` represented by `x`.
-
-```julia-repl
-julia> ar_raheem_alamiyn = ["ٱلرَّحِيمِ", "ٱلْعَٰلَمِينَ"]
-2-element Vector{String}:
- "ٱلرَّحِيمِ"
- "ٱلْعَٰلَمِينَ"
-
-julia> r = Rhyme(true, Syllable(1, 1, 2))
-Rhyme(true, Syllable{Int64}(1, 1, 2))
-
-julia> segments = encode.(r.(ar_raheem_alamiyn, true))
-2-element Vector{Segment}:
- Segment("~aH?Hiy", Harakaat[Harakaat("a", false), Harakaat("i", false)])
- Segment("lam?miy", Harakaat[Harakaat("a", false), Harakaat("i", false)])
-
-julia> sequence(segments, Segment)
-(["~aH?Hiy", "lam?miy"], [1, 2], Dict("~aH?Hiy" => 1, "lam?miy" => 2))
-
-julia> sequence(segments, Harakaat)
-(["a?i", "a?i"], [1, 1], Dict("a?i" => 1))
-
-julia> syllables, y_vec, y_dict = transition(segments, Harakaat)
-(["a?i", "a?i"], [1, 1], Dict("a?i" => 1))
-
-julia> using Makie
-
-julia> using CairoMakie
-
-julia> f = Figure(resolution=(500, 500));
-
-julia> a1 = Axis(f[1,1], 
-           xlabel="Ayah Number",
-           ylabel="Last Pronounced Syllable\n\n\n",
-           title="Surah Al-Fatihah Rhythmic Patterns\n\n",
-           yticks=(unique(y_vec), unique(syllables)), 
-       )
-Axis with 1 plots:
- ┗━ Mesh{Tuple{GeometryBasics.Mesh{3, Float32, GeometryBasics.TriangleP{3, Float32, GeometryBasics.PointMeta{3, Float32, Point{3, Float32}, (:normals,), Tuple{Vec{3, Float32}}}}, GeometryBasics.FaceView{GeometryBasics.TriangleP{3, Float32, GeometryBasics.PointMeta{3, Float32, Point{3, Float32}, (:normals,), Tuple{Vec{3, Float32}}}}, GeometryBasics.PointMeta{3, Float32, Point{3, Float32}, (:normals,), Tuple{Vec{3, Float32}}}, GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}, StructArrays.StructVector{GeometryBasics.PointMeta{3, Float32, Point{3, Float32}, (:normals,), Tuple{Vec{3, Float32}}}, @NamedTuple{position::Vector{Point{3, Float32}}, normals::Vector{Vec{3, Float32}}}, Int64}, Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}}}}}
-
-
-julia> lines!(a1, collect(eachindex(syllables)), y_vec)
-Lines{Tuple{Vector{Point{2, Float32}}}}
-
-julia> f
-```
+Extracts the last recited syllable from one to two characters prior and after the said vowel.
 """
-function sequence(segments::Array{Segment}, type::Union{Type{Harakaat},Type{Segment}})
-    if type == Harakaat
-        syllables = [join(s.harakaat) for s in segments]
-    else
-        syllables = [join(s.segment) for s in segments]
-    end
+function last_syllable(text::Buckwalter)::Tuple{Buckwalter,Buckwalter,Buckwalter}
+    out1 = Buckwalter(replace(text[end-3:end-2], "o" => ""))
+    out2 = Buckwalter(replace(text[end-3:end-1], "o" => ""))
+    out3 = Buckwalter(replace(text[end-4:end-1], "o" => ""))
+    return LastRecitedSyllable(out1), LastRecitedSyllable(out2), LastRecitedSyllable(out3)
+end
 
-    y = unique(syllables)
-    y_dict = Dict{String,Int64}()
+"""
+    to_number(texts::Array{LastRecitedSyllable})
+
+Converts 
+"""
+function to_number(texts::Array{LastRecitedSyllable})
+    y = unique(map(x -> x.syllable.text, texts))
+    y_dict = Dict()
     for i in eachindex(y)
         if i == 1
             y_dict[y[i]] = i
@@ -107,81 +57,67 @@ function sequence(segments::Array{Segment}, type::Union{Type{Harakaat},Type{Segm
             y_dict[y[i]] = i
         end
     end
-
-    y_vec = Vector{Int64}()
-    for i in syllables
+    y_vec = Array{Int64,1}()
+    for i in ychars
         push!(y_vec, y_dict[i])
     end
-    return Sequence(syllables, y_vec)
+    return y_vec, y_dict # scaling to 100 since algo will fail saying range step cannot 0
 end
 
-function transition(seq::Sequence)
-    seq = seq.sequence
-    transition_counts = Dict{Tuple{String,String}, Int}()
-    state_counts = Dict{String, Int}()
-    
-    for (current, next) in zip(seq, @view seq[2:end])
-        transition_counts[(current, next)] = get(transition_counts, (current, next), 0) + 1
-        state_counts[current] = get(state_counts, current, 0) + 1
-    end
-    state_counts[seq[end]] = get(state_counts, seq[end], 0) + 1  # Count the last state
-    
-    transition_probs = Dict{Tuple{String,String}, Float64}()
-    for ((from, to), count) in transition_counts
-        transition_probs[(from, to)] = count / state_counts[from]
-    end
-    
-    return transition_probs
-end
+bw_texts = verses(crps_tbl[1])
+y1_chars, y2_chars, y3_chars = last_syllable(bw_texts)
+y1, y1_dict = encode_to_number(y1_chars)
+y2, y2_dict = encode_to_number(y2_chars)
+y3, y3_dict = encode_to_number(y3_chars)
 
-function GraphMakie.graphplot(probs::Dict{Tuple{String,String}, Float64}, resolution=(500, 500))
-    states = unique(vcat(first.(keys(probs)), last.(keys(probs))))
-    n = length(states)
-    
-    # Create a mapping from states to indices
-    state_to_index = Dict(state => i for (i, state) in enumerate(states))
-    index_to_state = Dict(i => state for (state, i) in state_to_index)
-    
-    # Create the graph
-    g = DiGraph(n)
-    
-    # Add edges and calculate edge weights
-    edge_weights = Float64[]
-    for ((from, to), prob) in probs
-        add_edge!(g, state_to_index[from], state_to_index[to])
-        push!(edge_weights, prob)
+function vis(x1::Array{String,1}, y1::Array{Int64,1}; 
+    x2::Union{Nothing,Array{String,1}}=nothing, 
+    x3::Union{Nothing,Array{String,1}}=nothing, 
+    y2::Union{Nothing,Array{Int64,1}}=nothing, 
+    y3::Union{Nothing,Array{Int64,1}}=nothing, 
+    vis_args::LastRecitedVisArgs)
+    f = vis_args.fig_args;
+    a1 = Axis(f[1, 1], 
+        ylabel="Last Pronounced Syllable\n\n\n",
+        title=vis_args.title,
+        yticks=(unique(y1), unique(string.(x1))),
+        xticks = collect(eachindex(x1))
+    )
+    lines!(a1, collect(eachindex(x1)), y1)
+
+    if x2 !== nothing && x3 !== nothing
+        a2 = Axis(f[2, 1], 
+            ylabel="3 Characters\n\n\n",
+            yticks=(unique(y2), unique(string.(x2))),
+            xticks = collect(eachindex(x2))
+        )
+        a3 = Axis(f[3, 1], 
+            ylabel="3-4 Characters\n\n",
+            yticks=(unique(y3), unique(string.(x3))),
+            xticks = collect(eachindex(x3))
+        )
+        hidexdecorations!(a1)
+        lines!(a2, collect(eachindex(x2)), y2)
+        hidexdecorations!(a2)
+        lines!(a3, collect(eachindex(x3)), y3)
+    elseif x2 !== nothing && x3 === nothing
+        a2 = Axis(f[2, 1], 
+            ylabel="3 Characters\n\n\n",
+            yticks=(unique(y2), unique(string.(x2))),
+            xticks = collect(eachindex(x2))
+        )
+        hidexdecorations!(a1)
+        lines!(a2, collect(eachindex(x2)), y2)
+    elseif x2 === nothing && x3 !== nothing 
+        a3 = Axis(f[3, 1], 
+            ylabel="3-4 Characters\n\n",
+            yticks=(unique(y3), unique(string.(x3))),
+            xticks = collect(eachindex(x3))
+        )
+        hidexdecorations!(a1)
+        lines!(a3, collect(eachindex(x3)), y3)
+    else
     end
     
-    # Create the plot
-    f = Figure(resolution = resolution)
-    ax = Axis(f[1,1])
-    
-    # Use the actual state labels for nlabels
-    nlabels = [string(index_to_state[i]) for i in 1:nv(g)]
-    
-    # Create edge labels (probabilities)
-    distances = collect(0.05:0.05:ne(g)*0.05)
-    elabels = repr.(round.(distances, digits=2))
-    # elabels = [string(round(w, digits=2)) for w in edge_weights]
-    
-    # Create the graph plot
-    graphplot!(ax, g;
-               curve_distance=distances,
-               nlabels = nlabels,
-               nlabels_align = (:center, :center),
-               nlabels_textsize = 14,
-               node_size = 30,
-               node_color = :lightblue,
-               edge_width = 2 .* sqrt.(edge_weights ./ maximum(edge_weights)) .+ 1,
-               edge_color = [RGB((w/maximum(edge_weights)), 0, 1-(w/maximum(edge_weights))) for w in edge_weights],
-               elabels_textsize = 12,
-               elabels_align = (:center, :center),
-               arrow_size = 15,
-               elabels = elabels)
-    
-    hidedecorations!(ax)
-    hidespines!(ax)
-    ax.aspect = DataAspect()
-    
-    return f
+    f
 end
