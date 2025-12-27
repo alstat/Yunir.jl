@@ -525,4 +525,42 @@ using Yunir
         # In this case, it should identify the explicit vowel 'a'
         @test any(x -> x.char == "a", result.harakaat)
     end
+
+    @testset "Rhythmic Vis" begin
+        @test last_syllable(Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi")) === (LastRecitedSyllable(Bw("iy")), LastRecitedSyllable(Bw("iym")), LastRecitedSyllable(Bw("Hiym")))
+        alfatihah_bw = [
+            Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi"),
+            Bw("{loHamodu lil~ahi rab~i {loEa`lamiyna"),
+            Bw("{lr~aHoma`ni {lr~aHiymi"),
+            Bw("ma`liki yawomi {ld~iyni"),
+            Bw("<iy~aAka naEobudu wa<iy~aAka nasotaEiynu"),
+            Bw("{hodinaA {lS~ira`Ta {lomusotaqiyma"),
+            Bw("Sira`Ta {l~a*iyna >anoEamota Ealayohimo gayori {lomagoDuwbi Ealayohimo walaA {lD~aA^l~iyna")
+        ]
+        y1_chars = Array{LastRecitedSyllable,1}()
+        y2_chars = Array{LastRecitedSyllable,1}()
+        y3_chars = Array{LastRecitedSyllable,1}()
+        for text in alfatihah_bw
+            chars_tuple = last_syllable(text)
+            push!(y1_chars, chars_tuple[1])
+            push!(y2_chars, chars_tuple[2])
+            push!(y3_chars, chars_tuple[3])
+        end
+        y1, y1_dict = to_number(y1_chars)
+        y2, y2_dict = to_number(y2_chars)
+        y3, y3_dict = to_number(y3_chars)
+
+        @test y1 == [1, 1, 1, 1, 1, 1, 1]
+        @test y2 == [1, 2, 1, 2, 2, 1, 2]
+        @test y3 == [1, 2, 1, 3, 4, 5, 3]
+        @test y1_dict == Dict(LastRecitedSyllable(Bw("iy")) => 1)
+        @test y2_dict == Dict(LastRecitedSyllable(Bw("iym")) => 1, LastRecitedSyllable(Bw("iyn")) => 2)
+        @test y3_dict == Dict(
+            LastRecitedSyllable(Bw("Eiyn")) => 4, 
+            LastRecitedSyllable(Bw("~iyn")) => 3,
+            LastRecitedSyllable(Bw("qiym")) => 5,
+            LastRecitedSyllable(Bw("Hiym")) => 1,
+            LastRecitedSyllable(Bw("miyn")) => 2
+        )
+    end
 end

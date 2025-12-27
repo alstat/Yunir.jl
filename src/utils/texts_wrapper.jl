@@ -1,7 +1,7 @@
-struct Arabic
+struct Ar
     text::String
 end
 
-struct Buckwalter
+struct Bw
     text::String
 end

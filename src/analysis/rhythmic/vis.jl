@@ -1,26 +1,109 @@
+"""
+    VisType
+
+Enum specifying the type of plot.
+
+# Variants
+- `last_recited`: plots the last recited syllable
+- `schimiller`: generates the Joseph Schimiller rhythmic graph
+"""
 @enum VisType last_recited schimiller
+
+"""
+    LastRecitedVariants
+
+Enum specifying the variant of last-recited visualization.
+
+# Variants
+- `one`: only shows the syllable in the y-axis of the graph
+- `two`: includes additional subplot now accounting the consonant after the syllable
+- `three`: is `two` variant but with another suplot now accounting consonants before and after the syllable
+"""
 @enum LastRecitedVariants one two three
 
 abstract type AbstractRhythmicVisArgs end;
 abstract type AbstractSyllable end;
+
+"""
+    RhythmicVis(type::VisType, args::T) where T <: AbstractRhythmicVisArgs
+
+Create a `RhythmicVis` object with the specified visualization type and arguments.
+
+# Arguments
+- `type::VisType`: The type of rhythmic visualization (from the `VisType` enum)
+- `args::T`: Visualization arguments, must be a subtype of `AbstractRhythmicVisArgs`
+
+# Examples
+```julia
+args = LastRecitedVisArgs(fig, "My Title")
+vis = RhythmicVis(last_recited::VisType, args)
+```
+"""
 struct RhythmicVis{T <: AbstractRhythmicVisArgs}
 	type::VisType
     args::T
 end
 
+"""
+    LastRecitedVisArgs <: AbstractRhythmicVisArgs
+
+Create a `LastRecitedVisArgs` with `variant` argument specifying the number of characters before and after the last recited syllable, this variant is 
+specified by the `LastRecitedVariants` which takes `one`, `two`, or `three` variant. It also takes `fig_args` argument to specify the details of the `Makie.Figure`.
+The third argument `title` specifies the title of the graph.
+"""
 struct LastRecitedVisArgs <: AbstractRhythmicVisArgs
     variant::LastRecitedVariants
     fig_args::Makie.Figure
     title::String
 end
-LastRecitedVisArgs() = LastRecitedVisArgs(one, Figure(resolution=(800, 800)), "")
+
+"""
+    LastRecitedVisArgs
+
+Create a LastRecitedVisArgs object with the following default arguments: `one::LastRecitedVariants`, `Figure(resolution=(800, 800))`, and title="".
+"""
+LastRecitedVisArgs() = LastRecitedVisArgs(one::LastRecitedVariants, Figure(resolution=(800, 800)), "")
+
+"""
+    LastRecitedVisArgs(variant::LastRecitedVariants) 
+
+Create a LastRecitedVisArgs object with custom `variant` specification and default values for the remaining arguments set to: `Figure(resolution=(800, 800))`, and title="".
+"""
 LastRecitedVisArgs(variant::LastRecitedVariants) = LastRecitedVisArgs(variant, Figure(resolution=(800, 800)), "")
 
+"""
+    LastRecitedSyllable <: AbstractSyllable
+
+Create a LastRecitedSyllable object with `syllable` field.
+"""
 struct LastRecitedSyllable <: AbstractSyllable
-    syllable::Buckwalter
+    syllable::Bw
 end
 
-function (r::RhythmicVis)(texts::Array{Buckwalter})::Tuple{Makie.Figure,NTuple{3,Tuple{Array{Int64,1},Dict{LastRecitedSyllable,Int64}}}}
+"""
+    (r::RhythmicVis)(texts::Array{Bw})
+
+Generate a rhythmic visualization from an array of Bw-encoded texts.
+
+This is a functor/callable method for `RhythmicVis` objects.
+
+# Arguments
+- `texts::Array{Bw}`: Array of texts in Bw transliteration
+
+# Returns
+A tuple containing:
+- `Makie.Figure`: The generated visualization figure
+- `NTuple{3,...}`: A 3-tuple where each element is a tuple of:
+  - `Array{Int64,1}`: Array of integer values
+  - `Dict{LastRecitedSyllable,Int64}`: Dictionary mapping syllables to counts
+
+# Examples
+```julia
+vis = RhythmicVis(last_recited, LastRecitedVisArgs())
+fig, data = vis(buckwalter_texts)
+```
+"""
+function (r::RhythmicVis)(texts::Array{Bw})::Tuple{Makie.Figure,NTuple{3,Tuple{Array{Int64,1},Dict{LastRecitedSyllable,Int64}}}}
 	if r.type == last_recited
         y1_chars = Array{LastRecitedSyllable,1}()
         y2_chars = Array{LastRecitedSyllable,1}()
@@ -46,21 +129,23 @@ function (r::RhythmicVis)(texts::Array{Buckwalter})::Tuple{Makie.Figure,NTuple{3
 end
 
 """
-    last_syllable(text::Buckwalter)
+    last_syllable(text::Bw)
 
-Extracts the last recited syllable from one to two characters prior and after the said vowel.
+Extract the last syllables from Bw-encoded text.
+
+Returns a 3-tuple of `LastRecitedSyllable` values which are described as the description of the three variants of `LastRecitedVariants`, respectively.
 """
-function last_syllable(text::Buckwalter)::NTuple{3,LastRecitedSyllable}
-    out1 = Buckwalter(replace(text.text[end-3:end-2], "o" => ""))
-    out2 = Buckwalter(replace(text.text[end-3:end-1], "o" => "")) 
-    out3 = Buckwalter(replace(text.text[end-4:end-1], "o" => ""))
+function last_syllable(text::Bw)::NTuple{3,LastRecitedSyllable}
+    out1 = Bw(replace(text.text[end-3:end-2], "o" => ""))
+    out2 = Bw(replace(text.text[end-3:end-1], "o" => "")) 
+    out3 = Bw(replace(text.text[end-4:end-1], "o" => ""))
     return LastRecitedSyllable(out1), LastRecitedSyllable(out2), LastRecitedSyllable(out3)
 end
 
 """
     to_number(texts::Array{LastRecitedSyllable})
 
-Converts 
+Assign a unique sequence (sorted based on first appearance in the array) of number to the unique values of `LastRecitedSyllable` texts to be used as y-axis location for plotting Rhythmic last recited syllable.
 """
 function to_number(texts::Array{LastRecitedSyllable})::Tuple{Array{Int64,1},Dict{LastRecitedSyllable,Int64}}
     y = unique(texts)
@@ -89,6 +174,7 @@ function vis(x1::Array{LastRecitedSyllable,1}, y1::Array{Int64,1};
     x3::Union{Nothing,Array{LastRecitedSyllable,1}}=nothing, 
     y3::Union{Nothing,Array{Int64,1}}=nothing, 
     vis_args::LastRecitedVisArgs=LastRecitedVisArgs())::Makie.Figure
+    x1 = map(x -> x.syllable.text, x1)
     f = vis_args.fig_args;
     a1 = Axis(f[1, 1], 
         ylabel="Last Pronounced Syllable\n\n\n",
@@ -99,6 +185,8 @@ function vis(x1::Array{LastRecitedSyllable,1}, y1::Array{Int64,1};
     lines!(a1, collect(eachindex(x1)), y1)
 
     if x2 !== nothing && x3 !== nothing
+        x2 = map(x -> x.syllable.text, x2)
+        x3 = map(x -> x.syllable.text, x3)
         a2 = Axis(f[2, 1], 
             ylabel="3 Characters\n\n\n",
             yticks=(unique(y2), unique(string.(x2))),
@@ -109,11 +197,10 @@ function vis(x1::Array{LastRecitedSyllable,1}, y1::Array{Int64,1};
             yticks=(unique(y3), unique(string.(x3))),
             xticks = collect(eachindex(x3))
         )
-        hidexdecorations!(a1)
         lines!(a2, collect(eachindex(x2)), y2)
-        hidexdecorations!(a2)
         lines!(a3, collect(eachindex(x3)), y3)
     elseif x2 !== nothing && x3 === nothing
+        x2 = map(x -> x.syllable.text, x2)
         a2 = Axis(f[2, 1], 
             ylabel="3 Characters\n\n\n",
             yticks=(unique(y2), unique(string.(x2))),
@@ -122,6 +209,7 @@ function vis(x1::Array{LastRecitedSyllable,1}, y1::Array{Int64,1};
         hidexdecorations!(a1)
         lines!(a2, collect(eachindex(x2)), y2)
     elseif x2 === nothing && x3 !== nothing 
+        x3 = map(x -> x.syllable.text, x3)
         a3 = Axis(f[3, 1], 
             ylabel="3-4 Characters\n\n",
             yticks=(unique(y3), unique(string.(x3))),

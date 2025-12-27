@@ -32,7 +32,7 @@ export Alignment, AbstractCAMeLDB, AbstractEncoder, SimpleEncoding
 export @transliterator, genproperties
 
 # text wrapper
-export Arabic, Buckwalter
+export Ar, Bw
 
 # Orthography
 export AbstractCharacter, AbstractCharacter, AbstractConsonant, AbstractSolar, AbstractLunar,
@@ -50,6 +50,7 @@ export Alif, AlifMaksurah, Ba, Ta, TaMarbuta, Tha, Jeem, HHa, Kha, Dal, Thal, Ra
 
 # Rhyme
 export Harakaat, Syllabification, Syllable, Segment, Sequence, sequence, vowel_indices, syllabic_consistency
+export VisType, LastRecitedVariants, LastRecitedVisArgs, RhythmicVis, LastRecitedSyllable, last_syllable, to_number
 
 # Symmetric Analysis
 export Slicer, AyahEmbeddings, AyahMidpoints, gen_midpoints, gen_slices, fitness, selection, slicer, five_summary, refine!, mutate!, crossover!
