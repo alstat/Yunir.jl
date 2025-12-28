@@ -351,20 +351,20 @@ julia> tajweed_timings = Dict{String,Int64}(
 julia> syllabic_consistency(segments, tajweed_timings)
 ```
 """
-function syllabic_consistency(segments::Vector{Segment}, syllable_timings::Dict{String,Int64})
+function syllabic_consistency(segments::Vector{Segment}, syllable_timings::Dict{Bw,Int64})
     segment_scores = Int64[]
     for segment in segments
         syllables = split(segment.segment, "?")
         syllable_scores = Int64[]
         for syllable in syllables
             if occursin('{', syllable)
-                push!(syllable_scores, syllable_timings["a"])
+                push!(syllable_scores, syllable_timings[Bw("a")])
             else
                 vowel_idcs = vowel_indices(string(syllable))
                 vowel = syllable[vowel_idcs]
                 if length(vowel_idcs) < 1
                     if occursin('^', syllable)
-                        syllable_score = syllable_timings["^"]
+                        syllable_score = syllable_timings[Bw("^")]
                     else
                         syllable_score = minimum(values(syllable_timings)) # ?
                     end
@@ -378,15 +378,15 @@ function syllabic_consistency(segments::Vector{Segment}, syllable_timings::Dict{
                                (vowel == "u" && next_letter == "w")
                         if cond
                             if occursin('^', syllable)
-                                syllable_score = syllable_timings["^"]
+                                syllable_score = syllable_timings[Bw("^")]
                             else
-                                syllable_score = syllable_timings[vowel * next_letter]
+                                syllable_score = syllable_timings[Bw(vowel * next_letter)]
                             end
                         else
-                            syllable_score = syllable_timings[vowel]
+                            syllable_score = syllable_timings[Bw(vowel)]
                         end
                     else
-                        syllable_score = syllable_timings[vowel]
+                        syllable_score = syllable_timings[Bw(vowel)]
                     end
                 end
                 push!(syllable_scores, syllable_score)

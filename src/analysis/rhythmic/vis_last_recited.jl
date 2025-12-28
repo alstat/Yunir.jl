@@ -5,9 +5,9 @@ Enum specifying the type of plot.
 
 # Variants
 - `last_recited`: plots the last recited syllable
-- `schimiller`: generates the Joseph Schimiller rhythmic graph
+- `schillinger`: generates the Joseph Schillinger's rhythmic graph
 """
-@enum VisType last_recited schimiller
+@enum VisType last_recited schillinger
 
 """
     LastRecitedVariants
@@ -51,25 +51,25 @@ Create a `LastRecitedVisArgs` with `variant` argument specifying the number of c
 specified by the `LastRecitedVariants` which takes `one`, `two`, or `three` variant. It also takes `fig_args` argument to specify the details of the `Makie.Figure`.
 The third argument `title` specifies the title of the graph.
 """
-struct LastRecitedVisArgs <: AbstractRhythmicVisArgs
+struct LastRecited <: AbstractRhythmicVisArgs
     variant::LastRecitedVariants
     fig_args::Makie.Figure
     title::String
 end
 
 """
-    LastRecitedVisArgs
+    LastRecited
 
-Create a LastRecitedVisArgs object with the following default arguments: `one::LastRecitedVariants`, `Figure(resolution=(800, 800))`, and title="".
+Create a `LastRecited` object with the following default arguments: `one::LastRecitedVariants`, `Figure(resolution=(800, 800))`, and title="".
 """
-LastRecitedVisArgs() = LastRecitedVisArgs(one::LastRecitedVariants, Figure(resolution=(800, 800)), "")
+LastRecited() = LastRecited(one::LastRecitedVariants, Figure(resolution=(800, 800)), "")
 
 """
     LastRecitedVisArgs(variant::LastRecitedVariants) 
 
 Create a LastRecitedVisArgs object with custom `variant` specification and default values for the remaining arguments set to: `Figure(resolution=(800, 800))`, and title="".
 """
-LastRecitedVisArgs(variant::LastRecitedVariants) = LastRecitedVisArgs(variant, Figure(resolution=(800, 800)), "")
+LastRecited(variant::LastRecitedVariants) = LastRecited(variant, Figure(resolution=(800, 800)), "")
 
 """
     LastRecitedSyllable <: AbstractSyllable
@@ -99,7 +99,7 @@ A tuple containing:
 
 # Examples
 ```julia
-vis = RhythmicVis(last_recited, LastRecitedVisArgs())
+vis = RhythmicVis(last_recited, LastRecited())
 fig, data = vis(buckwalter_texts)
 ```
 """
@@ -131,7 +131,7 @@ end
 """
     last_syllable(text::Bw)
 
-Extract the last syllables from Bw-encoded text.
+Extract the last syllables from Buckwalter-encoded text.
 
 Returns a 3-tuple of `LastRecitedSyllable` values which are described as the description of the three variants of `LastRecitedVariants`, respectively.
 """
@@ -173,7 +173,7 @@ function vis(x1::Array{LastRecitedSyllable,1}, y1::Array{Int64,1};
     y2::Union{Nothing,Array{Int64,1}}=nothing, 
     x3::Union{Nothing,Array{LastRecitedSyllable,1}}=nothing, 
     y3::Union{Nothing,Array{Int64,1}}=nothing, 
-    vis_args::LastRecitedVisArgs=LastRecitedVisArgs())::Makie.Figure
+    vis_args::LastRecited=LastRecited())::Makie.Figure
     x1 = map(x -> x.syllable.text, x1)
     f = vis_args.fig_args;
     a1 = Axis(f[1, 1], 
