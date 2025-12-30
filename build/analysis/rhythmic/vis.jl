@@ -5,7 +5,7 @@ using Graphs
 using Makie
 
 """
-	join(harakaat::Array{Harakaat})
+	join(harakaat::Vector{Harakaat})
 
 Join function for handling `Harakaat` object. It joins the harakaat together with `?` separator.
 
@@ -23,7 +23,7 @@ julia> join(encode(output).harakaat)
 "a?i"
 ```
 """
-Base.join(harakaat::Array{Harakaat}, delim::String="?") = join([h.char for h in harakaat], delim)
+Base.join(harakaat::Vector{Harakaat}, delim::String="?") = join([h.char for h in harakaat], delim)
 
 
 """
@@ -37,7 +37,7 @@ struct Sequence
 end
 
 """
-	sequence(segments::Array{Segment}, type::Union{Type{Harakaat},Type{Segment}})
+	sequence(segments::Vector{Segment}, type::Union{Type{Harakaat},Type{Segment}})
 
 Extracts the sequence of the `segments` by indexing it into `x`` and `y`, where `x` is the index of the segment, and `y` is the index of its vowels or harakaat.
 It returns a tuple containing the following `y`, `y_dict` (the mapping dictionary with key represented by `x` and value represented by `y`), `syllables` represented by `x`.
@@ -87,7 +87,7 @@ Lines{Tuple{Vector{Point{2, Float32}}}}
 julia> f
 ```
 """
-function sequence(segments::Array{Segment}, type::Union{Type{Harakaat},Type{Segment}})
+function sequence(segments::Vector{Segment}, type::Union{Type{Harakaat},Type{Segment}})
     if type == Harakaat
         syllables = [join(s.harakaat) for s in segments]
     else

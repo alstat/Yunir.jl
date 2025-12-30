@@ -42,8 +42,8 @@ const AR_LONG_VOWELS = [
 const BW_LONG_VOWELS = encode.(AR_LONG_VOWELS)
 
 """
-	Segment(text::String, harakaat::Array{Harakaat})
-Create a `Segment` object from `text`, which is the form of the segments of syllables, 
+	Segment(text::String, harakaat::Vector{Harakaat})
+Create a `Segment` object from `text`, which is the form of the segments of syllables,
 where vowels of which are also listed as `harakaat`.
 ```julia-repl
 julia> bw_segment = "~aH?Hiy"
@@ -53,7 +53,7 @@ Segment("~aH?Hiy", Harakaat[Harakaat("a", false), Harakaat("i", false)])
 """
 struct Segment
 	segment::String
-	harakaat::Array{Harakaat}
+	harakaat::Vector{Harakaat}
 end
 Yunir.encode(x::Segment) = Segment(encode(x.segment), encode.(x.harakaat))
 Yunir.arabic(x::Segment) = Segment(arabic(x.segment), encode.(x.harakaat))
@@ -351,7 +351,7 @@ julia> tajweed_timings = Dict{String,Int64}(
 julia> syllabic_consistency(segments, tajweed_timings)
 ```
 """
-function syllabic_consistency(segments::Vector{Segment}, syllable_timings::Dict{Bw,Int64})
+function syllabic_consistency(segments::Vector{Segment}, syllable_timings::Dict{Bw,Int64})::Vector{Int64}
     segment_scores = Int64[]
     for segment in segments
         syllables = split(segment.segment, "?")
@@ -394,5 +394,6 @@ function syllabic_consistency(segments::Vector{Segment}, syllable_timings::Dict{
         end
         push!(segment_scores, syllable_scores...)
     end
+	println("Here is the segment_scores ", segment_scores)
     return segment_scores
 end

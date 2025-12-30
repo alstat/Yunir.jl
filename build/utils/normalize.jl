@@ -25,7 +25,7 @@ function normalize(s::String, char_mapping::Dict=DEFAULT_NORMALIZER; isarabic::B
     return isarabic ? s : encode(s)
 end
 
-function normalize(astr::Array{String}, char_mapping::Dict=DEFAULT_NORMALIZER; isarabic::Bool=true)
+function normalize(astr::Vector{String}, char_mapping::Dict=DEFAULT_NORMALIZER; isarabic::Bool=true)
     out = String[]
     for s in astr
         push!(out, normalize(s, char_mapping; isarabic=isarabic))
@@ -36,7 +36,7 @@ end
 # "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ" === "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ"
 
 """
-    normalize(s::String, chars::Array{Symbol,1}; isarabic::Bool=true)
+    normalize(s::String, chars::Vector{Symbol}; isarabic::Bool=true)
 
 Normalize a specific Arabic or Buckwalter `String` character/s (`chars`).
 
@@ -46,7 +46,7 @@ julia> ar_basmala = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلر
 julia> normalize(ar_basmala, [:alif_khanjareeya, :hamzat_wasl]) === "بِسْمِ اللَّهِ الرَّحْمَانِ الرَّحِيمِ"
 ```
 """
-function normalize(s::String, chars::Array{Symbol,1}; isarabic::Bool=true)
+function normalize(s::String, chars::Vector{Symbol}; isarabic::Bool=true)
     s = isarabic ? s : arabic(s)
     for char in chars
         s = normalize(s, char; isarabic=isarabic)        

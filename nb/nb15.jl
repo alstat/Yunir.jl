@@ -20,9 +20,9 @@ alfatihah_bw = [
     Buckwalter("Sira`Ta {l~a*iyna >anoEamota Ealayohimo gayori {lomagoDuwbi Ealayohimo walaA {lD~aA^l~iyna")
 ]
 
-y1_chars = Array{LastRecitedSyllable,1}()
-y2_chars = Array{LastRecitedSyllable,1}()
-y3_chars = Array{LastRecitedSyllable,1}()
+y1_chars = Vector{LastRecitedSyllable}()
+y2_chars = Vector{LastRecitedSyllable}()
+y3_chars = Vector{LastRecitedSyllable}()
 for text in alfatihah_bw
     chars_tuple = last_syllable(text)
     push!(y1_chars, chars_tuple[1])

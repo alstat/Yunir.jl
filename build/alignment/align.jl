@@ -15,15 +15,15 @@ function align(src::String, tgt::String; costmodel::BioAlignments.CostModel=BioA
 end
 
 """
-	align(src::Array{String}, tgt::Array{String}; 
+	align(src::Vector{String}, tgt::Vector{String};
 		costmodel::CostModel=CostModel(match=0, mismatch=1, insertion=1, deletion=0),
 		store_results::Bool=true
 	)
 
-ALign `tgt` array of texts to `src` array of texts using a particular `costmodel` from BioAlignments.jl. `store_results` if results of alignment are stored or returned, 
+ALign `tgt` array of texts to `src` array of texts using a particular `costmodel` from BioAlignments.jl. `store_results` if results of alignment are stored or returned,
 otherwise, only the scores are returned.
 """
-function align(src::Array{String}, tgt::Array{String}; 
+function align(src::Vector{String}, tgt::Vector{String}; 
 	costmodel::CostModel=CostModel(match=0, mismatch=1, insertion=1, deletion=1),
 	store_results::Bool=true)
 	nref = length(src)

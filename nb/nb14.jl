@@ -38,9 +38,9 @@ crps_tbl = table(crps)
 tnzl_tbl = table(tnzl)
 
 function last_syllable(bw_texts)
-    bw1_texts = Array{String,1}()
-    bw2_texts = Array{String,1}()
-    bw3_texts = Array{String,1}()
+    bw1_texts = Vector{String}()
+    bw2_texts = Vector{String}()
+    bw3_texts = Vector{String}()
     for bw_text in bw_texts
         @info bw_text
         push!(bw1_texts, replace(bw_text[end-3:end-2], "o" => ""))
@@ -50,7 +50,7 @@ function last_syllable(bw_texts)
     return bw1_texts, bw2_texts, bw3_texts
 end
 
-function encode_to_number(ychars::Array{String})
+function encode_to_number(ychars::Vector{String})
     y = unique(ychars)
     y_dict = Dict()
     for i in eachindex(y)
@@ -64,7 +64,7 @@ function encode_to_number(ychars::Array{String})
             y_dict[y[i]] = i
         end
     end
-    y_vec = Array{Int64,1}()
+    y_vec = Vector{Int64}()
     for i in ychars
         push!(y_vec, y_dict[i])
     end

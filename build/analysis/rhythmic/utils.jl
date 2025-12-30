@@ -42,8 +42,8 @@ const AR_LONG_VOWELS = [
 const BW_LONG_VOWELS = encode.(AR_LONG_VOWELS)
 
 """
-	Segment(text::String, harakaat::Array{Harakaat})
-Create a `Segment` object from `text`, which is the form of the segments of syllables, 
+	Segment(text::String, harakaat::Vector{Harakaat})
+Create a `Segment` object from `text`, which is the form of the segments of syllables,
 where vowels of which are also listed as `harakaat`.
 ```julia-repl
 julia> bw_segment = "~aH?Hiy"
@@ -53,7 +53,7 @@ Segment("~aH?Hiy", Harakaat[Harakaat("a", false), Harakaat("i", false)])
 """
 struct Segment
 	segment::String
-	harakaat::Array{Harakaat}
+	harakaat::Vector{Harakaat}
 end
 Yunir.encode(x::Segment) = Segment(encode(x.segment), encode.(x.harakaat))
 Yunir.arabic(x::Segment) = Segment(arabic(x.segment), encode.(x.harakaat))

@@ -81,20 +81,20 @@ struct LastRecitedSyllable <: AbstractSyllable
 end
 
 """
-    (r::RhythmicVis)(texts::Array{Bw})
+    (r::RhythmicVis)(texts::Vector{Bw})
 
 Generate a rhythmic visualization from an array of Bw-encoded texts.
 
 This is a functor/callable method for `RhythmicVis` objects.
 
 # Arguments
-- `texts::Array{Bw}`: Array of texts in Bw transliteration
+- `texts::Vector{Bw}`: Array of texts in Bw transliteration
 
 # Returns
 A tuple containing:
 - `Makie.Figure`: The generated visualization figure
 - `NTuple{3,...}`: A 3-tuple where each element is a tuple of:
-  - `Array{Int64,1}`: Array of integer values
+  - `Vector{Int64}`: Array of integer values
   - `Dict{LastRecitedSyllable,Int64}`: Dictionary mapping syllables to counts
 
 # Examples
@@ -103,11 +103,11 @@ vis = RhythmicVis(last_recited, LastRecited())
 fig, data = vis(buckwalter_texts)
 ```
 """
-function (r::RhythmicVis)(texts::Array{Bw})::Tuple{Makie.Figure,NTuple{3,Tuple{Array{Int64,1},Dict{LastRecitedSyllable,Int64}}}}
+function (r::RhythmicVis)(texts::Vector{Bw})::Tuple{Makie.Figure,NTuple{3,Tuple{Vector{Int64},Dict{LastRecitedSyllable,Int64}}}}
 	if r.type == last_recited
-        y1_chars = Array{LastRecitedSyllable,1}()
-        y2_chars = Array{LastRecitedSyllable,1}()
-        y3_chars = Array{LastRecitedSyllable,1}()
+        y1_chars = Vector{LastRecitedSyllable}()
+        y2_chars = Vector{LastRecitedSyllable}()
+        y3_chars = Vector{LastRecitedSyllable}()
         for text in texts
             chars_tuple = last_syllable(text)
             push!(y1_chars, chars_tuple[1])
@@ -143,11 +143,11 @@ function last_syllable(text::Bw)::NTuple{3,LastRecitedSyllable}
 end
 
 """
-    to_number(texts::Array{LastRecitedSyllable})
+    to_number(texts::Vector{LastRecitedSyllable})
 
 Assign a unique sequence (sorted based on first appearance in the array) of number to the unique values of `LastRecitedSyllable` texts to be used as y-axis location for plotting Rhythmic last recited syllable.
 """
-function to_number(texts::Array{LastRecitedSyllable})::Tuple{Array{Int64,1},Dict{LastRecitedSyllable,Int64}}
+function to_number(texts::Vector{LastRecitedSyllable})::Tuple{Vector{Int64},Dict{LastRecitedSyllable,Int64}}
     y = unique(texts)
     y_dict = Dict{LastRecitedSyllable,Int64}()
     for i in eachindex(y)
@@ -161,18 +161,18 @@ function to_number(texts::Array{LastRecitedSyllable})::Tuple{Array{Int64,1},Dict
             y_dict[y[i]] = i
         end
     end
-    y_vec = Array{Int64,1}()
+    y_vec = Vector{Int64}()
     for text in texts
         push!(y_vec, y_dict[text])
     end
     return y_vec, y_dict 
 end
 
-function vis(x1::Array{LastRecitedSyllable,1}, y1::Array{Int64,1}; 
-    x2::Union{Nothing,Array{LastRecitedSyllable,1}}=nothing, 
-    y2::Union{Nothing,Array{Int64,1}}=nothing, 
-    x3::Union{Nothing,Array{LastRecitedSyllable,1}}=nothing, 
-    y3::Union{Nothing,Array{Int64,1}}=nothing, 
+function vis(x1::Vector{LastRecitedSyllable}, y1::Vector{Int64};
+    x2::Union{Nothing,Vector{LastRecitedSyllable}}=nothing,
+    y2::Union{Nothing,Vector{Int64}}=nothing,
+    x3::Union{Nothing,Vector{LastRecitedSyllable}}=nothing,
+    y3::Union{Nothing,Vector{Int64}}=nothing, 
     vis_args::LastRecited=LastRecited())::Makie.Figure
     x1 = map(x -> x.syllable.text, x1)
     f = vis_args.fig_args;

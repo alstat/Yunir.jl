@@ -7,7 +7,7 @@ tnzltbl = table(tnzl)
 bw_texts = verses(tnzltbl[2])[2:end]
 bw_texts2 = verses(tnzltbl[5])[2:end]
 
-function extract_endword(s::Array{String})
+function extract_endword(s::Vector{String})
     texts = String[]
     for text in s
         push!(texts, split(text, " ")[end])
