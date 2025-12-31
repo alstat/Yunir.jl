@@ -1,29 +1,32 @@
 # test
-using QuranTree
+using Yunir
 using CairoMakie
 
-crps, tnzl = load(QuranData());
-crps_tbl = table(crps)
-tnzl_tbl = table(tnzl)
-bw_texts = Buckwalter.(verses(crps_tbl[1]))
-
-last_syllable(bw_texts[1])
-last_syllable(Buckwalter("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi")) === (LastRecitedSyllable(Buckwalter("iy")), LastRecitedSyllable(Buckwalter("iym")), LastRecitedSyllable(Buckwalter("Hiym")))
-
-alfatihah_bw = [
-    Buckwalter("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi"),
-    Buckwalter("{loHamodu lil~ahi rab~i {loEa`lamiyna"),
-    Buckwalter("{lr~aHoma`ni {lr~aHiymi"),
-    Buckwalter("ma`liki yawomi {ld~iyni"),
-    Buckwalter("<iy~aAka naEobudu wa<iy~aAka nasotaEiynu"),
-    Buckwalter("{hodinaA {lS~ira`Ta {lomusotaqiyma"),
-    Buckwalter("Sira`Ta {l~a*iyna >anoEamota Ealayohimo gayori {lomagoDuwbi Ealayohimo walaA {lD~aA^l~iyna")
+bw_texts = [
+    Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi"),
+    Bw("{loHamodu lil~ahi rab~i {loEa`lamiyna"),
+    Bw("{lr~aHoma`ni {lr~aHiymi"),
+    Bw("ma`liki yawomi {ld~iyni"),
+    Bw("<iy~aAka naEobudu wa<iy~aAka nasotaEiynu"),
+    Bw("{hodinaA {lS~ira`Ta {lomusotaqiyma"),
+    Bw("Sira`Ta {l~a*iyna >anoEamota Ealayohimo gayori {lomagoDuwbi Ealayohimo walaA {lD~aA^l~iyna")
 ]
+
+last_syllable(LastRecited(A), bw_texts[1])
+last_syllable(LastRecited(B), Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi")) === (LastRecitedSyllable(Bw("iy")), LastRecitedSyllable(Bw("iym")))
+last_syllable(LastRecited(C), Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi")) === (LastRecitedSyllable(Bw("iy")), LastRecitedSyllable(Bw("iym")), LastRecitedSyllable(Bw("Hiym")))
+
+
+
+
+
+
+LastRecited(A)
 
 y1_chars = Vector{LastRecitedSyllable}()
 y2_chars = Vector{LastRecitedSyllable}()
 y3_chars = Vector{LastRecitedSyllable}()
-for text in alfatihah_bw
+for text in bw_texts
     chars_tuple = last_syllable(text)
     push!(y1_chars, chars_tuple[1])
     push!(y2_chars, chars_tuple[2])
@@ -36,17 +39,21 @@ y3, y3_dict = to_number(y3_chars)
 y1 == [1, 1, 1, 1, 1, 1, 1]
 y2 == [1, 2, 1, 2, 2, 1, 2]
 y3 == [1, 2, 1, 3, 4, 5, 3]
-y1_dict == Dict(LastRecitedSyllable(Buckwalter("iy")) => 1)
-y2_dict == Dict(LastRecitedSyllable(Buckwalter("iym")) => 1, LastRecitedSyllable(Buckwalter("iyn")) => 2)
+y1_dict == Dict(LastRecitedSyllable(Bw("iy")) => 1)
+y2_dict == Dict(LastRecitedSyllable(Bw("iym")) => 1, LastRecitedSyllable(Bw("iyn")) => 2)
 y3_dict == Dict(
-    LastRecitedSyllable(Buckwalter("Eiyn")) => 4, 
-    LastRecitedSyllable(Buckwalter("~iyn")) => 3,
-    LastRecitedSyllable(Buckwalter("qiym")) => 5,
-    LastRecitedSyllable(Buckwalter("Hiym")) => 1,
-    LastRecitedSyllable(Buckwalter("miyn")) => 2
+    LastRecitedSyllable(Bw("Eiyn")) => 4, 
+    LastRecitedSyllable(Bw("~iyn")) => 3,
+    LastRecitedSyllable(Bw("qiym")) => 5,
+    LastRecitedSyllable(Bw("Hiym")) => 1,
+    LastRecitedSyllable(Bw("miyn")) => 2
 )
 
-
-rvis = RhythmicVis(last_recited::VisType, LastRecitedVisArgs(three))
+rvis = RhythmicVis(LastRecited(A))
 f, d = rvis(bw_texts)
 f
+
+
+
+###
+LastRecited(LastRecitedVariants.one)

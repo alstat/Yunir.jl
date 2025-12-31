@@ -311,8 +311,19 @@ function (r::Syllabification)(text::String; isarabic::Bool=false, first_word::Bo
     end
 end
 
+
 """
-	syllabic_consistency(segments::Vector{Segment}, syllable_timings::Dict{String,Int64})
+Rhythmic State
+"""
+struct RState
+	state::Int64
+	label::String
+end
+
+RState(state) = RState(state, "")
+
+"""
+	syllabic_consistency(segments::Vector{Segment}, syllable_timings::Dict{Bw,RState})
 
 Compute syllabic_consistency from a given `segments` and `syllable_timings`. THIS WILL ONLY WORK IF THE VOWEL HAS ONLY 1 TRAIL
 ```julia-repl
@@ -336,26 +347,28 @@ julia> for i in texts
 			end
 			j += 1
 		end
-julia> tajweed_timings = Dict{String,Int64}(
-			"i"  => 1,
-			"a"  => 1,
-			"u"  => 1,
-			"F"  => 1,
-			"N"  => 1,
-			"K"  => 1,
-			"iy" => 2,
-			"aA" => 2,
-			"uw" => 2,
-			"^"  => 4
-		)
+julia> tajweed_timings = Dict{Bw,RState}(
+    Bw("i") => RState(1, "short"), # kasra
+    Bw("a") => RState(1, "short"), # fatha
+    Bw("u") => RState(1, "short"), # damma
+    Bw("F") => RState(1, "short"), # fatha tanween
+    Bw("N") => RState(1, "short"), # damma tanween
+    Bw("K") => RState(1, "short"), # kasra tanween
+    Bw("iy") => RState(2, "long"), # kasra + yaa
+    Bw("aA") => RState(2, "long"), # fatha + alif
+    Bw("uw") => RState(2, "long"), # damma + waw
+    Bw("a`") => RState(2, "long"),
+    Bw("^") => RState(4, "maddah") # maddah
+)
+
 julia> syllabic_consistency(segments, tajweed_timings)
 ```
 """
-function syllabic_consistency(segments::Vector{Segment}, syllable_timings::Dict{Bw,Int64})::Vector{Int64}
-    segment_scores = Int64[]
+function syllabic_consistency(segments::Vector{Segment}, syllable_timings::Dict{Bw,RState})::Vector{RState}
+    segment_scores = RState[]
     for segment in segments
         syllables = split(segment.segment, "?")
-        syllable_scores = Int64[]
+        syllable_scores = RState[]
         for syllable in syllables
             if occursin('{', syllable)
                 push!(syllable_scores, syllable_timings[Bw("a")])
@@ -394,6 +407,5 @@ function syllabic_consistency(segments::Vector{Segment}, syllable_timings::Dict{
         end
         push!(segment_scores, syllable_scores...)
     end
-	println("Here is the segment_scores ", segment_scores)
     return segment_scores
 end

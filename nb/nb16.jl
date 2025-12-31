@@ -2,7 +2,7 @@
 using Yunir
 using CairoMakie
 
-function rhythmic_states(texts::Vector{Bw}, state_timings::Dict{Bw,Int64})::Vector{Vector{Int64}}
+function rhythmic_states(data::Schillinger, texts::Vector{Bw})::Vector{Vector{RState}}
     texts = map(x -> string.(split(x.text)), texts)
     r = Syllabification(true, Syllable(1, 0, 10))
 
@@ -25,21 +25,21 @@ function rhythmic_states(texts::Vector{Bw}, state_timings::Dict{Bw,Int64})::Vect
         k += 1
         push!(all_segments, segments)
     end
-    return map(segments -> syllabic_consistency(segments, state_timings), all_segments)
+    return map(segments -> syllabic_consistency(segments, data.state_timings), all_segments)
 end
 
-tajweed_timings = Dict{Bw,Int64}(
-    Bw("i") => 1, # kasra
-    Bw("a") => 1, # fatha
-    Bw("u") => 1, # damma
-    Bw("F") => 1, # fatha tanween
-    Bw("N") => 1, # damma tanween
-    Bw("K") => 1, # kasra tanween
-    Bw("iy") => 2, # kasra + yaa
-    Bw("aA") => 2, # fatha + alif
-    Bw("uw") => 2, # damma + waw
-    Bw("a`") => 2,
-    Bw("^") => 4 # maddah
+tajweed_timings = Dict{Bw,RState}(
+    Bw("i") => RState(1, "short"), # kasra
+    Bw("a") => RState(1, "short"), # fatha
+    Bw("u") => RState(1, "short"), # damma
+    Bw("F") => RState(1, "short"), # fatha tanween
+    Bw("N") => RState(1, "short"), # damma tanween
+    Bw("K") => RState(1, "short"), # kasra tanween
+    Bw("iy") => RState(2, "long"), # kasra + yaa
+    Bw("aA") => RState(2, "long"), # fatha + alif
+    Bw("uw") => RState(2, "long"), # damma + waw
+    Bw("a`") => RState(2, "long"),
+    Bw("^") => RState(4, "maddah") # maddah
 )
 
 bw_texts = [
@@ -51,10 +51,60 @@ bw_texts = [
     Bw("{hodinaA {lS~ira`Ta {lomusotaqiyma"),
     Bw("Sira`Ta {l~a*iyna >anoEamota Ealayohimo gayori {lomagoDuwbi Ealayohimo walaA {lD~aA^l~iyna")
 ]
-rhythms = rhythmic_states(bw_texts, tajweed_timings)
-fig = Figure(size=(900,900))
-mgrd = fig[1, 1] = GridLayout()
-grd1 = mgrd[1, 1] = GridLayout()
-grd2 = mgrd[1, 2] = GridLayout()
-grd3 = mgrd[2, 1] = GridLayout()
-grd4 = mgrd[2, 2] = GridLayout()
+
+struct Schillinger <: AbstractRhythmicVisArgs
+    state_timings::Dict{Bw,RState}
+end
+
+function vis(rhythms::Vector{Vector{RState}}, fig::Makie.Figure=Figure(size=(900,900)), title::String="Title", xlabel::String="Time in Seconds", ylabel::String="Line")
+    mgrd = fig[1, 1] = GridLayout()
+    grd = mgrd[1, 1] = GridLayout()
+
+    k = 1
+    axs = Axis[]
+    phases = rhythms[1]
+    for phases in rhythms
+        push!(axs, Axis(grd[k, 1], 
+            title= k == 1 ? title : "",
+            xlabel=k < length(rhythms) ? "" : xlabel,
+            ylabel="$(k)", 
+            ygridvisible=true, 
+            xgridvisible=false,
+            yticks=(1:length(phases), repeat([""], length(phases)))))
+        
+        steps = Int64[]; j = 2
+        for phase in phases
+            steps = vcat(steps, repeat([(j-1) % 2], phase.state))
+            j += 1
+        end
+        stairs!(axs[k], steps, step=:center)
+        
+        if k != length(rhythms)
+            hidexdecorations!(axs[k])
+            hidespines!(axs[k])
+        else
+            hidespines!(axs[k])
+        end
+        k += 1
+    end
+    linkxaxes!(axs..., )
+    ax = Axis(mgrd[1,1], ylabel=ylabel * "\n\n\n", 
+            ygridvisible=false, 
+            xgridvisible=false, 
+            xticklabelsvisible=false,
+            yticklabelsvisible=false,
+            xticksize=0,
+            yticksize=0,
+            spinewidth=0,
+
+    )
+    fig
+end
+
+rhythms = rhythmic_states(Schillinger(tajweed_timings), bw_texts)
+vis(rhythms)
+
+
+args = Schillinger(tajweed_timings)
+
+typeof(args) === Schillinger

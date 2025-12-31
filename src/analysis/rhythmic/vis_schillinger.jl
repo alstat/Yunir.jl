@@ -7,11 +7,11 @@ struct Schillinger <: AbstractRhythmicVisArgs
     title::String
 end
 
-function rhythmic_states(texts::Vector{Bw}, state_timings::Dict(Bw, int64))::Vector{Int64}
+function rhythmic_states(texts::Array{Bw}, state_timings::Dict{Bw,Int64})::Array{Int64}
     texts = map(x -> string.(split(x.text)), bw_texts)
     r = Syllabification(true, Syllable(1, 0, 10))
 
-    all_segments = Vector{Segment}[]
+    all_segments = Array{Segment}[]
     k = 1
     for text in texts
         segments = Segment[]
@@ -32,6 +32,4 @@ function rhythmic_states(texts::Vector{Bw}, state_timings::Dict(Bw, int64))::Vec
     end
     return map(segments -> syllabic_consistency(segments, state_timings), all_segments)
 end
-
-
 
