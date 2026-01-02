@@ -1,5 +1,6 @@
 using Test
 using Yunir
+using Makie
 
 @testset "Yunir.jl Unit Tests" begin
     @testset "Basic Text Processing" begin
@@ -527,40 +528,312 @@ using Yunir
     end
 
     @testset "Rhythmic Vis" begin
-        @test last_syllable(Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi")) === (LastRecitedSyllable(Bw("iy")), LastRecitedSyllable(Bw("iym")), LastRecitedSyllable(Bw("Hiym")))
-        alfatihah_bw = [
-            Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi"),
-            Bw("{loHamodu lil~ahi rab~i {loEa`lamiyna"),
-            Bw("{lr~aHoma`ni {lr~aHiymi"),
-            Bw("ma`liki yawomi {ld~iyni"),
-            Bw("<iy~aAka naEobudu wa<iy~aAka nasotaEiynu"),
-            Bw("{hodinaA {lS~ira`Ta {lomusotaqiyma"),
-            Bw("Sira`Ta {l~a*iyna >anoEamota Ealayohimo gayori {lomagoDuwbi Ealayohimo walaA {lD~aA^l~iyna")
-        ]
-        y1_chars = Vector{LastRecitedSyllable}()
-        y2_chars = Vector{LastRecitedSyllable}()
-        y3_chars = Vector{LastRecitedSyllable}()
-        for text in alfatihah_bw
-            chars_tuple = last_syllable(text)
-            push!(y1_chars, chars_tuple[1])
-            push!(y2_chars, chars_tuple[2])
-            push!(y3_chars, chars_tuple[3])
+        @testset "LastRecitedVariants Enum" begin
+            @test A isa LastRecitedVariants
+            @test B isa LastRecitedVariants
+            @test C isa LastRecitedVariants
+            @test Int(A) == 0
+            @test Int(B) == 1
+            @test Int(C) == 2
         end
-        y1, y1_dict = to_number(y1_chars)
-        y2, y2_dict = to_number(y2_chars)
-        y3, y3_dict = to_number(y3_chars)
 
-        @test y1 == [1, 1, 1, 1, 1, 1, 1]
-        @test y2 == [1, 2, 1, 2, 2, 1, 2]
-        @test y3 == [1, 2, 1, 3, 4, 5, 3]
-        @test y1_dict == Dict(LastRecitedSyllable(Bw("iy")) => 1)
-        @test y2_dict == Dict(LastRecitedSyllable(Bw("iym")) => 1, LastRecitedSyllable(Bw("iyn")) => 2)
-        @test y3_dict == Dict(
-            LastRecitedSyllable(Bw("Eiyn")) => 4, 
-            LastRecitedSyllable(Bw("~iyn")) => 3,
-            LastRecitedSyllable(Bw("qiym")) => 5,
-            LastRecitedSyllable(Bw("Hiym")) => 1,
-            LastRecitedSyllable(Bw("miyn")) => 2
-        )
+        @testset "LastRecited Construction" begin
+            # Test construction with each variant
+            lr_a = LastRecited(A)
+            @test lr_a isa LastRecited
+            @test lr_a.variant === A
+
+            lr_b = LastRecited(B)
+            @test lr_b isa LastRecited
+            @test lr_b.variant === B
+
+            lr_c = LastRecited(C)
+            @test lr_c isa LastRecited
+            @test lr_c.variant === C
+
+            # Test default constructor
+            lr_default = LastRecited()
+            @test lr_default isa LastRecited
+            @test lr_default.variant === A
+        end
+
+        @testset "LastRecitedSyllable Construction" begin
+            syl = LastRecitedSyllable(Bw("test"))
+            @test syl isa LastRecitedSyllable
+            @test syl.syllable === Bw("test")
+
+            # Test with different syllables
+            syl1 = LastRecitedSyllable(Bw("iy"))
+            syl2 = LastRecitedSyllable(Bw("iym"))
+            @test syl1.syllable === Bw("iy")
+            @test syl2.syllable === Bw("iym")
+        end
+
+        @testset "RhythmicVis Construction" begin
+            lr = LastRecited(A)
+            vis = RhythmicVis(lr)
+            @test vis isa RhythmicVis
+            @test vis.args === lr
+            @test vis.args.variant === A
+
+            # Test with different variants
+            vis_b = RhythmicVis(LastRecited(B))
+            @test vis_b.args.variant === B
+
+            vis_c = RhythmicVis(LastRecited(C))
+            @test vis_c.args.variant === C
+        end
+
+        @testset "last_syllable - Variant A" begin
+            lr_a = LastRecited(A)
+
+            # Test with Al-Fatihah first verse
+            text1 = Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi")
+            result = last_syllable(lr_a, text1)
+            @test result isa NTuple{1, LastRecitedSyllable}
+            @test length(result) == 1
+            @test result[1] === LastRecitedSyllable(Bw("iy"))
+
+            # Test with second verse
+            text2 = Bw("{loHamodu lil~ahi rab~i {loEa`lamiyna")
+            result2 = last_syllable(lr_a, text2)
+            @test result2[1] === LastRecitedSyllable(Bw("iy"))
+
+            # Test with different ending
+            text3 = Bw("ma`liki yawomi {ld~iyni")
+            result3 = last_syllable(lr_a, text3)
+            @test result3[1] === LastRecitedSyllable(Bw("iy"))
+        end
+
+        @testset "last_syllable - Variant B" begin
+            lr_b = LastRecited(B)
+
+            text1 = Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi")
+            result = last_syllable(lr_b, text1)
+            @test result isa NTuple{2, LastRecitedSyllable}
+            @test length(result) == 2
+            @test result[1] === LastRecitedSyllable(Bw("iy"))
+            @test result[2] === LastRecitedSyllable(Bw("iym"))
+
+            text2 = Bw("{loHamodu lil~ahi rab~i {loEa`lamiyna")
+            result2 = last_syllable(lr_b, text2)
+            @test result2[1] === LastRecitedSyllable(Bw("iy"))
+            @test result2[2] === LastRecitedSyllable(Bw("iyn"))
+        end
+
+        @testset "last_syllable - Variant C" begin
+            lr_c = LastRecited(C)
+
+            text1 = Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi")
+            result = last_syllable(lr_c, text1)
+            @test result isa NTuple{3, LastRecitedSyllable}
+            @test length(result) == 3
+            @test result === (
+                LastRecitedSyllable(Bw("iy")),
+                LastRecitedSyllable(Bw("iym")),
+                LastRecitedSyllable(Bw("Hiym"))
+            )
+
+            text2 = Bw("{loHamodu lil~ahi rab~i {loEa`lamiyna")
+            result2 = last_syllable(lr_c, text2)
+            @test result2 === (
+                LastRecitedSyllable(Bw("iy")),
+                LastRecitedSyllable(Bw("iyn")),
+                LastRecitedSyllable(Bw("miyn"))
+            )
+        end
+
+        @testset "to_numbers Function" begin
+            # Test with simple sequence
+            syllables = [
+                LastRecitedSyllable(Bw("iy")),
+                LastRecitedSyllable(Bw("iyn")),
+                LastRecitedSyllable(Bw("iy")),
+                LastRecitedSyllable(Bw("iym"))
+            ]
+
+            positions, mapping = to_numbers(syllables)
+
+            # Check positions
+            @test positions isa Vector{Int64}
+            @test length(positions) == 4
+            @test positions == [1, 2, 1, 3]
+
+            # Check mapping
+            @test mapping isa Dict{LastRecitedSyllable, Int64}
+            @test length(mapping) == 3
+            @test mapping[LastRecitedSyllable(Bw("iy"))] == 1
+            @test mapping[LastRecitedSyllable(Bw("iyn"))] == 2
+            @test mapping[LastRecitedSyllable(Bw("iym"))] == 3
+
+            # Test with all same syllables
+            same_syllables = [LastRecitedSyllable(Bw("iy")), LastRecitedSyllable(Bw("iy"))]
+            pos2, map2 = to_numbers(same_syllables)
+            @test pos2 == [1, 1]
+            @test length(map2) == 1
+
+            # Test with single syllable
+            single = [LastRecitedSyllable(Bw("test"))]
+            pos3, map3 = to_numbers(single)
+            @test pos3 == [1]
+            @test map3[LastRecitedSyllable(Bw("test"))] == 1
+        end
+
+        @testset "to_numbers with Al-Fatihah" begin
+            alfatihah_bw = [
+                Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi"),
+                Bw("{loHamodu lil~ahi rab~i {loEa`lamiyna"),
+                Bw("{lr~aHoma`ni {lr~aHiymi"),
+                Bw("ma`liki yawomi {ld~iyni"),
+                Bw("<iy~aAka naEobudu wa<iy~aAka nasotaEiynu"),
+                Bw("{hodinaA {lS~ira`Ta {lomusotaqiyma"),
+                Bw("Sira`Ta {l~a*iyna >anoEamota Ealayohimo gayori {lomagoDuwbi Ealayohimo walaA {lD~aA^l~iyna")
+            ]
+
+            y1_chars = Vector{LastRecitedSyllable}()
+            y2_chars = Vector{LastRecitedSyllable}()
+            y3_chars = Vector{LastRecitedSyllable}()
+
+            for text in alfatihah_bw
+                chars_tuple = last_syllable(LastRecited(C), text)
+                push!(y1_chars, chars_tuple[1])
+                push!(y2_chars, chars_tuple[2])
+                push!(y3_chars, chars_tuple[3])
+            end
+
+            y1, y1_dict = to_numbers(y1_chars)
+            y2, y2_dict = to_numbers(y2_chars)
+            y3, y3_dict = to_numbers(y3_chars)
+
+            @test y1 == [1, 1, 1, 1, 1, 1, 1]
+            @test y2 == [1, 2, 1, 2, 2, 1, 2]
+            @test y3 == [1, 2, 1, 3, 4, 5, 3]
+            @test y1_dict == Dict(LastRecitedSyllable(Bw("iy")) => 1)
+            @test y2_dict == Dict(
+                LastRecitedSyllable(Bw("iym")) => 1,
+                LastRecitedSyllable(Bw("iyn")) => 2
+            )
+            @test y3_dict == Dict(
+                LastRecitedSyllable(Bw("Eiyn")) => 4,
+                LastRecitedSyllable(Bw("~iyn")) => 3,
+                LastRecitedSyllable(Bw("qiym")) => 5,
+                LastRecitedSyllable(Bw("Hiym")) => 1,
+                LastRecitedSyllable(Bw("miyn")) => 2
+            )
+        end
+
+        @testset "RhythmicVis Functor - Variant A" begin
+            vis = RhythmicVis(LastRecited(A))
+            texts = [
+                Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi"),
+                Bw("{loHamodu lil~ahi rab~i {loEa`lamiyna")
+            ]
+
+            result = vis(texts)
+            @test result isa Tuple
+            @test length(result) == 2
+
+            fig, data = result
+            @test fig isa Makie.Figure
+            @test data isa NTuple{1, Tuple{Vector{Int64}, Dict{LastRecitedSyllable, Int64}}}
+
+            positions, mapping = data[1]
+            @test positions == [1, 1]
+            @test length(mapping) == 1
+        end
+
+        @testset "RhythmicVis Functor - Variant B" begin
+            vis = RhythmicVis(LastRecited(B))
+            texts = [
+                Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi"),
+                Bw("{loHamodu lil~ahi rab~i {loEa`lamiyna"),
+                Bw("{lr~aHoma`ni {lr~aHiymi")
+            ]
+
+            result = vis(texts)
+            @test result isa Tuple
+            @test length(result) == 2
+
+            fig, data = result
+            @test fig isa Makie.Figure
+            @test data isa NTuple{2, Tuple{Vector{Int64}, Dict{LastRecitedSyllable, Int64}}}
+
+            # Check first dataset
+            positions1, mapping1 = data[1]
+            @test length(positions1) == 3
+            @test all(p -> p == 1, positions1)  # All should be "iy"
+
+            # Check second dataset
+            positions2, mapping2 = data[2]
+            @test length(positions2) == 3
+            @test length(mapping2) == 2  # "iym" and "iyn"
+        end
+
+        @testset "RhythmicVis Functor - Variant C" begin
+            vis = RhythmicVis(LastRecited(C))
+            texts = [
+                Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi"),
+                Bw("{loHamodu lil~ahi rab~i {loEa`lamiyna"),
+            ]
+
+            result = vis(texts)
+            @test result isa Tuple
+            @test length(result) == 2
+
+            fig, data = result
+            @test fig isa Makie.Figure
+            @test data isa NTuple{3, Tuple{Vector{Int64}, Dict{LastRecitedSyllable, Int64}}}
+
+            # All three datasets should be present
+            @test length(data) == 3
+            for (positions, mapping) in data
+                @test positions isa Vector{Int64}
+                @test mapping isa Dict{LastRecitedSyllable, Int64}
+                @test length(positions) == 2
+            end
+        end
+
+        @testset "RhythmicVis with fig_kwargs" begin
+            vis = RhythmicVis(LastRecited(A))
+            texts = [
+                Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi"),
+                Bw("{loHamodu lil~ahi rab~i {loEa`lamiyna")
+            ]
+
+            # Test that fig_kwargs are accepted (doesn't error)
+            result = vis(texts, color=:blue, linewidth=2)
+            @test result isa Tuple
+            fig, data = result
+            @test fig isa Makie.Figure
+        end
+
+        @testset "Edge Cases" begin
+            # Test with single text
+            vis = RhythmicVis(LastRecited(A))
+            single_text = [Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi")]
+            result = vis(single_text)
+            @test result isa Tuple
+
+            # Test with many identical endings
+            identical_texts = [Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi") for _ in 1:10]
+            result2 = vis(identical_texts)
+            fig, data = result2
+            positions, mapping = data[1]
+            @test all(p -> p == 1, positions)
+            @test length(mapping) == 1
+        end
+
+        @testset "Abstract Types" begin
+            # Verify inheritance hierarchy
+            @test LastRecited <: AbstractRhythmicVisArgs
+            @test LastRecitedSyllable <: AbstractSyllable
+
+            # Verify instantiation works through abstract types
+            lr = LastRecited(A)
+            @test lr isa AbstractRhythmicVisArgs
+
+            syl = LastRecitedSyllable(Bw("test"))
+            @test syl isa AbstractSyllable
+        end
     end
 end

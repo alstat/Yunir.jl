@@ -12,29 +12,25 @@ bw_texts = [
     Bw("Sira`Ta {l~a*iyna >anoEamota Ealayohimo gayori {lomagoDuwbi Ealayohimo walaA {lD~aA^l~iyna")
 ]
 
-last_syllable(LastRecited(A), bw_texts[1])
-last_syllable(LastRecited(B), Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi")) === (LastRecitedSyllable(Bw("iy")), LastRecitedSyllable(Bw("iym")))
-last_syllable(LastRecited(C), Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi")) === (LastRecitedSyllable(Bw("iy")), LastRecitedSyllable(Bw("iym")), LastRecitedSyllable(Bw("Hiym")))
+out1 = last_syllable(LastRecited(A::LastRecitedVariants), bw_texts[1])
+out2 = last_syllable(LastRecited(B), Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi"))
+out3 = last_syllable(LastRecited(C), Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi"))
 
-
-
-
-
-
+to_numbers([out1[1]])
+to_numbers([out2[1]])
 LastRecited(A)
 
 y1_chars = Vector{LastRecitedSyllable}()
 y2_chars = Vector{LastRecitedSyllable}()
 y3_chars = Vector{LastRecitedSyllable}()
+text = bw_texts[1]
 for text in bw_texts
-    chars_tuple = last_syllable(text)
+    chars_tuple = last_syllable(LastRecited(), text)
     push!(y1_chars, chars_tuple[1])
-    push!(y2_chars, chars_tuple[2])
-    push!(y3_chars, chars_tuple[3])
 end
-y1, y1_dict = to_number(y1_chars)
-y2, y2_dict = to_number(y2_chars)
-y3, y3_dict = to_number(y3_chars)
+y1, y1_dict = to_numbers(y1_chars)
+y2, y2_dict = to_numbers(y2_chars)
+y3, y3_dict = to_numbers(y3_chars)
 
 y1 == [1, 1, 1, 1, 1, 1, 1]
 y2 == [1, 2, 1, 2, 2, 1, 2]
@@ -49,7 +45,7 @@ y3_dict == Dict(
     LastRecitedSyllable(Bw("miyn")) => 2
 )
 
-rvis = RhythmicVis(LastRecited(A))
+rvis = RhythmicVis(LastRecited(B))
 f, d = rvis(bw_texts)
 f
 

@@ -49,9 +49,10 @@ export Alif, AlifMaksurah, Ba, Ta, TaMarbuta, Tha, Jeem, HHa, Kha, Dal, Thal, Ra
        AlifMaddah, AlifHamzaAbove, AlifHamzaBelow, AlifHamzatWasl, WawHamzaAbove, YaHamzaAbove
 
 # Rhyme
-export AbstractRhythmicVisArgs, Harakaat, Syllabification, Syllable, Segment, Sequence, RState, sequence, vowel_indices, syllabic_consistency
-export LastRecited, RhythmicVis, LastRecitedSyllable, last_syllable, to_number
+export AbstractRhythmicVisArgs, AbstractSyllable, Harakaat, Syllabification, Syllable, Segment, Sequence, RState, sequence, vowel_indices, syllabic_consistency
+export LastRecited, RhythmicVis, LastRecitedSyllable, last_syllable, to_numbers, vis
 export LastRecitedVariants, A, B, C
+
 # Symmetric Analysis
 export Slicer, AyahEmbeddings, AyahMidpoints, gen_midpoints, gen_slices, fitness, selection, slicer, five_summary, refine!, mutate!, crossover!
 
