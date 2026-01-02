@@ -1,17 +1,17 @@
 import Base: parse
 struct SimpleEncoding end
 
-function parse(::Type{Orthography}, s::String)
+function parse(::Type{Orthography}, s::Ar)
     parsed = []
-    for c in s
+    for c in s.text
         push!(parsed, ORTHOGRAPHY_TYPES[Symbol(c)])
     end
     return Orthography(parsed)
 end
 
-function parse(::Type{SimpleEncoding}, s::String)
+function parse(::Type{SimpleEncoding}, s::Ar)
     words = ""; i = 1
-    for c in s
+    for c in s.text
         if c === ' '
             words *= " | <space>"
         else

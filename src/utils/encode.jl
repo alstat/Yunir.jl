@@ -4,7 +4,8 @@
 Transliterate the input `String` object using a custom `encoder`. Custom `encoder` is
 generated using the `@transliterator`.
 """
-function encode(s::Union{Char,String}, encoder::AbstractEncoder)
+function encode(s::Ar, encoder::AbstractEncoder)
+    s = s.text
     for k in collect(keys(encoder.encode))
         s = replace(s, string(k) => string(encoder.encode[k]))
     end
@@ -23,7 +24,7 @@ julia> encode(ar_basmala)
 "bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi"
 ```
 """
-function encode(s::String)
+function encode(s::Ar)
     trans = Transliterator()
-    return encode(s, trans)
+    return Bw(encode(s, trans))
 end

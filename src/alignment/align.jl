@@ -9,8 +9,8 @@ end
 
 Align `tgt` string to `src` string using a particular `costmodel` from BioAlignments.jl.
 """
-function align(src::String, tgt::String; costmodel::BioAlignments.CostModel=BioAlignments.CostModel(match=0, mismatch=1, insertion=1, deletion=1))
-	res = BioAlignments.pairalign(BioAlignments.EditDistance(), tgt, src, costmodel)
+function align(src::Bw, tgt::Bw; costmodel::BioAlignments.CostModel=BioAlignments.CostModel(match=0, mismatch=1, insertion=1, deletion=1))
+	res = BioAlignments.pairalign(BioAlignments.EditDistance(), tgt.text, src.text, costmodel)
 	return Alignment(BioAlignments.alignment(res), BioAlignments.score(res))
 end
 
@@ -23,7 +23,7 @@ end
 ALign `tgt` array of texts to `src` array of texts using a particular `costmodel` from BioAlignments.jl. `store_results` if results of alignment are stored or returned,
 otherwise, only the scores are returned.
 """
-function align(src::Vector{String}, tgt::Vector{String}; 
+function align(src::Vector{Bw}, tgt::Vector{Bw}; 
 	costmodel::CostModel=CostModel(match=0, mismatch=1, insertion=1, deletion=1),
 	store_results::Bool=true)
 	nref = length(src)

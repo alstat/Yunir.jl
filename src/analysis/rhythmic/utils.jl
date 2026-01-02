@@ -9,35 +9,35 @@ Harakaat("َ", false)
 ```
 """
 struct Harakaat
-	char::Union{String, Char}
+	char::Union{Ar,Bw}
 	is_tanween::Bool
 end
 
 function Base.string(x::Harakaat)
-	Harakaat(string(x.char), x.is_tanween)
+	Harakaat(string(x.char.text), x.is_tanween)
 end
-Yunir.encode(x::Harakaat) = Harakaat(encode(string(x.char)), x.is_tanween)
-Yunir.arabic(x::Harakaat) = Harakaat(arabic(string(x.char)), x.is_tanween)
+Yunir.encode(x::Harakaat) = Harakaat(encode(Ar(string(x.char.text))), x.is_tanween)
+Yunir.arabic(x::Harakaat) = Harakaat(arabic(Bw(string(x.char.text))), x.is_tanween)
 
-Base.occursin(x::String, y::Harakaat) = occursin(x, y.char)
+Base.occursin(x::String, y::Harakaat) = occursin(x, y.char.text)
 function Base.broadcasted(::typeof(in), s::AbstractString, mss::Vector{Harakaat})
 	return [occursin(s, ms) for ms ∈ mss]
 end
 const AR_VOWELS = [
-	Harakaat(Char(0x064B) |> string, true),
-	Harakaat(Char(0x064C) |> string, true),
-	Harakaat(Char(0x064D) |> string, true),
-	Harakaat(Char(0x064E) |> string, false),
-	Harakaat(Char(0x064F) |> string, false),
-	Harakaat(Char(0x0650) |> string, false),
+	Harakaat(Char(0x064B) |> string |> Ar, true),
+	Harakaat(Char(0x064C) |> string |> Ar, true),
+	Harakaat(Char(0x064D) |> string |> Ar, true),
+	Harakaat(Char(0x064E) |> string |> Ar, false),
+	Harakaat(Char(0x064F) |> string |> Ar, false),
+	Harakaat(Char(0x0650) |> string |> Ar, false),
 ]
 const BW_VOWELS = encode.(AR_VOWELS)
 const AR_LONG_VOWELS = [
-	Char(0x064A) |> string, # yah
-	Char(0x0648) |> string, # waw
-    Char(0x0649) |> string, # alif maksura
-	Char(0x0627) |> string, # alif
-	Char(0x0670) |> string  # superscript alif
+	Char(0x064A) |> string |> Ar, # yah
+	Char(0x0648) |> string |> Ar, # waw
+    Char(0x0649) |> string |> Ar, # alif maksura
+	Char(0x0627) |> string |> Ar, # alif
+	Char(0x0670) |> string |> Ar  # superscript alif
 ]
 const BW_LONG_VOWELS = encode.(AR_LONG_VOWELS)
 
@@ -46,13 +46,13 @@ const BW_LONG_VOWELS = encode.(AR_LONG_VOWELS)
 Create a `Segment` object from `text`, which is the form of the segments of syllables,
 where vowels of which are also listed as `harakaat`.
 ```julia-repl
-julia> bw_segment = "~aH?Hiy"
-julia> Segment(bw_segment, Harakaat[Harakaat("a", false), Harakaat("i", false)])
+julia> bw_segment = Bw("~aH?Hiy")
+julia> Segment(bw_segment, Harakaat[Harakaat(Bw("a"), false), Harakaat(Bw("i"), false)])
 Segment("~aH?Hiy", Harakaat[Harakaat("a", false), Harakaat("i", false)])
 ```
 """
 struct Segment
-	segment::String
+	segment::Union{Ar,Bw}
 	harakaat::Vector{Harakaat}
 end
 Yunir.encode(x::Segment) = Segment(encode(x.segment), encode.(x.harakaat))
@@ -103,15 +103,15 @@ struct Syllabification
 	silent_vowel::Bool
 	syllable::Syllable
 end
-function count_vowels(text::String, isarabic::Bool=false)
-    text = isarabic ? encode(text) : text
+function count_vowels(text::Union{Ar,Bw})
+    text = text isa Ar ? encode(text) : text
 	jvowels = join([c.char for c in BW_VOWELS])
-    return count(c -> c in jvowels, text)
+    return count(c -> c in jvowels, text.text)
 end
-function vowel_indices(text::String, isarabic::Bool=false)
-    text = isarabic ? encode(text) : text
+function vowel_indices(text::Union{Ar,Bw})
+    text = text isa Ar ? encode(text) : text
 	jvowels = join([c.char for c in BW_VOWELS])
-	return findall(c -> c in jvowels, text)
+	return findall(c -> c in jvowels, text.text)
 end
 """
 	(r::Syllabification)(text::String, isarabic::Bool=false)
@@ -130,11 +130,11 @@ julia> encode(output)
 Segment("Hiym", Harakaat[Harakaat("i", false)])
 ```
 """
-function (r::Syllabification)(text::String; isarabic::Bool=false, first_word::Bool=false, silent_last_vowel::Bool=false)
+function (r::Syllabification)(text::Union{Ar,Bw}; first_word::Bool=false, silent_last_vowel::Bool=false)
     jvowels = join([c.char for c in BW_VOWELS])
-	text = isarabic ? encode(text) : text
+	text = text isa Ar ? encode(text) : text
 	
-	vowel_idcs = vowel_indices(text, isarabic)
+	vowel_idcs = vowel_indices(text)
 	harakaat = Harakaat[]
 	segment_text = ""
 	
@@ -152,9 +152,9 @@ function (r::Syllabification)(text::String; isarabic::Bool=false, first_word::Bo
 			else
 				# if the name of the orthography is spelled with e instead of i, use i
 				if occursin('e', orthog)
-					push!(harakaat, BW_VOWELS[findfirst(x -> x.char == "i", BW_VOWELS)])
+					push!(harakaat, BW_VOWELS[findfirst(x -> x.char.text == "i", BW_VOWELS)])
 				elseif occursin('o', orthog) # cases like Noon
-					push!(harakaat, BW_VOWELS[findfirst(x -> x.char == "u", BW_VOWELS)])
+					push!(harakaat, BW_VOWELS[findfirst(x -> x.char.text == "u", BW_VOWELS)])
 				else
 					# otherwise, extract the vowels from the name of the orthography
 					name_vowel_idcs = findall(x -> x in jvowels, lowercase(orthog))
@@ -193,7 +193,7 @@ function (r::Syllabification)(text::String; isarabic::Bool=false, first_word::Bo
 				i += 1
 			end
 		end
-		return Segment(segment_text, harakaat)
+		return Segment(text isa Ar ? Ar(segment_text) : Bw(segment_text), harakaat)
 	end
 	
 	if silent_last_vowel
@@ -206,7 +206,7 @@ function (r::Syllabification)(text::String; isarabic::Bool=false, first_word::Bo
 	end
 
 	# uplimit accounts exclusion of silent last vowel
-	uplimit = r.syllable.nvowels > (count_vowels(text, isarabic) - is_silent) ? (count_vowels(text, isarabic) - is_silent) : r.syllable.nvowels
+	uplimit = r.syllable.nvowels > (count_vowels(text) - is_silent) ? (count_vowels(text) - is_silent) : r.syllable.nvowels
 	k = 1
 	for i in 0:(uplimit-is_silent-penalty)
 		vowel_idx = vowel_idcs[end-i-is_silent]
@@ -216,7 +216,7 @@ function (r::Syllabification)(text::String; isarabic::Bool=false, first_word::Bo
 
 		# if it has at least one vowel
 		if sum(cond) > 0
-			push!(harakaat, isarabic ? arabic(BW_VOWELS[cond][1]) : BW_VOWELS[cond][1])
+			push!(harakaat, text isa Ar ? arabic(BW_VOWELS[cond][1]) : BW_VOWELS[cond][1])
 			lead_length = length(text[1:(vowel_idx-1)])
 			trail_length = length(text[(vowel_idx+1):end])
 			lead_nchars_lwlimit = lead_length > r.syllable.lead_nchars ? r.syllable.lead_nchars : lead_length
@@ -238,8 +238,8 @@ function (r::Syllabification)(text::String; isarabic::Bool=false, first_word::Bo
 						first_word_trail = ""
 					end
 					first_word_text = "{" * first_word_trail * "?" 
-					first_word_harakaat = filter(x -> x.char == "a", BW_VOWELS)[1]
-					push!(harakaat, isarabic ? arabic(first_word_harakaat) : first_word_harakaat)
+					first_word_harakaat = filter(x -> x.char.text == "a", BW_VOWELS)[1]
+					push!(harakaat, text isa Ar ? arabic(first_word_harakaat) : first_word_harakaat)
 				else 
 					first_word_text = ""
 				end
@@ -304,11 +304,7 @@ function (r::Syllabification)(text::String; isarabic::Bool=false, first_word::Bo
 		end
 		k += 1
 	end
-    if isarabic
-        return Segment(arabic(segment_text), reverse(harakaat))
-	else
-        return Segment(segment_text, reverse(harakaat))
-    end
+	return Segment(text isa Ar ? Ar(segment_text) : Bw(segment_text), reverse(harakaat))
 end
 
 
@@ -339,11 +335,11 @@ julia> segments = Segment[]
 julia> j = 1
 julia> for i in texts
 			if j == 1
-				push!(segments, r(encode(i), isarabic=false, first_word=true, silent_last_vowel=false))
+				push!(segments, r(encode(i), first_word=true, silent_last_vowel=false))
 			elseif j == length(texts)
-				push!(segments, r(encode(i), isarabic=false, first_word=false, silent_last_vowel=true))
+				push!(segments, r(encode(i), first_word=false, silent_last_vowel=true))
 			else
-				push!(segments, r(encode(i), isarabic=false, first_word=false, silent_last_vowel=false))
+				push!(segments, r(encode(i), first_word=false, silent_last_vowel=false))
 			end
 			j += 1
 		end

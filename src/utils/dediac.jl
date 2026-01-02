@@ -12,8 +12,8 @@ julia> dediac(arabic(bw_basmala))
 "بسم ٱلله ٱلرحمن ٱلرحيم"
 ```
 """
-function dediac(s::String; isarabic::Bool=true)
+function dediac(s::Union{Ar,Bw})
     trans = Transliterator()
-    return !isarabic ? replace(s, trans.rx_diacs => s"") : 
-        replace(s, trans.rx_ardiacs => s"")
+    return s isa Bw ? Bw(replace(s.text, trans.rx_diacs => s"")) : 
+        Ar(replace(s.text, trans.rx_ardiacs => s""))
 end

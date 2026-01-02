@@ -2,6 +2,10 @@
 using Yunir
 using CairoMakie
 
+struct Schillinger <: AbstractRhythmicVisArgs
+    state_timings::Dict{Bw,RState}
+end
+
 function rhythmic_states(data::Schillinger, texts::Vector{Bw})::Vector{Vector{RState}}
     texts = map(x -> string.(split(x.text)), texts)
     r = Syllabification(true, Syllable(1, 0, 10))
@@ -52,10 +56,6 @@ bw_texts = [
     Bw("Sira`Ta {l~a*iyna >anoEamota Ealayohimo gayori {lomagoDuwbi Ealayohimo walaA {lD~aA^l~iyna")
 ]
 
-struct Schillinger <: AbstractRhythmicVisArgs
-    state_timings::Dict{Bw,RState}
-end
-
 function vis(rhythms::Vector{Vector{RState}}, fig::Makie.Figure=Figure(size=(900,900)), title::String="Title", xlabel::String="Time in Seconds", ylabel::String="Line")
     mgrd = fig[1, 1] = GridLayout()
     grd = mgrd[1, 1] = GridLayout()
@@ -103,8 +103,3 @@ end
 
 rhythms = rhythmic_states(Schillinger(tajweed_timings), bw_texts)
 vis(rhythms)
-
-
-args = Schillinger(tajweed_timings)
-
-typeof(args) === Schillinger

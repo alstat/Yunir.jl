@@ -4,6 +4,7 @@ import Base: download, delete!
 
 abstract type AbstractModel end
 
+include("utils/texts_wrapper.jl")
 include("orthography/orthography.jl")
 # include("pos/morphfeats_types.jl")
 include("constants.jl")
@@ -12,7 +13,6 @@ include("utils/decode.jl")
 include("utils/normalize.jl")
 include("utils/dediac.jl")
 include("utils/clean.jl")
-include("utils/texts_wrapper.jl")
 include("alignment/align.jl")
 include("utils/encode.jl")
 include("utils/parse.jl")

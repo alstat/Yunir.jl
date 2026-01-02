@@ -357,6 +357,7 @@ function vis(x1::Vector{LastRecitedSyllable}, y1::Vector{Int64};
             xticks=collect(eachindex(x2))
         )
         a3 = Axis(f[3, 1],
+            xlabel=xlabel,
             ylabel=ylabel[3],
             yticks=(unique(y3), unique(string.(x3))),
             xticks=collect(eachindex(x3))
@@ -368,6 +369,7 @@ function vis(x1::Vector{LastRecitedSyllable}, y1::Vector{Int64};
     elseif x2 !== nothing && x3 === nothing
         x2 = map(x -> x.syllable.text, x2)
         a2 = Axis(f[2, 1],
+            xlabel=xlabel,
             ylabel=ylabel[2],
             yticks=(unique(y2), unique(string.(x2))),
             xticks=collect(eachindex(x2))
@@ -377,6 +379,7 @@ function vis(x1::Vector{LastRecitedSyllable}, y1::Vector{Int64};
     elseif x2 === nothing && x3 !== nothing
         x3 = map(x -> x.syllable.text, x3)
         a3 = Axis(f[3, 1],
+            xlabel=xlabel,
             ylabel=ylabel[3],
             yticks=(unique(y3), unique(string.(x3))),
             xticks=collect(eachindex(x3))

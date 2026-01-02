@@ -5,57 +5,57 @@ using Makie
 @testset "Yunir.jl Unit Tests" begin
     @testset "Basic Text Processing" begin
         @info "encoding"
-        ar_basmala = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ"
-        @test encode(ar_basmala) === "bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi"
+        ar_basmala = Ar("بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ")
+        @test encode(ar_basmala) === Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi")
 
         @info "dediac and arabic"
-        bw_basmala = "bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi"
-        @test dediac(bw_basmala; isarabic=false) === "bsm {llh {lrHmn {lrHym"
-        @test arabic(dediac(bw_basmala; isarabic=false)) === "بسم ٱلله ٱلرحمن ٱلرحيم"
-        @test dediac(arabic(bw_basmala)) === arabic(dediac(bw_basmala; isarabic=false))
+        bw_basmala = Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi")
+        @test dediac(bw_basmala) === Bw("bsm {llh {lrHmn {lrHym")
+        @test arabic(dediac(bw_basmala)) === Ar("بسم ٱلله ٱلرحمن ٱلرحيم")
+        @test dediac(arabic(bw_basmala)) === arabic(dediac(bw_basmala))
 
         @info "normalizing"
-        ar_basmala = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ"
-        @test normalize(ar_basmala, :alif_khanjareeya) === "بِسْمِ ٱللَّهِ ٱلرَّحْمَانِ ٱلرَّحِيمِ"
-        @test normalize(ar_basmala, :hamzat_wasl) === "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ"
+        ar_basmala = Ar("بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ")
+        @test normalize(ar_basmala, :alif_khanjareeya) === Ar("بِسْمِ ٱللَّهِ ٱلرَّحْمَانِ ٱلرَّحِيمِ")
+        @test normalize(ar_basmala, :hamzat_wasl) === Ar("بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ")
 
-        sentence1 = "وَٱلَّذِينَ يُؤْمِنُونَ بِمَآ أُنزِلَ إِلَيْكَ وَمَآ أُنزِلَ مِن قَبْلِكَ وَبِٱلْءَاخِرَةِ هُمْ يُوقِنُونَ"
-        @test normalize(sentence1, :alif_maddah) === "وَٱلَّذِينَ يُؤْمِنُونَ بِمَا أُنزِلَ إِلَيْكَ وَمَا أُنزِلَ مِن قَبْلِكَ وَبِٱلْءَاخِرَةِ هُمْ يُوقِنُونَ"
-        @test normalize(sentence1, :alif_hamza_above) === "وَٱلَّذِينَ يُؤْمِنُونَ بِمَآ اُنزِلَ إِلَيْكَ وَمَآ اُنزِلَ مِن قَبْلِكَ وَبِٱلْءَاخِرَةِ هُمْ يُوقِنُونَ"
+        sentence1 = Ar("وَٱلَّذِينَ يُؤْمِنُونَ بِمَآ أُنزِلَ إِلَيْكَ وَمَآ أُنزِلَ مِن قَبْلِكَ وَبِٱلْءَاخِرَةِ هُمْ يُوقِنُونَ")
+        @test normalize(sentence1, :alif_maddah) === Ar("وَٱلَّذِينَ يُؤْمِنُونَ بِمَا أُنزِلَ إِلَيْكَ وَمَا أُنزِلَ مِن قَبْلِكَ وَبِٱلْءَاخِرَةِ هُمْ يُوقِنُونَ")
+        @test normalize(sentence1, :alif_hamza_above) === Ar("وَٱلَّذِينَ يُؤْمِنُونَ بِمَآ اُنزِلَ إِلَيْكَ وَمَآ اُنزِلَ مِن قَبْلِكَ وَبِٱلْءَاخِرَةِ هُمْ يُوقِنُونَ")
 
-        sentence2 = "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ"
-        @test normalize(sentence2, :alif_hamza_below) === "اِيَّاكَ نَعْبُدُ وَاِيَّاكَ نَسْتَعِينُ"
+        sentence2 = Ar("إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ")
+        @test normalize(sentence2, :alif_hamza_below) === Ar("اِيَّاكَ نَعْبُدُ وَاِيَّاكَ نَسْتَعِينُ")
 
-        sentence3 = "ٱلَّذِينَ يُؤْمِنُونَ بِٱلْغَيْبِ وَيُقِيمُونَ ٱلصَّلَوٰةَ وَمِمَّا رَزَقْنَٰهُمْ يُنفِقُونَ"
-        @test normalize(sentence3, :waw_hamza_above) === "ٱلَّذِينَ يُوْمِنُونَ بِٱلْغَيْبِ وَيُقِيمُونَ ٱلصَّلَوٰةَ وَمِمَّا رَزَقْنَٰهُمْ يُنفِقُونَ"
-        @test normalize(sentence3, :ta_marbuta) === "ٱلَّذِينَ يُؤْمِنُونَ بِٱلْغَيْبِ وَيُقِيمُونَ ٱلصَّلَوٰهَ وَمِمَّا رَزَقْنَٰهُمْ يُنفِقُونَ"
+        sentence3 = Ar("ٱلَّذِينَ يُؤْمِنُونَ بِٱلْغَيْبِ وَيُقِيمُونَ ٱلصَّلَوٰةَ وَمِمَّا رَزَقْنَٰهُمْ يُنفِقُونَ")
+        @test normalize(sentence3, :waw_hamza_above) === Ar("ٱلَّذِينَ يُوْمِنُونَ بِٱلْغَيْبِ وَيُقِيمُونَ ٱلصَّلَوٰةَ وَمِمَّا رَزَقْنَٰهُمْ يُنفِقُونَ")
+        @test normalize(sentence3, :ta_marbuta) === Ar("ٱلَّذِينَ يُؤْمِنُونَ بِٱلْغَيْبِ وَيُقِيمُونَ ٱلصَّلَوٰهَ وَمِمَّا رَزَقْنَٰهُمْ يُنفِقُونَ")
 
-        sentence4 = "ٱللَّهُ يَسْتَهْزِئُ بِهِمْ وَيَمُدُّهُمْ فِى طُغْيَٰنِهِمْ يَعْمَهُونَ"
-        @test normalize(sentence4, :ya_hamza_above) === "ٱللَّهُ يَسْتَهْزِيُ بِهِمْ وَيَمُدُّهُمْ فِى طُغْيَٰنِهِمْ يَعْمَهُونَ"
+        sentence4 = Ar("ٱللَّهُ يَسْتَهْزِئُ بِهِمْ وَيَمُدُّهُمْ فِى طُغْيَٰنِهِمْ يَعْمَهُونَ")
+        @test normalize(sentence4, :ya_hamza_above) === Ar("ٱللَّهُ يَسْتَهْزِيُ بِهِمْ وَيَمُدُّهُمْ فِى طُغْيَٰنِهِمْ يَعْمَهُونَ")
 
-        sentence5 = "ذَٰلِكَ ٱلْكِتَٰبُ لَا رَيْبَ فِيهِ هُدًى لِّلْمُتَّقِينَ"
-        @test normalize(sentence5, :alif_maksura) === "ذَٰلِكَ ٱلْكِتَٰبُ لَا رَيْبَ فِيهِ هُدًي لِّلْمُتَّقِينَ"
+        sentence5 = Ar("ذَٰلِكَ ٱلْكِتَٰبُ لَا رَيْبَ فِيهِ هُدًى لِّلْمُتَّقِينَ")
+        @test normalize(sentence5, :alif_maksura) === Ar("ذَٰلِكَ ٱلْكِتَٰبُ لَا رَيْبَ فِيهِ هُدًي لِّلْمُتَّقِينَ")
 
-        @test normalize(ar_basmala, [:alif_khanjareeya, :hamzat_wasl]) === "بِسْمِ اللَّهِ الرَّحْمَانِ الرَّحِيمِ"
+        @test normalize(ar_basmala, [:alif_khanjareeya, :hamzat_wasl]) === Ar("بِسْمِ اللَّهِ الرَّحْمَانِ الرَّحِيمِ")
 
-        sentence6 = "ﷺ"
-        @test normalize(sentence6) === "صلى الله عليه وسلم"
+        sentence6 = Ar("ﷺ")
+        @test normalize(sentence6) === Ar("صلى الله عليه وسلم")
 
-        sentence7 = "ﷻ"
-        @test normalize(sentence7) === "جل جلاله"
+        sentence7 = Ar("ﷻ")
+        @test normalize(sentence7) === Ar("جل جلاله")
 
-        sentence8 = "﷽"
+        sentence8 = Ar("﷽")
         @test normalize(sentence8) === ar_basmala
 
-        @test normalize("بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ") === "بِسْمِ اللَّهِ الرَّحْمَانِ الرَّحِيمِ"
+        @test normalize(Ar("بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ")) === Ar("بِسْمِ اللَّهِ الرَّحْمَانِ الرَّحِيمِ")
     end
     @testset "tokenization" begin
-        sentence10 = "هَلْ,; ذَهَبْتَ إِلَى المَكْتَبَةِ؟"
+        sentence10 = Ar("هَلْ,; ذَهَبْتَ إِلَى المَكْتَبَةِ؟")
         @info tokenize(sentence10) === ["هَلْ", "ذَهَبْتَ", "إِلَى", "المَكْتَبَةِ", ",", ";", "؟"]
         @info tokenize(sentence10, false) === ["هَلْ,;", "ذَهَبْتَ", "إِلَى", "المَكْتَبَةِ؟"]
     end
     @testset "transliterator" begin
-        ar_basmala = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ"
+        ar_basmala = Ar("بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ")
         my_encoder = Dict(
             Symbol(Char(0x0621)) => Symbol('('),
             Symbol(Char(0x0622)) => Symbol('\''),
@@ -121,7 +121,7 @@ using Makie
         )
 
         @transliterator my_encoder "MyEncoder"
-        @test encode(ar_basmala) === "A~\$^l~ :mmiun~ :mziux^lu#h~ :mziux~Fl~"
+        @test encode(ar_basmala) === Bw("A~\$^l~ :mmiun~ :mziux^lu#h~ :mziux~Fl~")
         @test arabic(encode(ar_basmala)) === ar_basmala
 
         old_keys = collect(keys(BW_ENCODING))
@@ -145,13 +145,13 @@ using Makie
     # @test parse(SimpleEncoding, ar_basmala) === "Ba+Kasra | Seen+Sukun | Meem+Kasra | <space> | AlifHamzatWasl | Lam | Lam+Shadda+Fatha | Ha+Kasra | <space> | AlifHamzatWasl | Lam | Ra+Shadda+Fatha | HHa+Sukun | Meem+Fatha+AlifKhanjareeya | Noon+Kasra | <space> | AlifHamzatWasl | Lam | Ra+Shadda+Fatha | HHa+Kasra | Ya | Meem+Kasra" 
 
     @testset "Alignment" begin
-        shamela0012129 = "خرج مع ابي بكر الصديق رضي الله عنه في تجارة الي بصري ومعهم نعيمان وكان نعيمان ممن شهد——- بدرا ايضا وك——-ان علي الزاد فقال له سويبط———– اطعمني فقال حتي يجء ابو بكر فقال اما والله لاغيظنك فمروا بقوم فقال لهم سويبط -تشترون مني عبدا قا—لوا نعم فقال انه عبد له كلام وهو قاءل لكم اني حر فان كنتم اذا قال لكم هذه المقالة تركتموه فلا تفسدوا علي عبدي قا-لوا بل نشتريه منك فاشتروه بعشر قلاءص ثم جاءوا فوضعوا في عنقه حبلا ف—————قال نعيمان ان هذا يستهزء بكم واني حر فقالوا قد عرفنا –خبرك وانطلقوا به فلما جاء ابو بكر -اخبروه فاتبعهم ورد عليهم القلاءص واخذه فلما قدموا علي النبي صلي الله عليه وسلم اخبروه فضحك هو واصحابه من ذلك حولا"
-        shamela0023790 = "خرج— ابو بكر——————– في تجارة——— ومعه- نعيمان وسويبط بن حرملة وكانا شهدا بدر—–ا وكان نعيمان علي الزاد فقال له سويبط وكان مزاحا اطعمني فقال حتي يجء ابو بكر فقال اما والله لاغيظنك فمروا بقوم فقال لهم سويبط اتشترون مني عبدا لي قالوا نعم ق-ال انه عبد له كلام وهو قاءل لكم اني حر فان كنتم اذا قال لكم هذه المقالة تركتموه فلا تفسدوا علي عبدي فقالوا بل نشتريه منك——– بعشر قلاءص ثم جاءوا فوضعوا في عنقه حبلا وعمامة واشتروه فقال نعيمان ان هذا يستهزء بكم واني حر قا-لوا قد اخبرنا بخبرك وانطلقوا به و—-جاء ابو بكر فاخبروه فاتبعهم فرد عليهم القلاءص واخذه فلما قدموا علي النبي صلي الله عليه وسلم اخبروه فضحك هو واصحابه منهما- حول"
+        shamela0012129 = Ar("خرج مع ابي بكر الصديق رضي الله عنه في تجارة الي بصري ومعهم نعيمان وكان نعيمان ممن شهد——- بدرا ايضا وك——-ان علي الزاد فقال له سويبط———– اطعمني فقال حتي يجء ابو بكر فقال اما والله لاغيظنك فمروا بقوم فقال لهم سويبط -تشترون مني عبدا قا—لوا نعم فقال انه عبد له كلام وهو قاءل لكم اني حر فان كنتم اذا قال لكم هذه المقالة تركتموه فلا تفسدوا علي عبدي قا-لوا بل نشتريه منك فاشتروه بعشر قلاءص ثم جاءوا فوضعوا في عنقه حبلا ف—————قال نعيمان ان هذا يستهزء بكم واني حر فقالوا قد عرفنا –خبرك وانطلقوا به فلما جاء ابو بكر -اخبروه فاتبعهم ورد عليهم القلاءص واخذه فلما قدموا علي النبي صلي الله عليه وسلم اخبروه فضحك هو واصحابه من ذلك حولا")
+        shamela0023790 = Ar("خرج— ابو بكر——————– في تجارة——— ومعه- نعيمان وسويبط بن حرملة وكانا شهدا بدر—–ا وكان نعيمان علي الزاد فقال له سويبط وكان مزاحا اطعمني فقال حتي يجء ابو بكر فقال اما والله لاغيظنك فمروا بقوم فقال لهم سويبط اتشترون مني عبدا لي قالوا نعم ق-ال انه عبد له كلام وهو قاءل لكم اني حر فان كنتم اذا قال لكم هذه المقالة تركتموه فلا تفسدوا علي عبدي فقالوا بل نشتريه منك——– بعشر قلاءص ثم جاءوا فوضعوا في عنقه حبلا وعمامة واشتروه فقال نعيمان ان هذا يستهزء بكم واني حر قا-لوا قد اخبرنا بخبرك وانطلقوا به و—-جاء ابو بكر فاخبروه فاتبعهم فرد عليهم القلاءص واخذه فلما قدموا علي النبي صلي الله عليه وسلم اخبروه فضحك هو واصحابه منهما- حول")
         shamela0012129_cln = clean(shamela0012129)
         shamela0023790_cln = clean(shamela0023790)
         mapping = Dict(
-            "الله" => "ﷲ",
-            "لا" => "ﻻ",
+            Ar("الله") => Ar("ﷲ"),
+            Ar("لا") => Ar("ﻻ"),
         )
         shamela0012129_nrm = normalize(shamela0012129_cln, mapping)
         shamela0023790_nrm = normalize(shamela0023790_cln, mapping)
@@ -213,148 +213,148 @@ using Makie
     @testset "Syllabification" begin
         @transliterator :default
         # texts
-        ar_raheem = encode("ٱلرَّحِيمِ") # output: "{lr~aHiymi"
+        ar_raheem = encode(Ar("ٱلرَّحِيمِ")) # output: "{lr~aHiymi"
         r = Syllabification(true, Syllable(0, 0, 1)) # 1 vowel only, and it will start from the last vowel
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).segment === Segment("i", Harakaat[Harakaat("i", false)]).segment
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat == [Harakaat("i", false)]
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].char == "i"
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].is_tanween == false
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).segment === Segment(Bw("i"), Harakaat[Harakaat(Bw("i"), false)]).segment
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat == [Harakaat(Bw("i"), false)]
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[1].char == Bw("i")
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[1].is_tanween == false
 
         r = Syllabification(true, Syllable(1, 0, 1)) # 1 vowel only, and it will start from the last vowel
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).segment === Segment("mi", Harakaat[Harakaat("i", false)]).segment
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat == [Harakaat("i", false)]
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].char == "i"
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].is_tanween == false
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).segment === Segment(Bw("mi"), Harakaat[Harakaat(Bw("i"), false)]).segment
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat == [Harakaat(Bw("i"), false)]
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[1].char == Bw("i")
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[1].is_tanween == false
 
         r = Syllabification(true, Syllable(1, 1, 1)) # 1 vowel only, and it will start from the last vowel
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).segment === Segment("mi", Harakaat[Harakaat("i", false)]).segment
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat == [Harakaat("i", false)]
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].char == "i"
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].is_tanween == false
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).segment === Segment(Bw("mi"), Harakaat[Harakaat(Bw("i"), false)]).segment
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat == [Harakaat(Bw("i"), false)]
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[1].char == Bw("i")
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[1].is_tanween == false
 
         r = Syllabification(true, Syllable(1, 2, 1)) # 1 vowel only, and it will start from the last vowel
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).segment === Segment("mi", Harakaat[Harakaat("i", false)]).segment
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat == [Harakaat("i", false)]
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].char == "i"
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].is_tanween == false
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).segment === Segment(Bw("mi"), Harakaat[Harakaat(Bw("i"), false)]).segment
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat == [Harakaat(Bw("i"), false)]
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[1].char == Bw("i")
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[1].is_tanween == false
 
         r = Syllabification(true, Syllable(2, 2, 1)) # 1 vowel only, and it will start from the last vowel
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).segment === Segment("ymi", Harakaat[Harakaat("i", false)]).segment
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat == [Harakaat("i", false)]
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].char == "i"
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].is_tanween == false
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).segment === Segment(Bw("ymi"), Harakaat[Harakaat(Bw("i"), false)]).segment
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat == [Harakaat(Bw("i"), false)]
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[1].char == Bw("i")
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[1].is_tanween == false
 
         # more than 1 vowel
         r = Syllabification(true, Syllable(0, 0, 2)) # 2 vowels, and it will start from the last vowel
 
         # capture the long vowel
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).segment === Segment("iy?i", Harakaat[Harakaat("i", false)]).segment
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat == Harakaat[Harakaat("i", false), Harakaat("i", false)]
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].char == "i"
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[2].char == "i"
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].is_tanween == false
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[2].is_tanween == false
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).segment === Segment(Bw("iy?i"), Harakaat[Harakaat(Bw("i"), false)]).segment
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat == Harakaat[Harakaat(Bw("i"), false), Harakaat(Bw("i"), false)]
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[1].char == Bw("i")
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[2].char == Bw("i")
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[1].is_tanween == false
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[2].is_tanween == false
 
         r = Syllabification(true, Syllable(0, 1, 2)) # 2 vowels, and it will start from the last vowel
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).segment === Segment("iy?i", Harakaat[Harakaat("i", false)]).segment
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat == Harakaat[Harakaat("i", false), Harakaat("i", false)]
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].char == "i"
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[2].char == "i"
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].is_tanween == false
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[2].is_tanween == false
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).segment === Segment(Bw("iy?i"), Harakaat[Harakaat(Bw("i"), false)]).segment
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat == Harakaat[Harakaat(Bw("i"), false), Harakaat(Bw("i"), false)]
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[1].char == Bw("i")
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[2].char == Bw("i")
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[1].is_tanween == false
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[2].is_tanween == false
 
         r = Syllabification(true, Syllable(1, 1, 2)) # 2 vowels, and it will start from the last vowel
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).segment === Segment("Hiy?mi", Harakaat[Harakaat("i", false)]).segment
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat == Harakaat[Harakaat("i", false), Harakaat("i", false)]
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].char == "i"
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[2].char == "i"
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].is_tanween == false
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[2].is_tanween == false
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).segment === Segment(Bw("Hiy?mi"), Harakaat[Harakaat(Bw("i"), false)]).segment
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat == Harakaat[Harakaat(Bw("i"), false), Harakaat(Bw("i"), false)]
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[1].char == Bw("i")
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[2].char == Bw("i")
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[1].is_tanween == false
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[2].is_tanween == false
 
         r = Syllabification(true, Syllable(2, 2, 2)) # 2 vowels, and it will start from the last vowel
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).segment === Segment("aHiym?ymi", Harakaat[Harakaat("i", false)]).segment
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat == Harakaat[Harakaat("i", false), Harakaat("i", false)]
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].char == "i"
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[2].char == "i"
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].is_tanween == false
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[2].is_tanween == false
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).segment === Segment(Bw("aHiym?ymi"), Harakaat[Harakaat(Bw("i"), false)]).segment
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat == Harakaat[Harakaat(Bw("i"), false), Harakaat(Bw("i"), false)]
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[1].char == Bw("i")
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[2].char == Bw("i")
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[1].is_tanween == false
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[2].is_tanween == false
 
         # more than 2 vowels
         r = Syllabification(true, Syllable(0, 0, 3)) # 3 vowels, and it will start from the last vowel
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).segment === Segment("a?iy?i", Harakaat[Harakaat("a", false), Harakaat("i", false), Harakaat("i", false)]).segment
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat == Harakaat[Harakaat("a", false), Harakaat("i", false), Harakaat("i", false)]
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].char == "a"
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[2].char == "i"
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[3].char == "i"
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].is_tanween == false
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[2].is_tanween == false
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[3].is_tanween == false
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).segment === Segment(Bw("a?iy?i"), Harakaat[Harakaat(Bw("a"), false), Harakaat(Bw("i"), false), Harakaat(Bw("i"), false)]).segment
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat == Harakaat[Harakaat(Bw("a"), false), Harakaat(Bw("i"), false), Harakaat(Bw("i"), false)]
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[1].char == Bw("a")
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[2].char == Bw("i")
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[3].char == Bw("i")
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[1].is_tanween == false
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[2].is_tanween == false
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[3].is_tanween == false
 
         # more than 2 vowels
         r = Syllabification(true, Syllable(1, 1, 3)) # 3 vowels, and it will start from the last vowel
 
         # remember ~ is a sadda, and therefore needs to have consonant preceding it to know what letter to double
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).segment === Segment("r~aH?Hiy?mi", Harakaat[Harakaat("a", false), Harakaat("i", false), Harakaat("i", false)]).segment
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat == Harakaat[Harakaat("a", false), Harakaat("i", false), Harakaat("i", false)]
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].char == "a"
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[2].char == "i"
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[3].char == "i"
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].is_tanween == false
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[2].is_tanween == false
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[3].is_tanween == false
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).segment === Segment(Bw("r~aH?Hiy?mi"), Harakaat[Harakaat(Bw("a"), false), Harakaat(Bw("i"), false), Harakaat(Bw("i"), false)]).segment
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat == Harakaat[Harakaat(Bw("a"), false), Harakaat(Bw("i"), false), Harakaat(Bw("i"), false)]
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[1].char == Bw("a")
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[2].char == Bw("i")
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[3].char == Bw("i")
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[1].is_tanween == false
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[2].is_tanween == false
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[3].is_tanween == false
 
         r = Syllabification(true, Syllable(2, 2, 3)) # 3 vowels, and it will start from the last vowel
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).segment === Segment("r~aHi?aHiym?ymi", Harakaat[Harakaat("a", false), Harakaat("i", false), Harakaat("i", false)]).segment
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat == Harakaat[Harakaat("a", false), Harakaat("i", false), Harakaat("i", false)]
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].char == "a"
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[2].char == "i"
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[3].char == "i"
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[1].is_tanween == false
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[2].is_tanween == false
-        @test r(ar_raheem, isarabic=false, first_word=false, silent_last_vowel=false).harakaat[3].is_tanween == false
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).segment === Segment(Bw("r~aHi?aHiym?ymi"), Harakaat[Harakaat(Bw("a"), false), Harakaat(Bw("i"), false), Harakaat(Bw("i"), false)]).segment
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat == Harakaat[Harakaat(Bw("a"), false), Harakaat(Bw("i"), false), Harakaat(Bw("i"), false)]
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[1].char == Bw("a")
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[2].char == Bw("i")
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[3].char == Bw("i")
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[1].is_tanween == false
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[2].is_tanween == false
+        @test r(ar_raheem, first_word=false, silent_last_vowel=false).harakaat[3].is_tanween == false
 
         ###
-        alhamd = encode("ٱلْحَمْدُ")
+        alhamd = encode(Ar("ٱلْحَمْدُ"))
         r = Syllabification(true, Syllable(0, 0, 1)) # 1 vowel only, and it will start from the last vowel
-        @test r(alhamd, isarabic=false, first_word=true, silent_last_vowel=false).segment === Segment("u", Harakaat[Harakaat("u", false)]).segment
-        @test r(alhamd, isarabic=false, first_word=true, silent_last_vowel=false).harakaat == [Harakaat("u", false)]
-        @test r(alhamd, isarabic=false, first_word=true, silent_last_vowel=false).harakaat[1].char == "u"
-        @test r(alhamd, isarabic=false, first_word=true, silent_last_vowel=false).harakaat[1].is_tanween == false
+        @test r(alhamd, first_word=true, silent_last_vowel=false).segment === Segment(Bw("u"), Harakaat[Harakaat(Bw("u"), false)]).segment
+        @test r(alhamd, first_word=true, silent_last_vowel=false).harakaat == [Harakaat(Bw("u"), false)]
+        @test r(alhamd, first_word=true, silent_last_vowel=false).harakaat[1].char == Bw("u")
+        @test r(alhamd, first_word=true, silent_last_vowel=false).harakaat[1].is_tanween == false
 
-        alhamd = encode("ٱلْحَمْدُ") # output: "{loHamodu"
+        alhamd = encode(Ar("ٱلْحَمْدُ")) # output: "{loHamodu"
         r = Syllabification(true, Syllable(0, 0, 2)) # 1 vowel only, and it will start the finding of vowel from right to left of the letters
-        @test r(alhamd, isarabic=false, first_word=true, silent_last_vowel=true).segment === Segment("{?a", Harakaat[Harakaat("a", false), Harakaat("a", false)]).segment
-        @test r(alhamd, isarabic=false, first_word=true, silent_last_vowel=true).harakaat == [Harakaat("a", false), Harakaat("a", false)]
-        @test r(alhamd, isarabic=false, first_word=true, silent_last_vowel=true).harakaat[1].char == "a"
-        @test r(alhamd, isarabic=false, first_word=true, silent_last_vowel=true).harakaat[2].char == "a"
+        @test r(alhamd, first_word=true, silent_last_vowel=true).segment === Segment(Bw("{?a"), Harakaat[Harakaat(Bw("a"), false), Harakaat(Bw("a"), false)]).segment
+        @test r(alhamd, first_word=true, silent_last_vowel=true).harakaat == [Harakaat(Bw("a"), false), Harakaat(Bw("a"), false)]
+        @test r(alhamd, first_word=true, silent_last_vowel=true).harakaat[1].char == Bw("a")
+        @test r(alhamd, first_word=true, silent_last_vowel=true).harakaat[2].char == Bw("a")
 
-        alhamd = encode("ٱلْحَمْدُ") # output: "{loHamodu"
+        alhamd = encode(Ar("ٱلْحَمْدُ")) # output: "{loHamodu"
         r = Syllabification(true, Syllable(0, 1, 2)) # 1 vowel only, and it will start the finding of vowel from right to left of the letters
-        @test r(alhamd, isarabic=false, first_word=true, silent_last_vowel=true).segment === Segment("{l?am", Harakaat[Harakaat("a", false), Harakaat("a", false)]).segment
-        @test r(alhamd, isarabic=false, first_word=true, silent_last_vowel=true).harakaat == [Harakaat("a", false), Harakaat("a", false)]
-        @test r(alhamd, isarabic=false, first_word=true, silent_last_vowel=true).harakaat[1].char == "a"
-        @test r(alhamd, isarabic=false, first_word=true, silent_last_vowel=true).harakaat[2].char == "a"
+        @test r(alhamd, first_word=true, silent_last_vowel=true).segment === Segment(Bw("{l?am"), Harakaat[Harakaat(Bw("a"), false), Harakaat(Bw("a"), false)]).segment
+        @test r(alhamd, first_word=true, silent_last_vowel=true).harakaat == [Harakaat(Bw("a"), false), Harakaat(Bw("a"), false)]
+        @test r(alhamd, first_word=true, silent_last_vowel=true).harakaat[1].char == Bw("a")
+        @test r(alhamd, first_word=true, silent_last_vowel=true).harakaat[2].char == Bw("a")
 
-        alhamd = encode("ٱلْحَمْدُ") # output: "{loHamodu"
+        alhamd = encode(Ar("ٱلْحَمْدُ")) # output: "{loHamodu"
         r = Syllabification(true, Syllable(1, 1, 2)) # 1 vowel only, and it will start the finding of vowel from right to left of the letters
-        @test r(alhamd, isarabic=false, first_word=true, silent_last_vowel=true).segment === Segment("{l?Ham", Harakaat[Harakaat("a", false), Harakaat("a", false)]).segment
-        @test r(alhamd, isarabic=false, first_word=true, silent_last_vowel=true).harakaat == [Harakaat("a", false), Harakaat("a", false)]
-        @test r(alhamd, isarabic=false, first_word=true, silent_last_vowel=true).harakaat[1].char == "a"
-        @test r(alhamd, isarabic=false, first_word=true, silent_last_vowel=true).harakaat[2].char == "a"
+        @test r(alhamd, first_word=true, silent_last_vowel=true).segment === Segment(Bw("{l?Ham"), Harakaat[Harakaat(Bw("a"), false), Harakaat(Bw("a"), false)]).segment
+        @test r(alhamd, first_word=true, silent_last_vowel=true).harakaat == [Harakaat(Bw("a"), false), Harakaat(Bw("a"), false)]
+        @test r(alhamd, first_word=true, silent_last_vowel=true).harakaat[1].char == Bw("a")
+        @test r(alhamd, first_word=true, silent_last_vowel=true).harakaat[2].char == Bw("a")
 
-        alhamd = encode("ٱلْحَمْدُ") # output: "{loHamodu"
+        alhamd = encode(Ar("ٱلْحَمْدُ")) # output: "{loHamodu"
         r = Syllabification(true, Syllable(1, 2, 2)) # 1 vowel only, and it will start the finding of vowel from right to left of the letters
-        @test r(alhamd, isarabic=false, first_word=true, silent_last_vowel=true).segment === Segment("{lo?Hamo", Harakaat[Harakaat("a", false), Harakaat("a", false)]).segment
-        @test r(alhamd, isarabic=false, first_word=true, silent_last_vowel=true).harakaat == [Harakaat("a", false), Harakaat("a", false)]
-        @test r(alhamd, isarabic=false, first_word=true, silent_last_vowel=true).harakaat[1].char == "a"
-        @test r(alhamd, isarabic=false, first_word=true, silent_last_vowel=true).harakaat[2].char == "a"
+        @test r(alhamd, first_word=true, silent_last_vowel=true).segment === Segment(Bw("{lo?Hamo"), Harakaat[Harakaat(Bw("a"), false), Harakaat(Bw("a"), false)]).segment
+        @test r(alhamd, first_word=true, silent_last_vowel=true).harakaat == [Harakaat(Bw("a"), false), Harakaat(Bw("a"), false)]
+        @test r(alhamd, first_word=true, silent_last_vowel=true).harakaat[1].char == Bw("a")
+        @test r(alhamd, first_word=true, silent_last_vowel=true).harakaat[2].char == Bw("a")
 
-        alhamd = encode("ٱلْحَمْدُ") # output: "{loHamodu"
+        alhamd = encode(Ar("ٱلْحَمْدُ")) # output: "{loHamodu"
         r = Syllabification(true, Syllable(2, 2, 2)) # 1 vowel only, and it will start the finding of vowel from right to left of the letters
-        @test r(alhamd, isarabic=false, first_word=true, silent_last_vowel=true).segment === Segment("{lo?oHamo", Harakaat[Harakaat("a", false), Harakaat("a", false)]).segment
-        @test r(alhamd, isarabic=false, first_word=true, silent_last_vowel=true).harakaat == [Harakaat("a", false), Harakaat("a", false)]
-        @test r(alhamd, isarabic=false, first_word=true, silent_last_vowel=true).harakaat[1].char == "a"
-        @test r(alhamd, isarabic=false, first_word=true, silent_last_vowel=true).harakaat[2].char == "a"
+        @test r(alhamd, first_word=true, silent_last_vowel=true).segment === Segment(Bw("{lo?oHamo"), Harakaat[Harakaat(Bw("a"), false), Harakaat(Bw("a"), false)]).segment
+        @test r(alhamd, first_word=true, silent_last_vowel=true).harakaat == [Harakaat(Bw("a"), false), Harakaat(Bw("a"), false)]
+        @test r(alhamd, first_word=true, silent_last_vowel=true).harakaat[1].char == Bw("a")
+        @test r(alhamd, first_word=true, silent_last_vowel=true).harakaat[2].char == Bw("a")
     end
 
     @testset "Disconnected Letters (Huroof Muqatta'at)" begin
@@ -362,169 +362,169 @@ using Makie
         r = Syllabification(true, Syllable(0, 0, 1))
 
         # Test 1: Basic case - Alif Lām Mīm (الم)
-        alm = encode("الم")
-        result = r(alm, isarabic=false, first_word=false, silent_last_vowel=false)
-        @test result.segment == "A?l?m"
+        alm = encode(Ar("الم"))
+        result = r(alm, first_word=false, silent_last_vowel=false)
+        @test result.segment == Bw("A?l?m")
         @test length(result.harakaat) == 4  # 'a' and 'i' for alif, 'a' for lam, 'i' for mim
-        @test result.harakaat[1].char == "a"  # First vowel for alif
-        @test result.harakaat[2].char == "i"  # Second vowel for alif
-        @test result.harakaat[3].char == "a"  # Vowel for lam
-        @test result.harakaat[4].char == "i"  # Vowel for mim
+        @test result.harakaat[1].char == Bw("a")  # First vowel for alif
+        @test result.harakaat[2].char == Bw("i")  # Second vowel for alif
+        @test result.harakaat[3].char == Bw("a")  # Vowel for lam
+        @test result.harakaat[4].char == Bw("i")  # Vowel for mim
 
         # Test 2: With maddah - Alif Lām Mīm Ṣād (المص)
-        alms = encode("الٓمٓصٓ")
-        result = r(alms, isarabic=false, first_word=false, silent_last_vowel=false)
-        @test result.segment == "A?l^?m^?S^"
+        alms = encode(Ar("الٓمٓصٓ"))
+        result = r(alms, first_word=false, silent_last_vowel=false)
+        @test result.segment == Bw("A?l^?m^?S^")
         @test length(result.harakaat) == 5  # 'a' and 'i' for alif, 'a' for lam, 'i' for mim, 'a' for sad
-        @test result.harakaat[1].char == "a"  # First vowel for alif
-        @test result.harakaat[2].char == "i"  # Second vowel for alif
-        @test result.harakaat[3].char == "a"  # Vowel for lam
-        @test result.harakaat[4].char == "i"  # Vowel for mim
-        @test result.harakaat[5].char == "a"  # Vowel for sad
+        @test result.harakaat[1].char == Bw("a")  # First vowel for alif
+        @test result.harakaat[2].char == Bw("i")  # Second vowel for alif
+        @test result.harakaat[3].char == Bw("a")  # Vowel for lam
+        @test result.harakaat[4].char == Bw("i")  # Vowel for mim
+        @test result.harakaat[5].char == Bw("a")  # Vowel for sad
 
         # Test 3: Kāf Hā Yā 'Ayn Ṣād (كهيعص)
-        khyas = encode("كهيعص")
-        result = r(khyas, isarabic=false, first_word=false, silent_last_vowel=false)
-        @test result.segment == "k?h?y?E?S"
+        khyas = encode(Ar("كهيعص"))
+        result = r(khyas, first_word=false, silent_last_vowel=false)
+        @test result.segment == Bw("k?h?y?E?S")
         @test length(result.harakaat) == 6
-        @test result.harakaat[1].char == "a"  # Vowel for kaf
-        @test result.harakaat[2].char == "a"  # Vowel for ha
-        @test result.harakaat[3].char == "a"  # Vowel for ya
-        @test result.harakaat[4].char == "a"  # Vowel for ayn since it has sound of a first
-        @test result.harakaat[5].char == "i"  # Vowel for ayn since it has sound of i second
-        @test result.harakaat[6].char == "a"  # Vowel for sad
+        @test result.harakaat[1].char == Bw("a")  # Vowel for kaf
+        @test result.harakaat[2].char == Bw("a")  # Vowel for ha
+        @test result.harakaat[3].char == Bw("a")  # Vowel for ya
+        @test result.harakaat[4].char == Bw("a")  # Vowel for ayn since it has sound of a first
+        @test result.harakaat[5].char == Bw("i")  # Vowel for ayn since it has sound of i second
+        @test result.harakaat[6].char == Bw("a") # Vowel for sad
 
         # Test 4: Ṭā Hā (طه)
-        th = encode("طه")
-        result = r(th, isarabic=false, first_word=false, silent_last_vowel=false)
-        @test result.segment == "T?h"
+        th = encode(Ar("طه"))
+        result = r(th, first_word=false, silent_last_vowel=false)
+        @test result.segment == Bw("T?h")
         @test length(result.harakaat) == 2
-        @test result.harakaat[1].char == "a"  # Vowel for ta
-        @test result.harakaat[2].char == "a"  # Vowel for ha
+        @test result.harakaat[1].char == Bw("a")  # Vowel for ta
+        @test result.harakaat[2].char == Bw("a")  # Vowel for ha
 
         # Test 5: Ṭā Sīn Mīm (طسم)
-        tsm = encode("طسم")
-        result = r(tsm, isarabic=false, first_word=false, silent_last_vowel=false)
-        @test result.segment == "T?s?m"
+        tsm = encode(Ar("طسم"))
+        result = r(tsm, first_word=false, silent_last_vowel=false)
+        @test result.segment == Bw("T?s?m")
         @test length(result.harakaat) == 3
-        @test result.harakaat[1].char == "a"  # Vowel for ta
-        @test result.harakaat[2].char == "i"  # Vowel for sin
-        @test result.harakaat[3].char == "i"  # Vowel for mim
+        @test result.harakaat[1].char == Bw("a")  # Vowel for ta
+        @test result.harakaat[2].char == Bw("i")  # Vowel for sin
+        @test result.harakaat[3].char == Bw("i")  # Vowel for mim
 
         # Test 6: Ḥā Mīm (حم)
-        hm = encode("حم")
-        result = r(hm, isarabic=false, first_word=false, silent_last_vowel=false)
-        @test result.segment == "H?m"
+        hm = encode(Ar("حم"))
+        result = r(hm, first_word=false, silent_last_vowel=false)
+        @test result.segment == Bw("H?m")
         @test length(result.harakaat) == 2
-        @test result.harakaat[1].char == "a"  # Vowel for ha
-        @test result.harakaat[2].char == "i"  # Vowel for mim
+        @test result.harakaat[1].char == Bw("a")  # Vowel for ha
+        @test result.harakaat[2].char == Bw("i")  # Vowel for mim
 
         # Test 7: Yā Sīn (يس)
-        ys = encode("يس")
-        result = r(ys, isarabic=false, first_word=false, silent_last_vowel=false)
-        @test result.segment == "y?s"
+        ys = encode(Ar("يس"))
+        result = r(ys, first_word=false, silent_last_vowel=false)
+        @test result.segment == Bw("y?s")
         @test length(result.harakaat) == 2
-        @test result.harakaat[1].char == "a"  # Vowel for ya
-        @test result.harakaat[2].char == "i"  # Vowel for sin
+        @test result.harakaat[1].char == Bw("a")  # Vowel for ya
+        @test result.harakaat[2].char == Bw("i")  # Vowel for sin
 
         # Test 8: Ṣād (ص)
-        s = encode("صٓ")
-        result = r(s, isarabic=false, first_word=false, silent_last_vowel=false)
-        @test result.segment == "S^"
+        s = encode(Ar("صٓ"))
+        result = r(s, first_word=false, silent_last_vowel=false)
+        @test result.segment == Bw("S^")
         @test length(result.harakaat) == 1
-        @test result.harakaat[1].char == "a"  # Vowel for sad
+        @test result.harakaat[1].char == Bw("a")  # Vowel for sad
 
         # Test 9: Qāf (ق)
-        q = encode("ق")
-        result = r(q, isarabic=false, first_word=false, silent_last_vowel=false)
-        @test result.segment == "q"
+        q = encode(Ar("ق"))
+        result = r(q, first_word=false, silent_last_vowel=false)
+        @test result.segment == Bw("q")
         @test length(result.harakaat) == 1
-        @test result.harakaat[1].char == "a"  # Vowel for qaf
+        @test result.harakaat[1].char == Bw("a")  # Vowel for qaf
 
         # Test 10: Nūn (ن)
-        n = encode("ن")
-        result = r(n, isarabic=false, first_word=false, silent_last_vowel=false)
-        @test result.segment == "n"
+        n = encode(Ar("ن"))
+        result = r(n, first_word=false, silent_last_vowel=false)
+        @test result.segment == Bw("n")
         @test length(result.harakaat) == 1
-        @test result.harakaat[1].char == "u"  # Vowel for nun
+        @test result.harakaat[1].char == Bw("u")  # Vowel for nun
 
         # Test 11: 'Ayn Sīn Qāf (عسق)
-        esq = encode("عسق")
-        result = r(esq, isarabic=false, first_word=false, silent_last_vowel=false)
-        @test result.segment == "E?s?q"
+        esq = encode(Ar("عسق"))
+        result = r(esq, first_word=false, silent_last_vowel=false)
+        @test result.segment == Bw("E?s?q")
         @test length(result.harakaat) == 4
-        @test result.harakaat[1].char == "a"  # Vowel for ayn for a sound
-        @test result.harakaat[2].char == "i"  # Vowel for ayn for i sound
-        @test result.harakaat[3].char == "i"  # Vowel for sin
-        @test result.harakaat[4].char == "a"  # Vowel for qaf
+        @test result.harakaat[1].char == Bw("a")  # Vowel for ayn for a sound
+        @test result.harakaat[2].char == Bw("i")  # Vowel for ayn for i sound
+        @test result.harakaat[3].char == Bw("i")  # Vowel for sin
+        @test result.harakaat[4].char == Bw("a")  # Vowel for qaf
 
         # Test 12: Complex case with multiple diacritics - Alif Lām Rā (الر)
-        alr = encode("الٓرٓ")
-        result = r(alr, isarabic=false, first_word=false, silent_last_vowel=false)
-        @test result.segment == "A?l^?r^"
+        alr = encode(Ar("الٓرٓ"))
+        result = r(alr, first_word=false, silent_last_vowel=false)
+        @test result.segment == Bw("A?l^?r^")
         @test length(result.harakaat) == 4  # 'a' and 'i' for alif, 'a' for lam, 'a' for ra
-        @test result.harakaat[1].char == "a"  # First vowel for alif
-        @test result.harakaat[2].char == "i"  # Second vowel for alif
-        @test result.harakaat[3].char == "a"  # Vowel for lam
-        @test result.harakaat[4].char == "a"  # Vowel for ra
+        @test result.harakaat[1].char == Bw("a")  # First vowel for alif
+        @test result.harakaat[2].char == Bw("i")  # Second vowel for alif
+        @test result.harakaat[3].char == Bw("a")  # Vowel for lam
+        @test result.harakaat[4].char == Bw("a")  # Vowel for ra
 
         # Test 13: Single letter with shadda - Ṣād with shadda (صّ)
-        ss = encode("صّ")
-        result = r(ss, isarabic=false, first_word=false, silent_last_vowel=false)
-        @test result.segment == "S~"
+        ss = encode(Ar("صّ"))
+        result = r(ss, first_word=false, silent_last_vowel=false)
+        @test result.segment == Bw("S~")
         @test length(result.harakaat) == 1
-        @test result.harakaat[1].char == "a"  # Vowel for sad
+        @test result.harakaat[1].char == Bw("a")  # Vowel for sad
 
         # Test 14: Letter with both shadda and maddah - this would be unusual but testing for robustness
-        # sm = encode("صّٓ")  # Note: This might not be a standard Arabic form
-        # result = r(sm, isarabic=false, first_word=false, silent_last_vowel=false)
+        # sm = encode(Ar("صّٓ"))  # Note: This might not be a standard Arabic form
+        # result = r(sm, first_word=false, silent_last_vowel=false)
         # @test result.segment == "S~^"
         # @test length(result.harakaat) == 1
         # @test result.harakaat[1].char == "a"  # Vowel for sad
 
         # Test 15: Letter with sukun - Lām with sukun (لْ)
-        # ls = encode("لْ")
-        # result = r(ls, isarabic=false, first_word=false, silent_last_vowel=false)
+        # ls = encode(Ar("لْ"))
+        # result = r(ls, first_word=false, silent_last_vowel=false)
         # @test result.segment == "lo"
         # @test length(result.harakaat) == 1
         # @test result.harakaat[1].char == "a"  # Vowel for lam
 
         # Test 16: All three main vowel types
-        sin = encode("س")  # sin - uses 'i' vowel
-        ra = encode("ر")   # ra - uses 'a' vowel
-        nun = encode("ن")  # nun - uses 'u' vowel
+        sin = encode(Ar("س"))  # sin - uses 'i' vowel
+        ra = encode(Ar("ر"))   # ra - uses 'a' vowel
+        nun = encode(Ar("ن"))  # nun - uses 'u' vowel
 
-        result_sin = r(sin, isarabic=false, first_word=false, silent_last_vowel=false)
-        result_ra = r(ra, isarabic=false, first_word=false, silent_last_vowel=false)
-        result_nun = r(nun, isarabic=false, first_word=false, silent_last_vowel=false)
+        result_sin = r(sin, first_word=false, silent_last_vowel=false)
+        result_ra = r(ra, first_word=false, silent_last_vowel=false)
+        result_nun = r(nun, first_word=false, silent_last_vowel=false)
 
-        @test result_sin.harakaat[1].char == "i"
-        @test result_ra.harakaat[1].char == "a"
-        @test result_nun.harakaat[1].char == "u"
+        @test result_sin.harakaat[1].char == Bw("i")
+        @test result_ra.harakaat[1].char == Bw("a")
+        @test result_nun.harakaat[1].char == Bw("u")
 
         # Test 17: Letter combinations not found in Quran but possible in other contexts
-        mix = encode("تنفخ")  # ta-nun-fa-kha
-        result = r(mix, isarabic=false, first_word=false, silent_last_vowel=false)
-        @test result.segment == "t?n?f?x"
+        mix = encode(Ar("تنفخ"))  # ta-nun-fa-kha
+        result = r(mix, first_word=false, silent_last_vowel=false)
+        @test result.segment == Bw("t?n?f?x")
         @test length(result.harakaat) == 4
-        @test result.harakaat[1].char == "a"  # Vowel for ta
-        @test result.harakaat[2].char == "u"  # Vowel for nun
-        @test result.harakaat[3].char == "a"  # Vowel for fa
-        @test result.harakaat[4].char == "a"  # Vowel for kha
+        @test result.harakaat[1].char == Bw("a")  # Vowel for ta
+        @test result.harakaat[2].char == Bw("u")  # Vowel for nun
+        @test result.harakaat[3].char == Bw("a")  # Vowel for fa
+        @test result.harakaat[4].char == Bw("a")  # Vowel for kha
 
         # Test 18: Hamza forms
-        # hamzas = encode("ءأؤإئ")  # Various hamza forms
-        # result = r(hamzas, isarabic=false, first_word=false, silent_last_vowel=false)
+        # hamzas = encode(Ar("ءأؤإئ"))  # Various hamza forms
+        # result = r(hamzas, first_word=false, silent_last_vowel=false)
         # @test result.segment == "'?>?&?<?}"
         # @test length(result.harakaat) == 5
         # @test all(x -> x.char == "a", result.harakaat)  # All hamza forms use 'a' vowel
 
         # Test 19: Mixed with regular text containing explicit vowels
         # This should be handled by the regular syllabification logic, not handle_no_vowels
-        mixed = encode("المَ")  # The 'a' is an explicit vowel
-        result = r(mixed, isarabic=false, first_word=false, silent_last_vowel=false)
+        mixed = encode(Ar("المَ"))  # The 'a' is an explicit vowel
+        result = r(mixed, first_word=false, silent_last_vowel=false)
         # In this case, it should identify the explicit vowel 'a'
-        @test any(x -> x.char == "a", result.harakaat)
+        @test any(x -> x.char == Bw("a"), result.harakaat)
     end
 
     @testset "Rhythmic Vis" begin

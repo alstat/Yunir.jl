@@ -11,12 +11,13 @@ julia> arabic(bw_basmala)
 "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ"
 ```
 """
-function arabic(s::String)
+function arabic(s::Bw)
     trans = Transliterator()
-    return arabic(s, trans)
+    return Ar(arabic(s, trans))
 end
 
-function arabic(s::String, encoder::AbstractEncoder)
+function arabic(s::Bw, encoder::AbstractEncoder)
+    s = s.text
     for k in collect(keys(encoder.decode))
         s = replace(s, string(k) => string(encoder.decode[k]))
     end

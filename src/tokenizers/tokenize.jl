@@ -12,12 +12,12 @@ julia> tokenize(ar_basmala)
  "ٱلرَّحِيمِ"
 ```
 """
-function tokenize(s::String, punctuation::Bool=true) 
+function tokenize(s::Ar, punctuation::Bool=true) 
     if punctuation
-        new_s = replace(s, PUNCTUATIONS_REGEX => "")
-        punct = eachmatch(PUNCTUATIONS_REGEX, s)
-        return string.(vcat(split(new_s), [i.match for i in collect(punct)]))
+        new_s = replace(s.text, PUNCTUATIONS_REGEX => "")
+        punct = eachmatch(PUNCTUATIONS_REGEX, s.text)
+        return Ar.(string.(vcat(split(new_s), [i.match for i in collect(punct)])))
     else
-        return string.(split(s))
+        return Ar.(string.(split(s.text)))
     end
 end
