@@ -836,4 +836,177 @@ using Makie
             @test syl isa AbstractSyllable
         end
     end
+
+    @testset "Schillinger Rhythmic Visualization" begin
+        @testset "Schillinger Construction" begin
+            # Test basic construction
+            tajweed_timings = Dict{Bw,RState}(
+                Bw("i") => RState(1, "short"),
+                Bw("a") => RState(1, "short"),
+                Bw("u") => RState(1, "short"),
+                Bw("F") => RState(1, "short"),
+                Bw("N") => RState(1, "short"),
+                Bw("K") => RState(1, "short"),
+                Bw("iy") => RState(2, "long"),
+                Bw("aA") => RState(2, "long"),
+                Bw("uw") => RState(2, "long"),
+                Bw("a`") => RState(2, "long"),
+                Bw("^") => RState(4, "maddah")
+            )
+
+            schillinger = Schillinger(tajweed_timings)
+            @test schillinger isa Schillinger
+            @test schillinger.state_timings isa Dict{Bw,RState}
+            @test length(schillinger.state_timings) == 11
+            @test schillinger.state_timings[Bw("i")].state == 1
+            @test schillinger.state_timings[Bw("iy")].state == 2
+        end
+
+        @testset "Rhythmic States" begin
+             tajweed_timings = Dict{Bw,RState}(
+                Bw("i") => RState(1, "short"),
+                Bw("a") => RState(1, "short"),
+                Bw("u") => RState(1, "short"),
+                Bw("F") => RState(1, "short"),
+                Bw("N") => RState(1, "short"),
+                Bw("K") => RState(1, "short"),
+                Bw("iy") => RState(2, "long"),
+                Bw("aA") => RState(2, "long"),
+                Bw("uw") => RState(2, "long"),
+                Bw("a`") => RState(2, "long"),
+                Bw("^") => RState(4, "maddah")
+            )
+
+            schillinger = Schillinger(tajweed_timings)
+
+            # Test with single text
+            single_text = [Bw("bisomi {ll~ahi")]
+            states = rhythmic_states(schillinger, single_text)
+            @test states isa Vector{Vector{RState}}
+            @test length(states) == 1
+            @test length(states[1]) > 0
+            @test all(s -> s isa RState, states[1])
+
+            # Test with multiple texts
+            bw_texts = [
+                Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi"),
+                Bw("{loHamodu lil~ahi rab~i {loEa`lamiyna"),
+                Bw("{lr~aHoma`ni {lr~aHiymi")
+            ]
+
+            states = rhythmic_states(schillinger, bw_texts)
+            @test length(states) == 3
+            @test all(s -> s isa Vector{RState}, states)
+            @test all(s -> length(s) > 0, states)
+
+            # Test that all states have valid durations
+            for line_states in states
+                for state in line_states
+                    @test state.state > 0
+                    @test state.label isa String
+                end
+            end
+        end
+
+        @testset "Visualization Function" begin
+             tajweed_timings = Dict{Bw,RState}(
+                Bw("i") => RState(1, "short"),
+                Bw("a") => RState(1, "short"),
+                Bw("u") => RState(1, "short"),
+                Bw("F") => RState(1, "short"),
+                Bw("N") => RState(1, "short"),
+                Bw("K") => RState(1, "short"),
+                Bw("iy") => RState(2, "long"),
+                Bw("aA") => RState(2, "long"),
+                Bw("uw") => RState(2, "long"),
+                Bw("a`") => RState(2, "long"),
+                Bw("^") => RState(4, "maddah")
+            )
+
+            schillinger = Schillinger(tajweed_timings)
+            bw_texts = [
+                Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi"),
+                Bw("{loHamodu lil~ahi rab~i {loEa`lamiyna")
+            ]
+
+            states = rhythmic_states(schillinger, bw_texts)
+
+            # Test basic visualization
+            fig = vis(states)
+            @test fig isa Makie.Figure
+
+            # Test with custom parameters
+            custom_fig = vis(states, Figure(size=(600, 600)), "Custom Title", "Time", "Verse")
+            @test custom_fig isa Makie.Figure
+        end
+
+        @testset "Al-Fatihah Example" begin
+            # Complete example with all 7 verses of Al-Fatihah
+            tajweed_timings = Dict{Bw,RState}(
+                Bw("i") => RState(1, "short"),
+                Bw("a") => RState(1, "short"),
+                Bw("u") => RState(1, "short"),
+                Bw("F") => RState(1, "short"),
+                Bw("N") => RState(1, "short"),
+                Bw("K") => RState(1, "short"),
+                Bw("iy") => RState(2, "long"),
+                Bw("aA") => RState(2, "long"),
+                Bw("uw") => RState(2, "long"),
+                Bw("a`") => RState(2, "long"),
+                Bw("^") => RState(4, "maddah")
+            )
+
+            schillinger = Schillinger(tajweed_timings)
+
+            bw_texts = [
+                Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi"),
+                Bw("{loHamodu lil~ahi rab~i {loEa`lamiyna"),
+                Bw("{lr~aHoma`ni {lr~aHiymi"),
+                Bw("ma`liki yawomi {ld~iyni"),
+                Bw("<iy~aAka naEobudu wa<iy~aAka nasotaEiynu"),
+                Bw("{hodinaA {lS~ira`Ta {lomusotaqiyma"),
+                Bw("Sira`Ta {l~a*iyna >anoEamota Ealayohimo gayori {lomagoDuwbi Ealayohimo walaA {lD~aA^l~iyna")
+            ]
+
+            states = rhythmic_states(schillinger, bw_texts)
+            @test length(states) == 7
+
+            # Verify all verses produced rhythmic states
+            @test all(s -> length(s) > 0, states)
+
+            # Create visualization
+            fig = vis(states, Figure(size=(900, 900)), "Al-Fatihah Rhythmic Analysis", "Time", "Verse")
+            @test fig isa Makie.Figure
+        end
+
+        @testset "Edge Cases" begin
+            tajweed_timings = Dict{Bw,RState}(
+                Bw("i") => RState(1, "short"),
+                Bw("a") => RState(1, "short"),
+                Bw("u") => RState(1, "short"),
+                Bw("F") => RState(1, "short"),
+                Bw("N") => RState(1, "short"),
+                Bw("K") => RState(1, "short"),
+                Bw("iy") => RState(2, "long"),
+                Bw("aA") => RState(2, "long"),
+                Bw("uw") => RState(2, "long"),
+                Bw("a`") => RState(2, "long"),
+                Bw("^") => RState(4, "maddah")
+            )
+
+            schillinger = Schillinger(tajweed_timings)
+
+            # Test with single word
+            single_word = [Bw("bisomi")]
+            states = rhythmic_states(schillinger, single_word)
+            @test length(states) == 1
+            @test length(states[1]) > 0
+
+            # Test with very long text
+            long_text = [Bw("Sira`Ta {l~a*iyna >anoEamota Ealayohimo gayori {lomagoDuwbi Ealayohimo walaA {lD~aA^l~iyna")]
+            states_long = rhythmic_states(schillinger, long_text)
+            @test length(states_long) == 1
+            @test length(states_long[1]) > 0
+        end
+    end
 end

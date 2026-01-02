@@ -110,16 +110,16 @@ function print_align(out)
 				text_b *= b
 				push!(text_m, m)
 			else
-				text_a = arabic(text_a) * 
+				text_a = arabic(Bw(text_a)).text * 
 					"\n" * join(text_m) * 
-					"\n" * arabic(text_b) * "\n\n"
+					"\n" * arabic(Bw(text_b)).text * "\n\n"
 				output = output * text_a
 			end
 		else
 			if j % 60 == 0
-				text_a = arabic(text_a) * 
+				text_a = arabic(Bw(text_a)).text * 
 					"\n" * join(text_m) * 
-					"\n" * arabic(text_b) * "\n\n"
+					"\n" * arabic(Bw(text_b)).text * "\n\n"
 				output = output * text_a
 				text_a = "٢    "
 				text_b = "١    "

@@ -70,7 +70,7 @@ poem = """
 ## Extracting Syllables
 Now let's try extracting the syllables for the first line. To do this, let's convert the text into a vector of stanzas of the `poem`. We therefore split the text on the `";\n"` separator, where the `\n` is the code for line break. The function `strip` simply removes the whitespaces before and after each stanza.
 ```@example abc
-texts = map(x -> strip(string(x)), split.(poem, "\n"))
+texts = map(x -> Ar.(string.(strip(string(x)))), split.(poem, "\n"))
 ```
 Next is to initialize the syllabification for each stanza, suppose we want to capture the consonant before and after each vowel to represent one syllable. For example, for the word `basmala`, the syllabification if only the consonant preceding the vowel is considered then we have `ba`, `ma`, and `la`. To specify this configuration for the syllable, we do it as follows:
 ```@repl abc
@@ -84,7 +84,6 @@ Then, the following will syllabicize the first word in the said poem.
 ```@repl abc
 r(
     string(split(texts[1], " ")[1]), 
-    isarabic=true, 
     first_word=true, 
     silent_last_vowel=false
 )
@@ -100,17 +99,17 @@ So that, if we want to extract the syllables all lines in the poem, then:
 # Process only the first 3 lines for demonstration
 line_syllables = Array[]
 for line in texts
-    words = string.(split(line, " "))
+    words = Ar.(string.(split(line.text, " ")))
 
     word_syllables = Segment[]
     i = 1
     for word in words
         if i === 1
-            push!(word_syllables, r(word, isarabic=true, first_word=true))
+            push!(word_syllables, r(word, first_word=true))
         elseif i === length(words)
-            push!(word_syllables, r(word, isarabic=true, first_word=false, silent_last_vowel=false))
+            push!(word_syllables, r(word, first_word=false, silent_last_vowel=false))
         else
-            push!(word_syllables, r(word, isarabic=true, first_word=false))
+            push!(word_syllables, r(word, first_word=false))
         end
         i += 1
     end
@@ -147,7 +146,7 @@ Let's start with a simple example using Al-Fatihah (the opening chapter of the Q
 
 ```@example abc
 # Al-Fatihah in Buckwalter transliteration
-alfatihah_raw = [
+alfatihah_raw = Ar.([
     "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ",
     "ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَٰلَمِينَ",
     "ٱلرَّحْمَٰنِ ٱلرَّحِيمِ",
@@ -155,8 +154,8 @@ alfatihah_raw = [
     "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
     "ٱهْدِنَا ٱلصِّرَٰطَ ٱلْمُسْتَقِيمَ",
     "صِرَٰطَ ٱلَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ ٱلْمَغْضُوبِ عَلَيْهِمْ وَلَا ٱلضَّآلِّينَ"
-]
-alfatihah_bw = Bw.(encode.(alfatihah_raw))
+])
+alfatihah_bw = encode.(alfatihah_raw)
 ```
 
 ### Creating a Simple Visualization (Variant A)
@@ -241,7 +240,7 @@ Now let's analyze the poem we loaded earlier to see its rhyme scheme:
 # Convert poem lines to Buckwalter encoding
 # Remove empty lines and encode
 poem_lines = filter(x -> length(x) > 0, texts)
-poem_bw = [Bw(encode(line)) for line in poem_lines]
+poem_bw = [encode(line) for line in poem_lines]
 
 # Create visualization
 vis_poem = RhythmicVis(LastRecited(C))
@@ -417,6 +416,341 @@ end
 
 # Example: analyze in batches
 # batches = analyze_batches(long_text_array)
+```
+## Joseph Schillinger's Rhythmic Graph
+
+Joseph Schillinger's rhythmic graph theory provides a powerful framework for analyzing and visualizing rhythmic patterns in Arabic text, particularly for Quranic recitation (tajweed). This approach maps vowel patterns to rhythmic states with specific durations, creating a quantitative representation of rhythmic flow.
+
+### Understanding Rhythmic States
+
+In Schillinger's theory, each vowel pattern maps to a rhythmic state with a duration value. For Arabic/Buckwalter text, we typically distinguish between:
+
+- **Short vowels** (duration = 1): kasra `i`, fatha `a`, damma `u`, and tanween `F`, `N`, `K`
+- **Long vowels** (duration = 2): kasra+yaa `iy`, fatha+alif `aA`, damma+waw `uw`, and alif khanjariya `a``
+- **Maddah** (duration = 4 or more): elongated vowel `^`
+
+### Setting Up the Timing Dictionary
+
+The first step is to create a timing dictionary that maps Buckwalter vowel patterns to rhythmic states:
+
+```@example schillinger
+using Yunir
+using CairoMakie
+
+# Define tajweed timings based on Quranic recitation rules
+tajweed_timings = Dict{Bw,RState}(
+    # Short vowels (1 beat)
+    Bw("i") => RState(1, "short"),    # kasra
+    Bw("a") => RState(1, "short"),    # fatha
+    Bw("u") => RState(1, "short"),    # damma
+    Bw("F") => RState(1, "short"),    # fatha tanween
+    Bw("N") => RState(1, "short"),    # damma tanween
+    Bw("K") => RState(1, "short"),    # kasra tanween
+
+    # Long vowels (2 beats)
+    Bw("iy") => RState(2, "long"),    # kasra + yaa
+    Bw("aA") => RState(2, "long"),    # fatha + alif
+    Bw("uw") => RState(2, "long"),    # damma + waw
+    Bw("a`") => RState(2, "long"),    # fatha + alif khanjariya
+
+    # Maddah (4 beats or more)
+    Bw("^") => RState(4, "maddah")    # maddah elongation
+)
+```
+
+The `RState` structure takes two parameters:
+1. `state::Int`: The duration/timing value
+2. `description::String`: A descriptive label
+
+### Creating a Schillinger Analyzer
+
+Once you have defined your timing dictionary, create a `Schillinger` object:
+
+```@example schillinger
+schillinger = Schillinger(tajweed_timings)
+```
+
+### Analyzing Text with `rhythmic_states`
+
+The `rhythmic_states` function analyzes Buckwalter-encoded Arabic texts and converts them into rhythmic states. Let's analyze verses from Al-Fatihah:
+
+```@example schillinger
+# Define Al-Fatihah in Buckwalter encoding
+bw_texts = [
+    Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi"),
+    Bw("{loHamodu lil~ahi rab~i {loEa`lamiyna"),
+    Bw("{lr~aHoma`ni {lr~aHiymi"),
+    Bw("ma`liki yawomi {ld~iyni"),
+    Bw("<iy~aAka naEobudu wa<iy~aAka nasotaEiynu"),
+    Bw("{hodinaA {lS~ira`Ta {lomusotaqiyma"),
+    Bw("Sira`Ta {l~a*iyna >anoEamota Ealayohimo gayori {lomagoDuwbi Ealayohimo walaA {lD~aA^l~iyna")
+]
+
+# Analyze the rhythmic patterns
+states = rhythmic_states(schillinger, bw_texts)
+
+# Display information about the first verse
+println("First verse: $(bw_texts[1].text)")
+println("Number of rhythmic states: $(length(states[1]))")
+println("First few states:")
+for (i, state) in enumerate(states[1][1:min(5, length(states[1]))])
+    println("  State $i: duration=$(state.state), type=$(state.label)")
+end
+```
+
+The `rhythmic_states` function:
+1. Splits each text into individual words
+2. Applies syllabification to each word with appropriate boundary conditions:
+   - First word: `first_word=true, silent_last_vowel=false`
+   - Last word: `first_word=false, silent_last_vowel=true`
+   - Middle words: `first_word=false, silent_last_vowel=false`
+3. Extracts vowel patterns from each syllable
+4. Maps each vowel pattern to its corresponding rhythmic state using the timing dictionary
+
+### Visualizing Rhythmic Patterns
+
+The `vis` function creates a staircase plot visualization of the rhythmic patterns:
+
+```@example schillinger
+# Create visualization
+fig = vis(states, Figure(size=(900, 900)),
+         "Al-Fatihah Rhythmic Analysis",
+         "Time in Beats",
+         "Verse")
+
+fig
+```
+
+The visualization parameters:
+- `rhythms::Vector{Vector{RState}}`: The output from `rhythmic_states`
+- `fig::Makie.Figure`: Optional pre-existing Figure (defaults to new Figure(size=(900,900)))
+- `title::String`: Plot title (defaults to "Title")
+- `xlabel::String`: X-axis label (defaults to "Time in Seconds")
+- `ylabel::String`: Y-axis label (defaults to "Line")
+
+The staircase plot shows:
+- Each subplot represents one text/verse
+- Steps alternate between levels (0 and 1) to show rhythmic transitions
+- Step width corresponds to the duration of each rhythmic state
+- All subplots share the same x-axis for easy comparison
+
+### Analyzing Specific Verses
+
+You can analyze specific verses or subsets of text:
+
+```@example schillinger
+# Analyze only the 4th verse
+verse4 = rhythmic_states(schillinger, bw_texts[4:4])
+
+println("Verse 4: $(bw_texts[4].text)")
+println("Total beats: $(sum(s.state for s in verse4[1]))")
+println("Number of states: $(length(verse4[1]))")
+
+# Create visualization for just this verse
+fig_verse4 = vis(verse4, Figure(size=(600, 300)),
+                 "Verse 4 Analysis",
+                 "Time in Beats",
+                 "")
+
+fig_verse4
+```
+
+### Comparing Rhythmic Patterns
+
+You can compare rhythmic patterns across different verses:
+
+```@example schillinger
+# Analyze verses 1-3
+first_three = rhythmic_states(schillinger, bw_texts[1:3])
+
+# Calculate total duration for each verse
+for (i, verse_states) in enumerate(first_three)
+    total_duration = sum(s.state for s in verse_states)
+    short_count = count(s -> s.label == "short", verse_states)
+    long_count = count(s -> s.label == "long", verse_states)
+    maddah_count = count(s -> s.label == "maddah", verse_states)
+
+    println("Verse $i:")
+    println("  Total duration: $total_duration beats")
+    println("  Short vowels: $short_count")
+    println("  Long vowels: $long_count")
+    println("  Maddah: $maddah_count")
+end
+
+# Visualize comparison
+fig_compare = vis(first_three, Figure(size=(900, 600)),
+                  "First Three Verses Comparison",
+                  "Time in Beats",
+                  "Verse")
+
+fig_compare
+```
+
+### Custom Timing Schemes
+
+You can define custom timing schemes for different recitation styles or analytical purposes:
+
+```@example schillinger
+# Example: Simplified timing (only short vs long)
+simple_timings = Dict{Bw,RState}(
+    Bw("i") => RState(1, "short"),
+    Bw("a") => RState(1, "short"),
+    Bw("u") => RState(1, "short"),
+    Bw("F") => RState(1, "short"),
+    Bw("N") => RState(1, "short"),
+    Bw("K") => RState(1, "short"),
+    Bw("iy") => RState(2, "long"),
+    Bw("aA") => RState(2, "long"),
+    Bw("uw") => RState(2, "long"),
+    Bw("a`") => RState(2, "long"),
+    Bw("^") => RState(2, "long")  # Treat maddah as regular long
+)
+
+schillinger_simple = Schillinger(simple_timings)
+states_simple = rhythmic_states(schillinger_simple, bw_texts[1:3])
+
+fig_simple = vis(states_simple, Figure(size=(900, 600)),
+                "Simplified Timing Analysis",
+                "Time in Beats",
+                "Verse")
+
+fig_simple
+```
+
+### Working with Arabic Script
+
+The `rhythmic_states` function also accepts Arabic (`Ar`) text, automatically converting it to Buckwalter encoding:
+
+```@example schillinger
+# Define texts in Arabic script
+ar_texts = [
+    Ar("بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ"),
+    Ar("الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ")
+]
+
+# Analyze directly
+states_ar = rhythmic_states(schillinger, ar_texts)
+
+println("Analyzed $(length(states_ar)) verses from Arabic text")
+```
+
+### Practical Applications
+
+#### 1. Recitation Timing Analysis
+
+Calculate total recitation time for verses:
+
+```@example schillinger
+# Assuming 1 beat = 0.3 seconds in typical recitation
+beat_duration = 0.3
+
+all_states = rhythmic_states(schillinger, bw_texts)
+
+println("Estimated recitation times:")
+for (i, verse_states) in enumerate(all_states)
+    total_beats = sum(s.state for s in verse_states)
+    time_seconds = total_beats * beat_duration
+    println("  Verse $i: $(total_beats) beats ≈ $(round(time_seconds, digits=1))s")
+end
+```
+
+#### 2. Rhythmic Complexity Analysis
+
+Identify verses with the most complex rhythmic patterns:
+
+```@example schillinger
+complexity_scores = []
+
+for (i, verse_states) in enumerate(all_states)
+    # Count transitions between different rhythmic states
+    transitions = 0
+    for j in 1:length(verse_states)-1
+        if verse_states[j].state != verse_states[j+1].state
+            transitions += 1
+        end
+    end
+
+    push!(complexity_scores, (i, transitions, length(verse_states)))
+    println("Verse $i: $transitions transitions, $(length(verse_states)) total states")
+end
+```
+
+#### 3. Finding Rhythmic Patterns
+
+Identify repeated rhythmic sequences:
+
+```@example schillinger
+# Extract rhythmic signature (sequence of durations)
+for (i, verse_states) in enumerate(all_states[1:3])
+    signature = [s.state for s in verse_states]
+    println("Verse $i signature: $(signature[1:min(10, length(signature))])...")
+end
+```
+
+### Important Notes
+
+!!! warning "Text Requirements"
+    - Input text must be fully diacritized (include all vowel markings)
+    - Incomplete diacritization will result in missing rhythmic states
+    - The syllabification algorithm relies on vowel markers to identify syllable boundaries
+
+!!! tip "Timing Dictionary Coverage"
+    - Ensure your timing dictionary includes all vowel patterns present in your text
+    - If a vowel pattern is missing from the dictionary, a `KeyError` will be raised
+    - The standard tajweed timing dictionary covers most Quranic texts
+
+!!! note "Performance"
+    - For large texts, consider analyzing in batches
+    - The visualization becomes cluttered with many verses; consider splitting into smaller groups
+    - Each subplot is linked on the x-axis for easy comparison
+
+### Complete Example: Full Analysis Pipeline
+
+Here's a complete example analyzing Al-Fatihah:
+
+```@example schillinger
+# 1. Set up timing dictionary
+tajweed = Dict{Bw,RState}(
+    Bw("i") => RState(1, "short"), Bw("a") => RState(1, "short"),
+    Bw("u") => RState(1, "short"), Bw("F") => RState(1, "short"),
+    Bw("N") => RState(1, "short"), Bw("K") => RState(1, "short"),
+    Bw("iy") => RState(2, "long"), Bw("aA") => RState(2, "long"),
+    Bw("uw") => RState(2, "long"), Bw("a`") => RState(2, "long"),
+    Bw("^") => RState(4, "maddah")
+)
+
+# 2. Create analyzer
+analyzer = Schillinger(tajweed)
+
+# 3. Prepare texts (Al-Fatihah)
+fatihah = [
+    Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi"),
+    Bw("{loHamodu lil~ahi rab~i {loEa`lamiyna"),
+    Bw("{lr~aHoma`ni {lr~aHiymi"),
+    Bw("ma`liki yawomi {ld~iyni"),
+    Bw("<iy~aAka naEobudu wa<iy~aAka nasotaEiynu"),
+    Bw("{hodinaA {lS~ira`Ta {lomusotaqiyma"),
+    Bw("Sira`Ta {l~a*iyna >anoEamota Ealayohimo gayori {lomagoDuwbi Ealayohimo walaA {lD~aA^l~iyna")
+]
+
+# 4. Analyze rhythmic patterns
+rhythms = rhythmic_states(analyzer, fatihah)
+
+# 5. Generate statistics
+println("Al-Fatihah Rhythmic Analysis")
+println("="^40)
+for (i, r) in enumerate(rhythms)
+    beats = sum(s.state for s in r)
+    println("Verse $i: $(beats) beats, $(length(r)) states")
+end
+
+# 6. Create visualization
+final_fig = vis(rhythms, Figure(size=(1000, 1000)),
+               "Al-Fatihah - Complete Rhythmic Analysis",
+               "Time (Beats)",
+               "Verse Number")
+
+final_fig
 ```
 
 ## References

@@ -45,11 +45,20 @@ y3_dict == Dict(
     LastRecitedSyllable(Bw("miyn")) => 2
 )
 
-rvis = RhythmicVis(LastRecited(B))
+rvis = RhythmicVis(LastRecited(C))
 f, d = rvis(bw_texts)
 f
 
-
+alfatihah_raw = [
+    "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ",
+    "ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَٰلَمِينَ",
+    "ٱلرَّحْمَٰنِ ٱلرَّحِيمِ",
+    "مَٰلِكِ يَوْمِ ٱلدِّينِ",
+    "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
+    "ٱهْدِنَا ٱلصِّرَٰطَ ٱلْمُسْتَقِيمَ",
+    "صِرَٰطَ ٱلَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ ٱلْمَغْضُوبِ عَلَيْهِمْ وَلَا ٱلضَّآلِّينَ"
+]
+alfatihah_bw = Bw.(encode.(alfatihah_raw))
 
 ###
 LastRecited(LastRecitedVariants.one)

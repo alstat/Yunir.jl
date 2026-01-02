@@ -105,12 +105,12 @@ struct Syllabification
 end
 function count_vowels(text::Union{Ar,Bw})
     text = text isa Ar ? encode(text) : text
-	jvowels = join([c.char for c in BW_VOWELS])
+	jvowels = join([c.char.text for c in BW_VOWELS])
     return count(c -> c in jvowels, text.text)
 end
 function vowel_indices(text::Union{Ar,Bw})
     text = text isa Ar ? encode(text) : text
-	jvowels = join([c.char for c in BW_VOWELS])
+	jvowels = join([c.char.text for c in BW_VOWELS])
 	return findall(c -> c in jvowels, text.text)
 end
 """
@@ -131,7 +131,7 @@ Segment("Hiym", Harakaat[Harakaat("i", false)])
 ```
 """
 function (r::Syllabification)(text::Union{Ar,Bw}; first_word::Bool=false, silent_last_vowel::Bool=false)
-    jvowels = join([c.char for c in BW_VOWELS])
+    jvowels = join([c.char.text for c in BW_VOWELS])
 	text = text isa Ar ? encode(text) : text
 	
 	vowel_idcs = vowel_indices(text)
@@ -360,16 +360,17 @@ julia> tajweed_timings = Dict{Bw,RState}(
 julia> syllabic_consistency(segments, tajweed_timings)
 ```
 """
-function syllabic_consistency(segments::Vector{Segment}, syllable_timings::Dict{Bw,RState})::Vector{RState}
+function syllabic_consistency(segments::Vector{Segment}, syllable_timings::Union{Dict{Ar,RState},Dict{Bw,RState}})::Vector{RState}
     segment_scores = RState[]
     for segment in segments
-        syllables = split(segment.segment, "?")
+        syllables = split(segment.segment.text, "?")
+		syllables = segment.segment isa Ar ? Ar.(string.(syllables)) : Bw.(string.(syllables))
         syllable_scores = RState[]
         for syllable in syllables
-            if occursin('{', syllable)
+            if occursin('{', syllable.text)
                 push!(syllable_scores, syllable_timings[Bw("a")])
             else
-                vowel_idcs = vowel_indices(string(syllable))
+                vowel_idcs = vowel_indices(syllable)
                 vowel = syllable[vowel_idcs]
                 if length(vowel_idcs) < 1
                     if occursin('^', syllable)
@@ -386,7 +387,7 @@ function syllabic_consistency(segments::Vector{Segment}, syllable_timings::Dict{
                                (vowel == "i" && next_letter == "Y") ||
                                (vowel == "u" && next_letter == "w")
                         if cond
-                            if occursin('^', syllable)
+                            if occursin('^', syllable.text)
                                 syllable_score = syllable_timings[Bw("^")]
                             else
                                 syllable_score = syllable_timings[Bw(vowel * next_letter)]

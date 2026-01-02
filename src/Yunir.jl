@@ -20,6 +20,7 @@ include("tokenizers/tokenize.jl")
 include("alignment/vis.jl")
 include("analysis/rhythmic/utils.jl")
 include("analysis/rhythmic/vis_last_recited.jl")
+include("analysis/rhythmic/vis_schillinger.jl")
 include("analysis/symmetric/utils.jl")
 
 # data
@@ -50,7 +51,7 @@ export Alif, AlifMaksurah, Ba, Ta, TaMarbuta, Tha, Jeem, HHa, Kha, Dal, Thal, Ra
 
 # Rhyme
 export AbstractRhythmicVisArgs, AbstractSyllable, Harakaat, Syllabification, Syllable, Segment, Sequence, RState, sequence, vowel_indices, syllabic_consistency
-export LastRecited, RhythmicVis, LastRecitedSyllable, last_syllable, to_numbers, vis
+export LastRecited, Schillinger, RhythmicVis, LastRecitedSyllable, last_syllable, to_numbers, vis, rhythmic_states
 export LastRecitedVariants, A, B, C
 
 # Symmetric Analysis

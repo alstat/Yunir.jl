@@ -7,21 +7,21 @@ Dediacritization is the process of removing diacritics from an Arabic word. Thes
 using Yunir
 @transliterator :default
 
-ar_basmala = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ";
+ar_basmala = Ar("بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ");
 dediac(ar_basmala)
 ```
 Or using Buckwalter as follows:
 ```@repl abc
-bw_basmala = "bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi";
+bw_basmala = Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi");
 dediac(bw_basmala; isarabic=false)
 ```
 The `isarabic` parameter with `false` argument indicates that the `dediac` function or `dediac` API takes a Buckwalter encoded input, `bw_basmala`, and returns an output that is not encoded in Arabic (as in the previous example) but instead an output in Buckwalter form as well. 
 
 With Julia's broadcasting feature, the above dediacritization can be applied to arrays by simply adding `.` to the name of the function.
 ```@repl abc
-sentence0 = ["بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ",
+sentence0 = Ar.(["بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ",
     "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ"
-]
+])
 dediac.(sentence0)
 ```
 As seen above, broadcasting allows application of the `dediac` function to the elements of the vector `sentence0`. That is, because there are two entries in the `sentence0` vector, the broadcasting applies the `dediac` function to each of these and thus returning two outputs as well.
@@ -29,29 +29,29 @@ As seen above, broadcasting allows application of the `dediac` function to the e
 Arabic letters are calligraphic by design. It's free flowing design makes it very flexible to form unique ligatures that may require normalization for consistency's sake when doing natural language processing. To do normalization, the function to use is `normalize`, which works on either Arabic, Buckwalter or custom transliterated characters. For example, using the `ar_basmala` and `bw_basmala` defined above, the normalized version would be
 ```@repl abc
 normalize(ar_basmala)
-normalize(bw_basmala; isarabic=false)
+normalize(bw_basmala)
 ```
 Again, the `isarabic=false` parameter simply disables an Arabic output and instead encode it as a Buckwalter output. You can also normalize specific characters, for example:
 ```@repl abc
 normalize(ar_basmala, :alif_khanjareeya)
 normalize(ar_basmala, :hamzat_wasl)
-sentence1 = "وَٱلَّذِينَ يُؤْمِنُونَ بِمَآ أُنزِلَ إِلَيْكَ وَمَآ أُنزِلَ مِن قَبْلِكَ وَبِٱلْءَاخِرَةِ هُمْ يُوقِنُونَ";
+sentence1 = Ar("وَٱلَّذِينَ يُؤْمِنُونَ بِمَآ أُنزِلَ إِلَيْكَ وَمَآ أُنزِلَ مِن قَبْلِكَ وَبِٱلْءَاخِرَةِ هُمْ يُوقِنُونَ");
 normalize(sentence1, :alif_maddah)
 normalize(sentence1, :alif_hamza_above)
-sentence2 = "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ";
+sentence2 = Ar("إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ");
 normalize(sentence2, :alif_hamza_below)
-sentence3 = "ٱلَّذِينَ يُؤْمِنُونَ بِٱلْغَيْبِ وَيُقِيمُونَ ٱلصَّلَوٰةَ وَمِمَّا رَزَقْنَٰهُمْ يُنفِقُونَ";
+sentence3 = Ar("ٱلَّذِينَ يُؤْمِنُونَ بِٱلْغَيْبِ وَيُقِيمُونَ ٱلصَّلَوٰةَ وَمِمَّا رَزَقْنَٰهُمْ يُنفِقُونَ");
 normalize(sentence3, :waw_hamza_above)
 normalize(sentence3, :ta_marbuta)
-sentence4 = "ٱللَّهُ يَسْتَهْزِئُ بِهِمْ وَيَمُدُّهُمْ فِى طُغْيَٰنِهِمْ يَعْمَهُونَ";
+sentence4 = Ar("ٱللَّهُ يَسْتَهْزِئُ بِهِمْ وَيَمُدُّهُمْ فِى طُغْيَٰنِهِمْ يَعْمَهُونَ");
 normalize(sentence4, :ya_hamza_above)
-sentence5 = "ذَٰلِكَ ٱلْكِتَٰبُ لَا رَيْبَ فِيهِ هُدًى لِّلْمُتَّقِينَ";
+sentence5 = Ar("ذَٰلِكَ ٱلْكِتَٰبُ لَا رَيْبَ فِيهِ هُدًى لِّلْمُتَّقِينَ");
 normalize(sentence5, :alif_maksura)
-sentence6 = "ﷺ"
-normalize(sentence6) === "صلى الله عليه وسلم"
-sentence7 = "ﷻ"
-normalize(sentence7) === "جل جلاله"
-sentence8 = "﷽"
+sentence6 = Ar("ﷺ")
+normalize(sentence6) === Ar("صلى الله عليه وسلم")
+sentence7 = Ar("ﷻ")
+normalize(sentence7) === Ar("جل جلاله")
+sentence8 = Ar("﷽")
 normalize(sentence8) === ar_basmala
 ```
 Or a combination,
@@ -100,16 +100,16 @@ arabic(encode(ar_basmala))
 ### Dediacritization and Normalization on Custom Transliteration
 As mentioned above, dediacritization and normalization also works on new custom transliteration. For example, dediacritizing the encoded `ar_basmala` would give us:
 ```@repl abc
-dediac(encode(ar_basmala); isarabic=false)
+dediac(encode(ar_basmala))
 
-dediac(encode(ar_basmala); isarabic=false) |> arabic
+dediac(encode(ar_basmala)) |> arabic
 ```
 And for normalization, 
 
 ```@repl abc
-normalize(encode(ar_basmala); isarabic=false)
+normalize(encode(ar_basmala))
 
-normalize(encode(ar_basmala); isarabic=false) |> arabic
+normalize(encode(ar_basmala)) |> arabic
 ```
 ### Reset Transliteration
 To reset the transliteration back to Buckwalter, simply specify `:default` as the argument for the macro `@transliterator` as follows:
@@ -120,6 +120,6 @@ With this, all functions dependent on transliteration will also get updated.
 ```@repl abc
 encode(ar_basmala)
 encode(ar_basmala) === bw_basmala
-dediac(encode(ar_basmala); isarabic=false)
-normalize(encode(ar_basmala); isarabic=false)
+dediac(encode(ar_basmala))
+normalize(encode(ar_basmala))
 ```

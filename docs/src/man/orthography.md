@@ -8,7 +8,7 @@ The numerals we refer here is the [Abjad numeral](https://en.wikipedia.org/wiki/
 using Yunir
 @transliterator :default
 
-ar_basmala = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ";
+ar_basmala = Ar("بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ");
 ```
 If we want to take the numerals, we need to tokenize it first.
 ```@repl abc2
