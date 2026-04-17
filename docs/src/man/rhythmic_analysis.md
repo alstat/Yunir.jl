@@ -1,11 +1,11 @@
 Rhythmic Analysis
 =============
-The prevalence of poetry in Arabic literature necessitates scientific tool to study the rhythmic signatures. Unfortunately, there are no resources for such methodology until the recent work of [asaadthesis](@citet). This section will demonstrate the APIs for doing rhythmic analysis based on the methodologies proposed by [asaadthesis](@citet). To do this, there are two types of text that will be studied, and these are pre-Islamic poetry and the Holy Qur'an.
+This section will demonstrate the APIs of Yunir.jl for doing rhythmic analysis. These APIs are mainly based in the recent work of [asaadthesis](@citet). To do this, there are two types of text that will be studied, and these are pre-Islamic poetry and the Holy Qur'an.
 
 ## Arabic Poetry
 The first data is from a well known author, [Al-Mutanabbi المتنبّي](https://en.wikipedia.org/wiki/Al-Mutanabbi), who authored several poetry including the titled [*'Indeed, every woman with a swaying walk'*](https://www.youtube.com/watch?v=9c1IrQwfYFM), which will be the basis for this section.
 ## Loading Data
-The following codes assigns the said poem of Al-Mutanabbi to a variable `poem`.
+The following codes assign the said poem of Al-Mutanabbi to a variable `poem`.
 ```@example abc
 using Yunir
 @transliterator :default
@@ -68,7 +68,7 @@ poem = """
 """
 ```
 ## Extracting Syllables
-Now let's try extracting the syllables for the first line. To do this, let's convert the text into a vector of stanzas of the `poem`. We therefore split the text on the `";\n"` separator, where the `\n` is the code for line break. The function `strip` simply removes the whitespaces before and after each stanza.
+Next, let's try extracting the syllables for the first line. To do this, let's convert the text into a vector of stanzas of the `poem`. We therefore split the text on the `";\n"` separator, where the `\n` is the code for line break. The function `strip` simply removes the whitespaces before and after each stanza.
 ```@example abc
 texts = map(x -> Ar.(string.(strip(string(x)))), split.(poem, "\n"))
 ```
@@ -83,12 +83,12 @@ r = Syllabification(false, syllable)
 Then, the following will syllabicize the first word in the said poem.
 ```@repl abc
 r(
-    string(split(texts[1], " ")[1]), 
+    Ar(string(split(texts[1], " ")[1])), 
     first_word=true, 
     silent_last_vowel=false
 )
 ```
-The parameter `isarabic` ask if the output segment should be in Arabic form. The segment is defined here as the joined slices of the syllables. The `first_word` parameter checks if the input text is a first word of a sentence or phrase. Finally the last parameter aims to capture the case of silencing the vowel of the last word.
+The segment is defined here as the joined slices of the syllables. The `first_word` parameter checks if the input text is a first word of a sentence or phrase. Finally the last parameter aims to capture the case of silencing the vowel of the last word.
 
 From the output above, there are two syllables, the first being `أَ` and the second is `لَا`, both are separated with `?`.
 !!! warning "Caution"

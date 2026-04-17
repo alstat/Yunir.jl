@@ -12,8 +12,12 @@ julia> dediac(arabic(bw_basmala))
 "بسم ٱلله ٱلرحمن ٱلرحيم"
 ```
 """
-function dediac(s::Union{Ar,Bw})
-    trans = Transliterator()
-    return s isa Bw ? Bw(replace(s.text, trans.rx_diacs => s"")) : 
-        Ar(replace(s.text, trans.rx_ardiacs => s""))
+function dediac(s::Union{Ar,Bw}, type::String)
+    if type == "Hello"
+        println("Hello!")
+    else
+        trans = Transliterator()
+        return s isa Bw ? Bw(replace(s.text, trans.rx_diacs => s"")) : 
+            Ar(replace(s.text, trans.rx_ardiacs => s""))
+    end
 end
