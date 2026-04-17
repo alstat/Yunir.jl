@@ -13,7 +13,7 @@ dediac(ar_basmala)
 Or using Buckwalter as follows:
 ```@repl abc
 bw_basmala = Bw("bisomi {ll~ahi {lr~aHoma`ni {lr~aHiymi");
-dediac(bw_basmala; isarabic=false)
+dediac(bw_basmala)
 ```
 The `isarabic` parameter with `false` argument indicates that the `dediac` function or `dediac` API takes a Buckwalter encoded input, `bw_basmala`, and returns an output that is not encoded in Arabic (as in the previous example) but instead an output in Buckwalter form as well. 
 

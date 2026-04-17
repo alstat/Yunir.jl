@@ -232,6 +232,8 @@ The pairwise alignment above works by minimizing a cost function, which is defin
 The default cost model is given by
 ```@setup def
 # BioAlignments is already available from the docs Project.toml
+using Pkg
+Pkg.add("BioAlignments")
 ```
 ```@repl def
 using BioAlignments
